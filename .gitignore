@@ -105,3 +105,6 @@ venv.bak/
 
 # PyCharm project folders
 .idea
+
+# SciKit-Build files
+_skbuild/
