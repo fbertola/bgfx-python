@@ -19,7 +19,7 @@ if (APPLE)
 elseif (WIN32)
     set(BGFX_BUILD_DIR win64_vs2017)
     set(BGFX_BUILD_PROJ_DIR vs2017)
-else
+else()
     set(BGFX_BUILD_DIR linux32_gcc)
     set(BGFX_BUILD_PROJ_DIR gmake-linux)
 endif()
