@@ -18,7 +18,7 @@ setup(
     author='Federico Bertola',
     url='https://github.com/fbertola/bgfx-python',
     license="BSD 2-Clause",
-    packages=['bgfx_python'],
+    packages=['bgfx', 'bgfx_python'],
     cmake_source_dir="src",
     cmake_args=cmake_args,
 )
