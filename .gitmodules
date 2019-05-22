@@ -1,0 +1,12 @@
+[submodule "dependencies/pybind11"]
+	path = dependencies/pybind11
+	url = https://github.com/RosettaCommons/pybind11
+[submodule "dependencies/bgfx"]
+	path = dependencies/bgfx
+	url = https://github.com/bkaradzic/bgfx
+[submodule "dependencies/bimg"]
+	path = dependencies/bimg
+	url = https://github.com/bkaradzic/bimg
+[submodule "dependencies/bx"]
+	path = dependencies/bx
+	url = https://github.com/bkaradzic/bx
