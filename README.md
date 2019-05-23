@@ -18,6 +18,8 @@
 <p align="center">
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
+  <a href="#build-cpp-bindings">Build CPP bindings</a> •
+  <a href="#examples">Examples</a> •
   <a href="#credits">Credits</a> •
   <a href="#license">License</a>
 </p>
@@ -47,6 +49,15 @@ Finally, simply build and install the wheel.
 
 ```bash
 $ python setup.py bdist_wheel
+``` 
+
+## Build CPP bindings
+
+`bgfx-python` uses _Binder_ and _Pybind11_ to wrap the original library. A script to generate such binding is provided inside the `scripts` directory.
+Make sure that all the paths are corrects then simply launch the script.
+
+```bash
+$ python make_bindings.py
 ``` 
 
 ## Examples
