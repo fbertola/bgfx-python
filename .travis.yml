@@ -5,12 +5,17 @@ languages:
 sudo: false
 
 python:
-  - 3.6-dev
+  - 3.7
 
 git:
   quiet: true
   depth: false
   submodules: true
+
+env:
+  global:
+    - LANG: en_US.UTF-8
+
 
 matrix:
   include:
@@ -24,7 +29,13 @@ matrix:
       python: 3.6-dev
 
 addons:
+  homebrew:
+    update: true
+    packages:
+      - cmake
+      - python
   apt:
+    update: true
     sources:
     - ubuntu-toolchain-r-test
     packages:
@@ -34,6 +45,9 @@ addons:
     - cmake
     - ninja
     - mesa-common-dev
+
+before_install:
+  - pyenv global 3.7
 
 install:
   - pip install --user -U pip setuptools wheel
