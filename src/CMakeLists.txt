@@ -1,12 +1,11 @@
 project(bgfx_python)
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.11.0)
 
-find_package( PythonInterp 3.6 REQUIRED )
-find_package( PythonLibs 3.6 REQUIRED )
+find_package(Python3 COMPONENTS Development)
 find_package(PythonExtensions REQUIRED)
 
 message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
-message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}}")
+message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
 
 set(BX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bx" CACHE PATH "BX dir" FORCE)
 set(BIMG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bimg" CACHE PATH "BIMG dir" FORCE)
