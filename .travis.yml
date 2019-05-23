@@ -2,7 +2,7 @@ languages:
   - cpp
   - python
 
-sudo: true
+sudo: false
 
 python:
   - 3.7
