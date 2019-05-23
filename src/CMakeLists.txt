@@ -42,7 +42,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ")
 
 execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
-execute_process(COMMAND make -e config=release64 bx bimg bgfx WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+execute_process(COMMAND make -e verbose=1 config=release64 bx bimg bgfx WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 
 add_library(bgfx_python MODULE bgfx_python.cpp)
 
