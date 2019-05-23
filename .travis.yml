@@ -25,6 +25,10 @@ addons:
     - cmake
     - ninja
 
+before_script:
+  - pip install -U pip setuptools wheel
+  - pip install scikit-build cmake ninja
+
 script:
   - python setup.py sdist bdist_wheel
 
