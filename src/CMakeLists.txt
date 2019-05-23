@@ -1,12 +1,10 @@
 project(bgfx_python)
 cmake_minimum_required(VERSION 3.5.0)
 
-include(FindPython3)
-find_package(Python3 COMPONENTS Development)
 find_package(PythonExtensions REQUIRED)
 
-message(STATUS "PYTHON_LIBRARIES = ${Python3_LIBRARIES}")
-message(STATUS "PYTHON_INCLUDE_DIRS = ${Python3_INCLUDE_DIRS}}")
+message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
+message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}}")
 
 set(BX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bx" CACHE PATH "BX dir" FORCE)
 set(BIMG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bimg" CACHE PATH "BIMG dir" FORCE)
@@ -34,7 +32,6 @@ include_directories("${BIMG_DIR}/include")
 include_directories("${BGFX_DIR}/include")
 include_directories("${BGFX_DIR}/include/bgfx")
 include_directories("${PYBIND11_DIR}/include")
-include_directories(${Python3_INCLUDE_DIRS})
 
 set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -52,7 +49,6 @@ add_library(bgfx_python MODULE bgfx_python.cpp)
 target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
 target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
 target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
-target_link_libraries(bgfx_python ${Python3_LIBRARIES})
 
 python_extension_module(bgfx_python)
 install(TARGETS bgfx_python LIBRARY DESTINATION bgfx_python)

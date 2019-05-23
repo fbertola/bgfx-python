@@ -28,6 +28,7 @@ addons:
     - clang
     - cmake
     - ninja
+    - mesa-common-dev
 
 install:
   - pip install --user -U pip setuptools wheel
@@ -40,5 +41,5 @@ script:
 #  only:
 #    - master
 
-osx_image: xcode9.3
+osx_image: xcode10.2
 dist: xenial
