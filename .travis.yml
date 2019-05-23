@@ -30,9 +30,16 @@ matrix:
       os: osx
       env: CC=gcc CXX=g++
       osx_image: xcode10.2
-      language: cpp
+      language: shell
       before_install: python3 --version ; pip3 --version ; sw_vers
 
+    - name: "Python 3.7.3 on Windows"
+      os: windows
+      language: shell
+      before_install:
+        - choco install python
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 addons:
   homebrew:
     update: true
