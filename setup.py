@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import io
 import os
 import sys
@@ -38,18 +40,18 @@ class UploadCommand(Command):
 
     def run(self):
         try:
-            self.status('Removing previous builds…')
+            self.status('Removing previous builds.')
             rmtree(os.path.join(here, 'dist'))
         except OSError:
             pass
 
-        self.status('Building Source and Wheel distribution…')
+        self.status('Building Source and Wheel distribution.')
         os.system('{0} setup.py sdist bdist_wheel'.format(sys.executable))
 
-        self.status('Uploading the package to PyPI via Twine…')
+        self.status('Uploading the package to PyPI via Twine.')
         os.system('twine upload dist/*')
 
-        self.status('Pushing git tags…')
+        self.status('Pushing git tags.')
         os.system('git tag v{0}'.format(version))
         os.system('git push --tags')
 
@@ -63,7 +65,6 @@ if sys.platform == 'darwin':
     assert len(sep) == 2
     cmake_args = ['-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=' + plat_name[sep[0] + 1:sep[1]],
                   '-DCMAKE_OSX_ARCHITECTURES:STRING=' + plat_name[sep[1] + 1:]]
-
 
 setup(
     name=package_name,
