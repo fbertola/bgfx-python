@@ -1,6 +1,8 @@
 project(bgfx_python)
 cmake_minimum_required(VERSION 3.5.0)
 
+find_package( PythonInterp 3.6 REQUIRED )
+find_package( PythonLibs 3.6 REQUIRED )
 find_package(PythonExtensions REQUIRED)
 
 message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
