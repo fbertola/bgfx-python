@@ -3,6 +3,7 @@ languages:
   - python
 
 git:
+  depth: false
   submodules: true
 
 matrix:
@@ -25,7 +26,7 @@ addons:
     - cmake
     - ninja
 
-before_script:
+install:
   - pip install -U pip setuptools wheel
   - pip install scikit-build cmake ninja
 
