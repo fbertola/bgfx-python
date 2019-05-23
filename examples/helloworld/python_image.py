@@ -257,5 +257,4 @@ s_python_logo = array('B',
     ]
 )
 
-addr, _ = s_python_logo.buffer_info()
-logo = as_void_ptr(addr)
+logo = as_void_ptr(s_python_logo)

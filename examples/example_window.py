@@ -1,5 +1,6 @@
 import ctypes
 import time
+import sys
 
 # noinspection PyPackageRequirements
 import glfw
@@ -42,11 +43,30 @@ class ExampleWindow(object):
 
         glfw.init()
 
+        # glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
         window = glfw.create_window(self.width, self.height, self.title, None, None)
         glfw.make_context_current(window)
-        handle = glfw_native.glfwGetCocoaWindow(window)
+
+        bgfx.renderFrame()
+
+        handle, display = None, None
+
+        if sys.platform == "darwin":
+            glfw_native.glfwGetCocoaWindow.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
+            glfw_native.glfwGetCocoaWindow.restype = ctypes.c_void_p
+            handle = glfw_native.glfwGetCocoaWindow(window)
+        elif sys.platform == "windows":
+            glfw_native.glfwGetWin32Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
+            glfw_native.glfwGetWin32Window.restype = ctypes.c_void_p
+            handle = glfw_native.glfwGetWin32Window(window)
+        elif sys.platform == "linux":
+            glfw_native.glfwGetX11Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
+            glfw_native.glfwGetX11Window.restype = ctypes.c_void_p
+            handle = glfw_native.glfwGetX11Window(window)
+            display = glfw_native.glfwGetX11Display()
 
         data = bgfx.PlatformData()
+        data.ndt = display
         data.nwh = as_void_ptr(handle)
         data.context = None
         data.backBuffer = None

@@ -1,4 +1,4 @@
-from bgfx import bgfx, BGFX_CLEAR_COLOR, BGFX_CLEAR_DEPTH
+from bgfx import bgfx, BGFX_CLEAR_COLOR, BGFX_CLEAR_DEPTH, BGFX_RESET_VSYNC
 
 from examples.example_window import ExampleWindow
 from examples.helloworld import python_image
@@ -11,6 +11,7 @@ class Test(ExampleWindow):
         self.init_conf = bgfx.Init()
         self.init_conf.resolution.width = self.width
         self.init_conf.resolution.height = self.height
+        self.init_conf.resolution.reset = BGFX_RESET_VSYNC
 
     def init(self):
         bgfx.init(self.init_conf)
@@ -22,7 +23,7 @@ class Test(ExampleWindow):
 
     def update(self, dt):
         bgfx.setViewRect(
-            0, 0, 0, self.init_conf.resolution.width, self.init_conf.resolution.height
+            0, 0, 0, bgfx.BackbufferRatio.Equal
         )
         bgfx.touch(0)
         bgfx.dbgTextClear(0, False)
