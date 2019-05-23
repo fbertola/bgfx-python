@@ -2,6 +2,8 @@ languages:
   - cpp
   - python
 
+sudo: true
+
 git:
   depth: false
   submodules: true
