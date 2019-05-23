@@ -5,7 +5,7 @@ languages:
 sudo: false
 
 python:
-  - 3.7
+  - 3.6-dev
 
 git:
   quiet: true
@@ -17,9 +17,11 @@ matrix:
     - compiler: gcc
       os: linux
       env: CC=gcc-8 CXX=g++-8
+      python: 3.6-dev
     - compiler: clang
       os: osx
       env: CC=gcc CXX=g++
+      python: 3.6-dev
 
 addons:
   apt:
