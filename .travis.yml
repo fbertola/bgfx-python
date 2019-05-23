@@ -32,8 +32,8 @@ addons:
   homebrew:
     update: true
     packages:
-      - cmake
-      - python
+    - cmake
+    - python@3
   apt:
     update: true
     sources:
