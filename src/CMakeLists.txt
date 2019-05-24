@@ -43,7 +43,7 @@ endif()
 add_library(bgfx_python MODULE bgfx_python.cpp)
 
 if (WIN32)
-    set(CMAKE_CXX_FLAGS "#{CMAKE_CXX_FLAGS} /MT /std:c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT /std:c++14")
 
     execute_process(COMMAND ../bx/tools/bin/windows/genie ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND msbuild bx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
