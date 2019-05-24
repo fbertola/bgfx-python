@@ -40,10 +40,17 @@ if (APPLE)
     set(CMAKE_MODULE_LINKER_FLAGS "-framework Cocoa -framework QuartzCore -framework OpenGL -weak_framework Metal -weak_framework MetalKit ")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ")
+if (WIN32)
+    execute_process(COMMAND tools/windows/genie ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BX_DIR})
+    execute_process(COMMAND msbuild bx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    execute_process(COMMAND msbuild bimg.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    execute_process(COMMAND msbuild bgfx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ")
 
-execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
-execute_process(COMMAND make -e config=release64 bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
+    execute_process(COMMAND make -e config=release64 bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+endif()
 
 add_library(bgfx_python MODULE bgfx_python.cpp)
 

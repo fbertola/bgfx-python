@@ -9,42 +9,38 @@ git:
   depth: false
   submodules: true
 
-env:
-  global:
-    - LANG: en_US.UTF-8
-
-
 matrix:
   include:
-
-    - name: "Python 3.7.1 on Xenial Linux"
-      compiler: gcc
+    - compiler: gcc
       os: linux
       python: 3.7
       dist: xenial
       env: CC=gcc-8 CXX=g++-8
       before_install: pyenv global 3.7
 
-    - name: "Python 3.7.2 on macOS"
-      compiler: clang
+    - compiler: clang
       os: osx
       env: CC=gcc CXX=g++
       osx_image: xcode10.2
       language: shell
       before_install: python3 --version ; pip3 --version ; sw_vers
 
-    - name: "Python 3.7.3 on Windows"
-      os: windows
+    - os: windows
       language: shell
       before_install:
-        - choco install python
+        - choco install python visualstudio2017-workload-vctools -y
         - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+
+  allow_failures:
+    - os: windows
+
 addons:
   homebrew:
     update: true
     packages:
     - cmake
+    - ninja
   apt:
     update: true
     sources:
@@ -62,7 +58,7 @@ install:
   - pip3 install --user scikit-build cmake ninja
 
 script:
-  - python3 setup.py sdist bdist_wheel
+  - python3 setup.py sdist bdist_wheel || python setup.py sdist bdist_wheel
 
 #branches:
 #  only:
