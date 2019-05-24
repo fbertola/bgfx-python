@@ -8,7 +8,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/python-v3.6+-blue.svg">
-  <a href="https://travis-ci.com/fbertola/bgfx-wrapper"><img src="https://travis-ci.com/fbertola/bgfx-wrapper.svg?branch=master"></a>
+  <a href="https://travis-ci.com/fbertola/bgfx-python"><img src="https://travis-ci.com/fbertola/bgfx-python.svg?branch=master"></a>
   <img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg">
   <a href="https://github.com/fbertola/bgfx-python/issues"><img src="https://img.shields.io/github/issues/fbertola/bgfx-python.svg"></a>
   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
