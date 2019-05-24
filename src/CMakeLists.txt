@@ -40,23 +40,31 @@ if (APPLE)
     set(CMAKE_MODULE_LINKER_FLAGS "-framework Cocoa -framework QuartzCore -framework OpenGL -weak_framework Metal -weak_framework MetalKit ")
 endif()
 
+add_library(bgfx_python MODULE bgfx_python.cpp)
+
 if (WIN32)
+    set(MSVC_TOOLSET_VERSION 150)
+
     execute_process(COMMAND ../bx/tools/bin/windows/genie ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND msbuild bx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
     execute_process(COMMAND msbuild bimg.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
     execute_process(COMMAND msbuild bgfx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bimgRelease.lib")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bxRelease.lib")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bgfxRelease.lib")
+
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ")
 
     execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND make -e config=release64 bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
+
 endif()
 
-add_library(bgfx_python MODULE bgfx_python.cpp)
 
-target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
-target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
-target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
 
 python_extension_module(bgfx_python)
 install(TARGETS bgfx_python LIBRARY DESTINATION bgfx_python)
