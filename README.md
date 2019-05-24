@@ -40,7 +40,8 @@ $ pip install bgfx-python
 To install the latest version, you'll need to clone this repository and its submodules:
 
 ```bash
-$ git clone --depth=1 --recursive https://github.com/fbertola/Natrix
+$ git clone --depth=1 https://github.com/fbertola/bgfx-python
+$ git submodule update --init --recursive
 ```
 
 Then, make sure to have `make`, `cmake` and `ninja` installed in your system.
