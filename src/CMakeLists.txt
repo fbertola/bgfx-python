@@ -41,7 +41,7 @@ if (APPLE)
 endif()
 
 if (WIN32)
-    execute_process(COMMAND tools/bin/windows/genie ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BX_DIR})
+    execute_process(COMMAND ../bxtools/bin/windows/genie ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND msbuild bx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
     execute_process(COMMAND msbuild bimg.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
     execute_process(COMMAND msbuild bgfx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
