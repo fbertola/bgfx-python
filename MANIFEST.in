@@ -14,3 +14,4 @@ prune docs/build
 prune tests
 prune dependencies
 prune scripts
+prune _skbuild
