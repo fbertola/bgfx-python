@@ -1,7 +1,10 @@
-include LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.rst NOTICES HISTORY.txt
+include LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.rst NOTICES HISTORY.txt pyproject.toml
 exclude .gitmodules
 exclude .editorconfig .travis.yml .env appveyor.yml tox.ini pytest.ini
 
+
+recursive-include src *
+recursive-include bgfx_python *
 recursive-include docs Makefile *.rst *.py *.bat
 recursive-include docs/_templates *.html
 recursive-include docs/_static *.js *.css *.png
