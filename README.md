@@ -28,14 +28,9 @@
 
 * Uses _Pyind11_ and _Builder_ to natively wrap the C++ interface. No _CTypes_ or ugly C interfaces.
 * Unless specified, the GIL is released for every invocation and pointers are passed by reference. This will ensure great overall performances.
-* Maintains the original documentation; you can use `help()` to view the associated documentation. 
-* Easy to integrate. Source distribution as well as binary wheels are provided.
+* Maintains the original documentation; use `help()` on a class or function to view it. 
 
 ## How To Use
-
-```bash
-$ pip install bgfx-python
-```
 
 To install the latest version, you'll need to clone this repository and its submodules:
 
@@ -49,7 +44,7 @@ Then, make sure to have `make`, `cmake` and `ninja` installed in your system.
 Finally, simply build and install the wheel.
 
 ```bash
-$ python setup.py bdist_wheel
+$ python setup.py install
 ``` 
 
 ## Build CPP bindings
