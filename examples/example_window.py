@@ -1,7 +1,7 @@
 import ctypes
 import time
 import sys
-
+import bimpy
 # noinspection PyPackageRequirements
 import glfw
 
@@ -17,8 +17,9 @@ class ExampleWindow(object):
         self.title = title
         self.height = height
         self.width = width
+        self.ctx = None
 
-    def init(self):
+    def init(self, platform_data):
         pass
 
     def shutdown(self):
@@ -43,9 +44,10 @@ class ExampleWindow(object):
 
         glfw.init()
 
-        # glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
+        glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
         window = glfw.create_window(self.width, self.height, self.title, None, None)
-        glfw.make_context_current(window)
+        # glfw.make_context_current(window)
+        # glfw.swap_interval(1)
 
         bgfx.renderFrame()
 
@@ -71,9 +73,8 @@ class ExampleWindow(object):
         data.context = None
         data.backBuffer = None
         data.backBufferDS = None
-        bgfx.setPlatformData(data)
 
-        self.init()
+        self.init(data)
 
         last_time = None
 
