@@ -47,6 +47,15 @@ Finally, simply build and install the wheel.
 $ python setup.py install
 ``` 
 
+### Installing on MacOS 
+
+Building on MacOS X > 10.14 requires you to also install the SDK headers:
+
+```bash
+xcode-select --install
+open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+```
+
 ## Build CPP bindings
 
 `bgfx-python` uses _Binder_ and _Pybind11_ to wrap the original library. A script to generate such binding is provided inside the `scripts` directory.
