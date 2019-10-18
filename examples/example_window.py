@@ -1,7 +1,6 @@
 import ctypes
 import time
 import sys
-import bimpy
 # noinspection PyPackageRequirements
 import glfw
 
