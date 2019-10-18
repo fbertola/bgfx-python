@@ -31,7 +31,7 @@ def make_bindings_code(all_includes_file):
             f"--bind {this_project_namespace_to_bind} "
             "--single-file "
             + ("--config config.cfg " if use_pybind_stl else "")
-            + f" {all_includes_fn} -- -std=c++14 "
+            + f" {all_includes_file} -- -std=c++14 "
             f"-I{bx_source} "
             f"-I{bimg_source} "
             f"-I{this_project_include}/.. "
