@@ -72,7 +72,7 @@ setup(
     description='Python wrapper for BGFX Library',
     author='Federico Bertola',
     url='https://github.com/fbertola/bgfx-python',
-    packages=['bgfx'],
+    packages=['bgfx_python'],
     cmake_source_dir="src",
     cmake_args=cmake_args,
     long_description=long_description,
