@@ -11,14 +11,12 @@ binder_executable = glob.glob(
 )[0]
 
 bindings_dir = "tmp_bindings"
-bx_source = f"{os.getcwd()}/../dependencies/bx/include"
-bimg_source = f"{os.getcwd()}/../dependencies/bimg/include"
 binder_source = f"{os.getcwd()}/../../binder/source"
 pybind_source = f"{os.getcwd()}/../../binder/build/pybind11/include"
 use_pybind_stl = True
-this_project_source = f"{os.getcwd()}/../dependencies/bgfx/include/bgfx"
+this_project_source = f"{os.getcwd()}/../dependencies/bgfx/3rdparty/dear-imgui"
 this_project_include = this_project_source
-this_project_namespace_to_bind = "bgfx"
+this_project_namespace_to_bind = "ImGui"
 python_module_name = "bgfx_python"
 
 
@@ -32,11 +30,10 @@ def make_bindings_code(all_includes_file):
             "--single-file "
             + ("--config config.cfg " if use_pybind_stl else "")
             + f" {all_includes_file} -- -std=c++14 "
-            f"-I{bx_source} "
-            f"-I{bimg_source} "
-            f"-I{this_project_include}/.. "
-            f"-I{this_project_include}/../../src "
-            f"-I{this_project_include} -DNDEBUG -v"
+            f"-I{this_project_include} "
+            f"-I{this_project_include}/widgets "
+            f"-I{this_project_include}/../ "
+            f"-DNDEBUG -v"
     ).split()
 
     print(" ".join(command))
@@ -45,7 +42,7 @@ def make_bindings_code(all_includes_file):
 
 
 def main():
-    all_includes_file = "../src/all_cmake_includes.hpp"
+    all_includes_file = "../src/all_cmake_includes_imgui.hpp"
     make_bindings_code(all_includes_file)
 
 
