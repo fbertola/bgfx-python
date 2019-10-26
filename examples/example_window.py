@@ -1,11 +1,12 @@
 import ctypes
 import time
 import sys
+
 # noinspection PyPackageRequirements
 import glfw
 
 # noinspection PyUnresolvedReferences
-from bgfx import bgfx, as_void_ptr
+from bgfx import bgfx, ImGuiExtra, as_void_ptr
 
 # noinspection PyPackageRequirements,PyProtectedMember
 from glfw import _glfw as glfw_native
@@ -17,6 +18,7 @@ class ExampleWindow(object):
         self.height = height
         self.width = width
         self.ctx = None
+        self.window = None
 
     def init(self, platform_data):
         pass
@@ -26,6 +28,24 @@ class ExampleWindow(object):
 
     def update(self, dt):
         pass
+
+    def get_mouse_state(self):
+        mouse_x, mouse_y = glfw.get_cursor_pos(self.window)
+        state_mbl = glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_LEFT)
+        state_mbm = glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_MIDDLE)
+        state_mbr = glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_RIGHT)
+
+        return (
+            mouse_x,
+            mouse_y,
+            1
+            if state_mbl == glfw.PRESS
+            else 0 | 1
+            if state_mbm == glfw.PRESS
+            else 0 | 1
+            if state_mbr == glfw.PRESS
+            else 0,
+        )
 
     # noinspection PyProtectedMember
     def run(self):
@@ -44,7 +64,9 @@ class ExampleWindow(object):
         glfw.init()
 
         glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
-        window = glfw.create_window(self.width, self.height, self.title, None, None)
+        self.window = glfw.create_window(
+            self.width, self.height, self.title, None, None
+        )
         # glfw.make_context_current(window)
         # glfw.swap_interval(1)
 
@@ -55,15 +77,15 @@ class ExampleWindow(object):
         if sys.platform == "darwin":
             glfw_native.glfwGetCocoaWindow.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
             glfw_native.glfwGetCocoaWindow.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetCocoaWindow(window)
+            handle = glfw_native.glfwGetCocoaWindow(self.window)
         elif sys.platform == "windows":
             glfw_native.glfwGetWin32Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
             glfw_native.glfwGetWin32Window.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetWin32Window(window)
+            handle = glfw_native.glfwGetWin32Window(self.window)
         elif sys.platform == "linux":
             glfw_native.glfwGetX11Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
             glfw_native.glfwGetX11Window.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetX11Window(window)
+            handle = glfw_native.glfwGetX11Window(self.window)
             display = glfw_native.glfwGetX11Display()
 
         data = bgfx.PlatformData()
@@ -77,7 +99,7 @@ class ExampleWindow(object):
 
         last_time = None
 
-        while not glfw.window_should_close(window):
+        while not glfw.window_should_close(self.window):
             glfw.poll_events()
 
             now = time.perf_counter()
