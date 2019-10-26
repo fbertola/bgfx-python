@@ -10,6 +10,8 @@ message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
 set(BX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bx" CACHE PATH "BX dir" FORCE)
 set(BIMG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bimg" CACHE PATH "BIMG dir" FORCE)
 set(BGFX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx" CACHE PATH "BGFX dir" FORCE)
+set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty/dear-imgui" CACHE PATH "IMGUI dir" FORCE)
+set(3RDPARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty" CACHE PATH "3RDPARTY dir" FORCE)
 set(PYBIND11_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/pybind11" CACHE PATH "PYBIND11 dir" FORCE)
 
 if (APPLE)
@@ -32,6 +34,10 @@ include_directories("${BX_DIR}/include")
 include_directories("${BIMG_DIR}/include")
 include_directories("${BGFX_DIR}/include")
 include_directories("${BGFX_DIR}/include/bgfx")
+include_directories("${BGFX_DIR}/examples")
+include_directories("${IMGUI_DIR}")
+include_directories("${IMGUI_DIR}/widgets")
+include_directories("${3RDPARTY_DIR}")
 include_directories("${PYBIND11_DIR}/include")
 
 set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -40,7 +46,16 @@ if (APPLE)
     set(CMAKE_MODULE_LINKER_FLAGS "-framework Cocoa -framework QuartzCore -framework OpenGL -weak_framework Metal -weak_framework MetalKit ")
 endif()
 
-add_library(bgfx_python MODULE bgfx_python.cpp)
+add_library(bgfx_python MODULE
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${BGFX_DIR}/examples/common/imgui/imgui.cpp
+    bgfx_python.cpp
+    imgui_python.cpp
+    imgui_extra_python.cpp
+    module.cpp)
 
 if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
@@ -61,10 +76,10 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 ")
 
     execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
-    execute_process(COMMAND make -e config=debug64 bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
-    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgDebug.a")
-    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxDebug.a")
-    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxDebug.a")
+    execute_process(COMMAND make -e config=release64 bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
+    target_link_libraries(bgfx_python "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
 
 endif()
 
