@@ -16,24 +16,39 @@ matrix:
       python: 3.7
       dist: xenial
       env: CC=gcc-8 CXX=g++-8
-      before_install: pyenv global 3.7
+      before_install:
+        - nohup docker pull quay.io/pypa/manylinux2010_x86_64 >/dev/null 2>&1 </dev/null &
+        - pyenv global 3.7
+        - pip3 install --user setuptools wheel scikit-build cmake ninja
+      script:
+        - bash -x -e .travis/python_release.sh
+      after_success: bash -x -e .travis/after_success.sh
 
     - compiler: clang
       os: osx
       env: CC=gcc CXX=g++
       osx_image: xcode10.2
       language: shell
-      before_install: python3 --version ; pip3 --version ; sw_vers
-
-    - os: windows
-      language: shell
       before_install:
-        - choco install python3 visualstudio2017-workload-vctools -y
-        - py -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH Platform=x64 Configuration=Release CC=cl.exe CXX=cl.exe
+        - nohup docker pull quay.io/pypa/manylinux2010_x86_64 >/dev/null 2>&1 </dev/null &
+        - python3 --version ; pip3 --version ; sw_vers
+        - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
+      script:
+        - bash -x -e .travis/python_release.sh
+      after_success: bash -x -e .travis/after_success.sh
 
-  allow_failures:
-    - os: windows
+#    - os: windows
+#      language: shell
+#      before_install:
+#        - choco install python3 visualstudio2017-workload-vctools -y
+#        - py -m pip install --upgrade pip
+#      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH Platform=x64 Configuration=Release CC=cl.exe CXX=cl.exe
+#
+#  allow_failures:
+#    - os: windows
+
+services:
+  - docker
 
 addons:
   homebrew:
@@ -52,13 +67,6 @@ addons:
     - cmake
     - ninja
     - mesa-common-dev
-
-install:
-  - pip3 install --user setuptools wheel || py -m pip install --user setuptools wheel
-  - pip3 install --user scikit-build cmake ninja || py -m pip install --user scikit-build cmake ninja
-
-script:
-  - python3 setup.py sdist bdist_wheel || python setup.py sdist bdist_wheel
 
 #branches:
 #  only:
