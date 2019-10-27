@@ -54,8 +54,8 @@ addons:
     - mesa-common-dev
 
 install:
-  - pip3 install --user setuptools wheel || pip install --user setuptools wheel
-  - pip3 install --user scikit-build cmake ninja || pip install --user scikit-build cmake ninja
+  - pip3 install --user setuptools wheel || py -m pip install --user setuptools wheel
+  - pip3 install --user scikit-build cmake ninja || py -m pip install --user scikit-build cmake ninja
 
 script:
   - python3 setup.py sdist bdist_wheel || python setup.py sdist bdist_wheel
