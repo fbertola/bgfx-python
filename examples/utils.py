@@ -1,6 +1,6 @@
 from array import array
-
-from bgfx import bgfx, ImGui, ImVec2, ImVec4
+import numpy as np
+from bgfx import bgfx, ImGui, ImVec2, ImVec4, ImGuiListClipper
 
 
 class SampleData:
@@ -35,7 +35,7 @@ class SampleData:
 
         self.m_min = min_val
         self.m_max = max_val
-        self.m_avg = avg_val / 100
+        self.m_avg = avg_val / 100.0
 
 
 def bar(width, max_width, height, color):
@@ -94,10 +94,10 @@ def resource_bar(name, tooltip, num, _max, max_width, height):
 
 def show_example_dialog():
     ImGui.SetNextWindowPos(ImVec2(10.0, 50.0), 1 << 2)
-    ImGui.SetNextWindowSize(ImVec2(300.0, 210.0), 1 << 2)
+    ImGui.SetNextWindowSize(ImVec2(300.0, 500.0), 1 << 2)
 
-    ImGui.Begin("Hello World")
-    ImGui.TextWrapped("A simple Hello World example")
+    ImGui.Begin("\uf080 Statistics")
+    ImGui.TextWrapped("Your program's statistics")
     ImGui.Separator()
 
     s_frame_time = SampleData()
@@ -105,14 +105,15 @@ def show_example_dialog():
     stats = bgfx.getStats()
     to_ms_cpu = 1000.0 / stats.cpuTimerFreq
     to_ms_gpu = 1000.0 / stats.gpuTimerFreq
-    frame_ms = stats.cpuTimeFrame * to_ms_cpu
+    frame_ms = float(stats.cpuTimeEnd - stats.cpuTimeBegin)
 
-    s_frame_time.push_sample(frame_ms)
+    s_frame_time.push_sample(frame_ms * to_ms_cpu)
 
-    frame_text_overlay = f"\uf063{s_frame_time.m_min:.3f}ms, \uf062{s_frame_time.m_max:.3f}ms\nAvg: {s_frame_time.m_avg:.3f}ms, {(1000.0 / s_frame_time.m_avg):.1f} FPS"
+    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpuTimerFreq/frame_ms):6.2f} FPS"
     ImGui.PushStyleColor(40, ImVec4(0.0, 0.5, 0.15, 1.0))
+    ImGui.PushItemWidth(-1)
     ImGui.PlotHistogram(
-        "Frame",
+        "",
         array("f", s_frame_time.m_values)[0],
         100,
         s_frame_time.m_offset,
@@ -121,14 +122,17 @@ def show_example_dialog():
         60.0,
         ImVec2(0.0, 45.0),
     )
+    ImGui.PopItemWidth()
     ImGui.PopStyleColor()
 
     ImGui.Text(
         f"Submit CPU {(stats.cpuTimeEnd - stats.cpuTimeBegin) * to_ms_cpu:.3f}, GPU {(stats.gpuTimeEnd - stats.gpuTimeBegin) * to_ms_gpu:.3f} (L: {stats.maxGpuLatency})"
     )
-    # ImGui.Text(f"GPU mem: {stats.gpuMemoryUsed} / {stats.gpuMemoryMax}")
 
-    if ImGui.CollapsingHeader("\uf12e Resources"):
+    if stats.gpuMemoryMax > 0:
+        ImGui.Text(f"GPU mem: {stats.gpuMemoryUsed} / {stats.gpuMemoryMax}")
+
+    if ImGui.CollapsingHeader("\uf12e Resources", 1 << 5):
         caps = bgfx.getCaps()
         itemHeight = ImGui.GetTextLineHeightWithSpacing()
         maxWidth = 90.0
@@ -223,4 +227,5 @@ def show_example_dialog():
             itemHeight,
         )
         ImGui.PopFont()
+
     ImGui.End()

@@ -1,4 +1,4 @@
-from bgfx import bgfx, ImGuiExtra, BGFX_CLEAR_COLOR, BGFX_CLEAR_DEPTH
+from bgfx import bgfx, ImGuiExtra, BGFX_CLEAR_COLOR, BGFX_CLEAR_DEPTH, BGFX_DEBUG_PROFILER, BGFX_DEBUG_STATS, BGFX_DEBUG_TEXT
 from examples.example_window import ExampleWindow
 from examples.helloworld import python_image
 from examples.utils import show_example_dialog
@@ -20,7 +20,7 @@ class Test(ExampleWindow):
         bgfx.init(self.init_conf)
         # bgfx.reset(self.width, self.height, BGFX_RESET_VSYNC, self.init_conf.resolution.format)
 
-        bgfx.setDebug(0x8)
+        bgfx.setDebug(BGFX_DEBUG_TEXT)
         bgfx.setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0, 0)
 
         ImGuiExtra.imguiCreate()
