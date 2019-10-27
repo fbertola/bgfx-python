@@ -1523,6 +1523,25 @@ void bind_imgui_10(std::function< pybind11::module &(std::string const &namespac
 		cl.def("BuildSortByKey", (void (ImGuiStorage::*)()) &ImGuiStorage::BuildSortByKey, "C++: ImGuiStorage::BuildSortByKey() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
 		cl.def("assign", (struct ImGuiStorage & (ImGuiStorage::*)(const struct ImGuiStorage &)) &ImGuiStorage::operator=, "C++: ImGuiStorage::operator=(const struct ImGuiStorage &) --> struct ImGuiStorage &", pybind11::return_value_policy::reference_internal, pybind11::arg(""), pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
+	{ // ImGuiListClipper file:imgui.h line:1709
+		pybind11::class_<ImGuiListClipper, std::shared_ptr<ImGuiListClipper>> cl(M(""), "ImGuiListClipper", "");
+		pybind11::handle cl_type = cl;
+
+		cl.def( pybind11::init( [](){ return new ImGuiListClipper(); } ), "doc" );
+		cl.def( pybind11::init( [](int const & a0){ return new ImGuiListClipper(a0); } ), "doc" , pybind11::arg("items_count"));
+		cl.def( pybind11::init<int, float>(), pybind11::arg("items_count"), pybind11::arg("items_height") );
+
+		cl.def_readwrite("StartPosY", &ImGuiListClipper::StartPosY);
+		cl.def_readwrite("ItemsHeight", &ImGuiListClipper::ItemsHeight);
+		cl.def_readwrite("ItemsCount", &ImGuiListClipper::ItemsCount);
+		cl.def_readwrite("StepNo", &ImGuiListClipper::StepNo);
+		cl.def_readwrite("DisplayStart", &ImGuiListClipper::DisplayStart);
+		cl.def_readwrite("DisplayEnd", &ImGuiListClipper::DisplayEnd);
+		cl.def("Step", (bool (ImGuiListClipper::*)()) &ImGuiListClipper::Step, "C++: ImGuiListClipper::Step() --> bool", pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("Begin", [](ImGuiListClipper &o, int const & a0) -> void { return o.Begin(a0); }, "", pybind11::arg("items_count"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("Begin", (void (ImGuiListClipper::*)(int, float)) &ImGuiListClipper::Begin, "C++: ImGuiListClipper::Begin(int, float) --> void", pybind11::arg("items_count"), pybind11::arg("items_height"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("End", (void (ImGuiListClipper::*)()) &ImGuiListClipper::End, "C++: ImGuiListClipper::End() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
+	}
 	{ // ImDrawList file:imgui.h line:1881
 		pybind11::class_<ImDrawList, std::shared_ptr<ImDrawList>> cl(M(""), "ImDrawList", "");
 		pybind11::handle cl_type = cl;
