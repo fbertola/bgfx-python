@@ -93,7 +93,7 @@ def resource_bar(name, tooltip, num, _max, max_width, height):
 
 
 def show_example_dialog():
-    ImGui.SetNextWindowPos(ImVec2(10.0, 50.0), 1 << 2)
+    ImGui.SetNextWindowPos(ImVec2(10.0, 70.0), 1 << 2)
     ImGui.SetNextWindowSize(ImVec2(300.0, 500.0), 1 << 2)
 
     ImGui.Begin("\uf080 Statistics")

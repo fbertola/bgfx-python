@@ -36,6 +36,8 @@ def make_bindings_code(all_includes_file):
             f"-I{bimg_source} "
             f"-I{this_project_include}/.. "
             f"-I{this_project_include}/../../src "
+            f"-I{this_project_include}/../../tools/shaderc "
+            f"-I/Library/Developer/CommandLineTools/usr/include/c++/v1 "
             f"-I{this_project_include} -DNDEBUG -v"
     ).split()
 
@@ -45,7 +47,7 @@ def make_bindings_code(all_includes_file):
 
 
 def main():
-    all_includes_file = "../src/all_cmake_includes_bgfx.hpp"
+    all_includes_file = "./all_cmake_includes_bgfx.hpp"
     make_bindings_code(all_includes_file)
 
 

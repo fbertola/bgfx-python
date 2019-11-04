@@ -42,7 +42,7 @@ def make_bindings_code(all_includes_file):
 
 
 def main():
-    all_includes_file = "../src/all_cmake_includes_imgui.hpp"
+    all_includes_file = "./all_cmake_includes_imgui.hpp"
     make_bindings_code(all_includes_file)
 
 

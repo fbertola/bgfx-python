@@ -29,6 +29,9 @@ class ExampleWindow(object):
     def update(self, dt):
         pass
 
+    def resize(self, width, height):
+        pass
+
     def get_mouse_state(self):
         mouse_x, mouse_y = glfw.get_cursor_pos(self.window)
         state_mbl = glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_LEFT)
@@ -67,10 +70,8 @@ class ExampleWindow(object):
         self.window = glfw.create_window(
             self.width, self.height, self.title, None, None
         )
-        # glfw.make_context_current(window)
-        # glfw.swap_interval(1)
 
-        bgfx.renderFrame()
+        glfw.set_window_size_callback(self.window, self._handle_window_resize)
 
         handle, display = None, None
 
@@ -113,3 +114,10 @@ class ExampleWindow(object):
 
         self.shutdown()
         glfw.terminate()
+
+    def _handle_window_resize(self, window, width, height):
+        self.width = width
+        self.height = height
+
+        self.resize(width, height)
+

@@ -49,7 +49,7 @@ void bind_imgui_internal_6(std::function< pybind11::module &(std::string const &
 
 void bind_imgui_extra(std::function< pybind11::module &(std::string const &namespace_) > &M);
 
-PYBIND11_MODULE(bgfx_python, root_module) {
+PYBIND11_MODULE(bgfx_lib, root_module) {
 	root_module.doc() = "bgfx_python module";
 
 	std::map <std::string, pybind11::module> modules;
