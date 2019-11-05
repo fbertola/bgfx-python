@@ -3,7 +3,7 @@
 yum install -y centos-release-scl
 yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build mesa-libGL-devel
 
-for PYBIN in "cp36-cp36m" "cp37-cp37m" "cp38-cp38m"; do
+for PYBIN in "cp36-cp36m" "cp37-cp37m" "cp38-cp38"; do
     "/opt/python/${PYBIN}/bin/pip" wheel -w /v/dist /v
 done
 
