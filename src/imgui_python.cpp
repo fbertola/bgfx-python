@@ -15,6 +15,75 @@
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
 
+struct Bool
+{
+	Bool(): value(false) {}
+	Bool(bool v): value(v) {}
+
+	bool value;
+	bool null = false;
+};
+
+struct Float
+{
+	Float(): value(0.0f) {}
+	Float(float v): value(v) {}
+
+	float value;
+};
+
+struct Double
+{
+	Double(): value(0.0) {}
+	Double(double v): value(v) {}
+
+	double value;
+};
+
+struct Int
+{
+	Int(): value(0) {}
+	Int(int v): value(v) {}
+
+	int value;
+};
+
+struct String
+{
+	String(): value("") {}
+	String(const std::string& v): value(v) {}
+
+	std::string value;
+};
+
+void bind_imgui_type_wrappers(std::function< pybind11::module &(std::string const &namespace_) > &M)
+{
+    pybind11::class_<Bool>(M("ImGui"), "Bool")
+        .def(pybind11::init())
+        .def(pybind11::init<bool>())
+        .def_readwrite("value", &Bool::value);
+
+    pybind11::class_<Float>(M("ImGui"), "Float")
+        .def(pybind11::init())
+        .def(pybind11::init<float>())
+        .def_readwrite("value", &Float::value);
+
+    pybind11::class_<Double>(M("ImGui"), "Double")
+        .def(pybind11::init())
+        .def(pybind11::init<double>())
+        .def_readwrite("value", &Double::value);
+
+    pybind11::class_<Int>(M("ImGui"), "Int")
+        .def(pybind11::init())
+        .def(pybind11::init<int>())
+        .def_readwrite("value", &Int::value);
+
+    pybind11::class_<String>(M("ImGui"), "String")
+        .def(pybind11::init())
+        .def(pybind11::init<std::string>())
+        .def_readwrite("value", &String::value);
+}
+
 void bind_imgui(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
 	{ // ImVec2 file:imgui.h line:180
@@ -111,7 +180,7 @@ void bind_imgui_1(std::function< pybind11::module &(std::string const &namespace
 
 	// ImGui::ShowMetricsWindow(bool *) file:imgui.h line:230
 	M("ImGui").def("ShowMetricsWindow", []() -> void { return ImGui::ShowMetricsWindow(); }, "", pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("ShowMetricsWindow", (void (*)(bool *)) &ImGui::ShowMetricsWindow, "C++: ImGui::ShowMetricsWindow(bool *) --> void", pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("ShowMetricsWindow", [](Bool & a0) -> void { return ImGui::ShowMetricsWindow(&a0.value); }, "C++: ImGui::ShowMetricsWindow(bool *) --> void", pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::ShowStyleEditor(struct ImGuiStyle *) file:imgui.h line:231
 	M("ImGui").def("ShowStyleEditor", []() -> void { return ImGui::ShowStyleEditor(); }, "", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -143,8 +212,8 @@ void bind_imgui_1(std::function< pybind11::module &(std::string const &namespace
 
 	// ImGui::Begin(const char *, bool *, int) file:imgui.h line:252
 	M("ImGui").def("Begin", [](const char * a0) -> bool { return ImGui::Begin(a0); }, "", pybind11::arg("name"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("Begin", [](const char * a0, bool * a1) -> bool { return ImGui::Begin(a0, a1); }, "", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("Begin", (bool (*)(const char *, bool *, int)) &ImGui::Begin, "C++: ImGui::Begin(const char *, bool *, int) --> bool", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Begin", [](const char * a0, Bool & a1) -> bool { return ImGui::Begin(a0, &a1.value); }, "", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Begin", [](const char * a0, Bool & a1, int a2) -> bool { return ImGui::Begin(a0, &a1.value, a2); }, "C++: ImGui::Begin(const char *, bool *, int) --> bool", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::End() file:imgui.h line:253
 	M("ImGui").def("End", (void (*)()) &ImGui::End, "C++: ImGui::End() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -567,7 +636,7 @@ void bind_imgui_3(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("ImageButton", (bool (*)(void *, const struct ImVec2 &, const struct ImVec2 &, const struct ImVec2 &, int, const struct ImVec4 &, const struct ImVec4 &)) &ImGui::ImageButton, "C++: ImGui::ImageButton(void *, const struct ImVec2 &, const struct ImVec2 &, const struct ImVec2 &, int, const struct ImVec4 &, const struct ImVec4 &) --> bool", pybind11::arg("user_texture_id"), pybind11::arg("size"), pybind11::arg("uv0"), pybind11::arg("uv1"), pybind11::arg("frame_padding"), pybind11::arg("bg_col"), pybind11::arg("tint_col"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::Checkbox(const char *, bool *) file:imgui.h line:409
-	M("ImGui").def("Checkbox", (bool (*)(const char *, bool *)) &ImGui::Checkbox, "C++: ImGui::Checkbox(const char *, bool *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Checkbox", [](const char * a0, Bool & a1) -> bool { return ImGui::Checkbox(a0, &a1.value); }, "C++: ImGui::Checkbox(const char *, bool *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::CheckboxFlags(const char *, unsigned int *, unsigned int) file:imgui.h line:410
 	M("ImGui").def("CheckboxFlags", (bool (*)(const char *, unsigned int *, unsigned int)) &ImGui::CheckboxFlags, "C++: ImGui::CheckboxFlags(const char *, unsigned int *, unsigned int) --> bool", pybind11::arg("label"), pybind11::arg("flags"), pybind11::arg("flags_value"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -576,7 +645,7 @@ void bind_imgui_3(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("RadioButton", (bool (*)(const char *, bool)) &ImGui::RadioButton, "C++: ImGui::RadioButton(const char *, bool) --> bool", pybind11::arg("label"), pybind11::arg("active"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::RadioButton(const char *, int *, int) file:imgui.h line:412
-	M("ImGui").def("RadioButton", (bool (*)(const char *, int *, int)) &ImGui::RadioButton, "C++: ImGui::RadioButton(const char *, int *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_button"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("RadioButton", [](const char * a0, Int & a1, int a2) -> bool { return ImGui::RadioButton(a0, &a1.value, a2); }, "C++: ImGui::RadioButton(const char *, int *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_button"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 }
 
@@ -615,40 +684,40 @@ void bind_imgui_4(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("EndCombo", (void (*)()) &ImGui::EndCombo, "C++: ImGui::EndCombo() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::Combo(const char *, int *, const char *, int) file:imgui.h line:422
-	M("ImGui").def("Combo", [](const char * a0, int * a1, const char * a2) -> bool { return ImGui::Combo(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("current_item"), pybind11::arg("items_separated_by_zeros"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("Combo", (bool (*)(const char *, int *, const char *, int)) &ImGui::Combo, "C++: ImGui::Combo(const char *, int *, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("current_item"), pybind11::arg("items_separated_by_zeros"), pybind11::arg("popup_max_height_in_items"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Combo", [](const char * a0, Int & a1, const char * a2) -> bool { return ImGui::Combo(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("current_item"), pybind11::arg("items_separated_by_zeros"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Combo", [](const char * a0, Int & a1, const char * a2, int a3) -> bool { return ImGui::Combo(a0, &a1.value, a2, a3); }, "C++: ImGui::Combo(const char *, int *, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("current_item"), pybind11::arg("items_separated_by_zeros"), pybind11::arg("popup_max_height_in_items"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragFloat(const char *, float *, float, float, float, const char *, float) file:imgui.h line:432
-	M("ImGui").def("DragFloat", [](const char * a0, float * a1) -> bool { return ImGui::DragFloat(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloat", [](const char * a0, float * a1, float const & a2) -> bool { return ImGui::DragFloat(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloat", [](const char * a0, float * a1, float const & a2, float const & a3) -> bool { return ImGui::DragFloat(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloat", [](const char * a0, float * a1, float const & a2, float const & a3, float const & a4) -> bool { return ImGui::DragFloat(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloat", [](const char * a0, float * a1, float const & a2, float const & a3, float const & a4, const char * a5) -> bool { return ImGui::DragFloat(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloat", (bool (*)(const char *, float *, float, float, float, const char *, float)) &ImGui::DragFloat, "C++: ImGui::DragFloat(const char *, float *, float, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1) -> bool { return ImGui::DragFloat(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1, float const & a2) -> bool { return ImGui::DragFloat(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1, float const & a2, float const & a3) -> bool { return ImGui::DragFloat(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1, float const & a2, float const & a3, float const & a4) -> bool { return ImGui::DragFloat(a0, &a1.value, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1, float const & a2, float const & a3, float const & a4, const char * a5) -> bool { return ImGui::DragFloat(a0, &a1.value, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloat", [](const char * a0, Float & a1, float a2, float a3, float a4, const char * a5, float a6) -> bool { return ImGui::DragFloat(a0, &a1.value, a2, a3, a4, a5, a6); }, "C++: ImGui::DragFloat(const char *, float *, float, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragFloatRange2(const char *, float *, float *, float, float, float, const char *, const char *, float) file:imgui.h line:436
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2) -> bool { return ImGui::DragFloatRange2(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2, float const & a3) -> bool { return ImGui::DragFloatRange2(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4) -> bool { return ImGui::DragFloatRange2(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4, float const & a5) -> bool { return ImGui::DragFloatRange2(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4, float const & a5, const char * a6) -> bool { return ImGui::DragFloatRange2(a0, a1, a2, a3, a4, a5, a6); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4, float const & a5, const char * a6, const char * a7) -> bool { return ImGui::DragFloatRange2(a0, a1, a2, a3, a4, a5, a6, a7); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragFloatRange2", (bool (*)(const char *, float *, float *, float, float, float, const char *, const char *, float)) &ImGui::DragFloatRange2, "C++: ImGui::DragFloatRange2(const char *, float *, float *, float, float, float, const char *, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float const & a3) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4, float const & a5) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4, float const & a5, const char * a6) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3, a4, a5, a6); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4, float const & a5, const char * a6, const char * a7) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3, a4, a5, a6, a7); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragFloatRange2", [](const char * a0, Float & a1, Float & a2, float a3, float a4, float a5, const char * a6, const char * a7, float a8) -> bool { return ImGui::DragFloatRange2(a0, &a1.value, &a2.value, a3, a4, a5, a6, a7, a8); }, "C++: ImGui::DragFloatRange2(const char *, float *, float *, float, float, float, const char *, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragInt(const char *, int *, float, int, int, const char *) file:imgui.h line:437
-	M("ImGui").def("DragInt", [](const char * a0, int * a1) -> bool { return ImGui::DragInt(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragInt", [](const char * a0, int * a1, float const & a2) -> bool { return ImGui::DragInt(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragInt", [](const char * a0, int * a1, float const & a2, int const & a3) -> bool { return ImGui::DragInt(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragInt", [](const char * a0, int * a1, float const & a2, int const & a3, int const & a4) -> bool { return ImGui::DragInt(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragInt", (bool (*)(const char *, int *, float, int, int, const char *)) &ImGui::DragInt, "C++: ImGui::DragInt(const char *, int *, float, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragInt", [](const char * a0, Int & a1) -> bool { return ImGui::DragInt(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragInt", [](const char * a0, Int & a1, float const & a2) -> bool { return ImGui::DragInt(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragInt", [](const char * a0, Int & a1, float const & a2, int const & a3) -> bool { return ImGui::DragInt(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragInt", [](const char * a0, Int & a1, float const & a2, int const & a3, int const & a4) -> bool { return ImGui::DragInt(a0, &a1.value, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragInt", [](const char * a0, Int & a1, float a2, int a3, int a4, const char * a5) -> bool { return ImGui::DragInt(a0, &a1.value, a2, a3, a4, a5); }, "C++: ImGui::DragInt(const char *, int *, float, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragIntRange2(const char *, int *, int *, float, int, int, const char *, const char *) file:imgui.h line:441
-	M("ImGui").def("DragIntRange2", [](const char * a0, int * a1, int * a2) -> bool { return ImGui::DragIntRange2(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragIntRange2", [](const char * a0, int * a1, int * a2, float const & a3) -> bool { return ImGui::DragIntRange2(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragIntRange2", [](const char * a0, int * a1, int * a2, float const & a3, int const & a4) -> bool { return ImGui::DragIntRange2(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragIntRange2", [](const char * a0, int * a1, int * a2, float const & a3, int const & a4, int const & a5) -> bool { return ImGui::DragIntRange2(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragIntRange2", [](const char * a0, int * a1, int * a2, float const & a3, int const & a4, int const & a5, const char * a6) -> bool { return ImGui::DragIntRange2(a0, a1, a2, a3, a4, a5, a6); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("DragIntRange2", (bool (*)(const char *, int *, int *, float, int, int, const char *, const char *)) &ImGui::DragIntRange2, "C++: ImGui::DragIntRange2(const char *, int *, int *, float, int, int, const char *, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2, float const & a3) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value, a3); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2, float const & a3, int const & a4) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2, float const & a3, int const & a4, int const & a5) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2, float const & a3, int const & a4, int const & a5, const char * a6) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value, a3, a4, a5, a6); }, "", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("DragIntRange2", [](const char * a0, Int & a1, Int & a2, float a3, int a4, int a5, const char * a6, const char * a7) -> bool { return ImGui::DragIntRange2(a0, &a1.value, &a2.value, a3, a4, a5, a6, a7); }, "C++: ImGui::DragIntRange2(const char *, int *, int *, float, int, int, const char *, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v_current_min"), pybind11::arg("v_current_max"), pybind11::arg("v_speed"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("format_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragScalar(const char *, int, void *, float, const void *, const void *, const char *, float) file:imgui.h line:442
 	M("ImGui").def("DragScalar", [](const char * a0, int const & a1, void * a2, float const & a3) -> bool { return ImGui::DragScalar(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::arg("v_speed"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -665,9 +734,9 @@ void bind_imgui_4(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("DragScalarN", (bool (*)(const char *, int, void *, int, float, const void *, const void *, const char *, float)) &ImGui::DragScalarN, "C++: ImGui::DragScalarN(const char *, int, void *, int, float, const void *, const void *, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::arg("components"), pybind11::arg("v_speed"), pybind11::arg("p_min"), pybind11::arg("p_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::SliderFloat(const char *, float *, float, float, const char *, float) file:imgui.h line:448
-	M("ImGui").def("SliderFloat", [](const char * a0, float * a1, float const & a2, float const & a3) -> bool { return ImGui::SliderFloat(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderFloat", [](const char * a0, float * a1, float const & a2, float const & a3, const char * a4) -> bool { return ImGui::SliderFloat(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderFloat", (bool (*)(const char *, float *, float, float, const char *, float)) &ImGui::SliderFloat, "C++: ImGui::SliderFloat(const char *, float *, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderFloat", [](const char * a0, Float & a1, float const & a2, float const & a3) -> bool { return ImGui::SliderFloat(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderFloat", [](const char * a0, Float & a1, float const & a2, float const & a3, const char * a4) -> bool { return ImGui::SliderFloat(a0, &a1.value, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderFloat", [](const char * a0, Float & a1, float a2, float a3, const char * a4, float a5) -> bool { return ImGui::SliderFloat(a0, &a1.value, a2, a3, a4, a5); }, "C++: ImGui::SliderFloat(const char *, float *, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 }
 
@@ -691,14 +760,14 @@ void bind_imgui_4(std::function< pybind11::module &(std::string const &namespace
 void bind_imgui_5(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
 	// ImGui::SliderAngle(const char *, float *, float, float, const char *) file:imgui.h line:452
-	M("ImGui").def("SliderAngle", [](const char * a0, float * a1) -> bool { return ImGui::SliderAngle(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderAngle", [](const char * a0, float * a1, float const & a2) -> bool { return ImGui::SliderAngle(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderAngle", [](const char * a0, float * a1, float const & a2, float const & a3) -> bool { return ImGui::SliderAngle(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::arg("v_degrees_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderAngle", (bool (*)(const char *, float *, float, float, const char *)) &ImGui::SliderAngle, "C++: ImGui::SliderAngle(const char *, float *, float, float, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::arg("v_degrees_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderAngle", [](const char * a0, Float & a1) -> bool { return ImGui::SliderAngle(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderAngle", [](const char * a0, Float & a1, float const & a2) -> bool { return ImGui::SliderAngle(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderAngle", [](const char * a0, Float & a1, float const & a2, float const & a3) -> bool { return ImGui::SliderAngle(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::arg("v_degrees_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderAngle", [](const char * a0, Float & a1, float a2, float a3, const char * a4) -> bool { return ImGui::SliderAngle(a0, &a1.value, a2, a3, a4); }, "C++: ImGui::SliderAngle(const char *, float *, float, float, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v_rad"), pybind11::arg("v_degrees_min"), pybind11::arg("v_degrees_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::SliderInt(const char *, int *, int, int, const char *) file:imgui.h line:453
-	M("ImGui").def("SliderInt", [](const char * a0, int * a1, int const & a2, int const & a3) -> bool { return ImGui::SliderInt(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("SliderInt", (bool (*)(const char *, int *, int, int, const char *)) &ImGui::SliderInt, "C++: ImGui::SliderInt(const char *, int *, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderInt", [](const char * a0, Int & a1, int const & a2, int const & a3) -> bool { return ImGui::SliderInt(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("SliderInt", [](const char * a0, Int & a1, int a2, int a3, const char * a4) -> bool { return ImGui::SliderInt(a0, &a1.value, a2, a3, a4); }, "C++: ImGui::SliderInt(const char *, int *, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::SliderScalar(const char *, int, void *, const void *, const void *, const char *, float) file:imgui.h line:457
 	M("ImGui").def("SliderScalar", [](const char * a0, int const & a1, void * a2, const void * a3, const void * a4) -> bool { return ImGui::SliderScalar(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::arg("p_min"), pybind11::arg("p_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -716,8 +785,8 @@ void bind_imgui_5(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("VSliderFloat", (bool (*)(const char *, const struct ImVec2 &, float *, float, float, const char *, float)) &ImGui::VSliderFloat, "C++: ImGui::VSliderFloat(const char *, const struct ImVec2 &, float *, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::VSliderInt(const char *, const struct ImVec2 &, int *, int, int, const char *) file:imgui.h line:460
-	M("ImGui").def("VSliderInt", [](const char * a0, const struct ImVec2 & a1, int * a2, int const & a3, int const & a4) -> bool { return ImGui::VSliderInt(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("VSliderInt", (bool (*)(const char *, const struct ImVec2 &, int *, int, int, const char *)) &ImGui::VSliderInt, "C++: ImGui::VSliderInt(const char *, const struct ImVec2 &, int *, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("VSliderInt", [](const char * a0, const struct ImVec2 & a1, Int & a2, int const & a3, int const & a4) -> bool { return ImGui::VSliderInt(a0, a1, &a2.value, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("VSliderInt", [](const char * a0, const struct ImVec2 & a1, Int & a2, int a3, int a4, const char * a5) -> bool { return ImGui::VSliderInt(a0, a1, &a2.value, a3, a4, a5); }, "C++: ImGui::VSliderInt(const char *, const struct ImVec2 &, int *, int, int, const char *) --> bool", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("v"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::VSliderScalar(const char *, const struct ImVec2 &, int, void *, const void *, const void *, const char *, float) file:imgui.h line:461
 	M("ImGui").def("VSliderScalar", [](const char * a0, const struct ImVec2 & a1, int const & a2, void * a3, const void * a4, const void * a5) -> bool { return ImGui::VSliderScalar(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::arg("p_min"), pybind11::arg("p_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -725,24 +794,24 @@ void bind_imgui_5(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("VSliderScalar", (bool (*)(const char *, const struct ImVec2 &, int, void *, const void *, const void *, const char *, float)) &ImGui::VSliderScalar, "C++: ImGui::VSliderScalar(const char *, const struct ImVec2 &, int, void *, const void *, const void *, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("size"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::arg("p_min"), pybind11::arg("p_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::InputFloat(const char *, float *, float, float, const char *, int) file:imgui.h line:469
-	M("ImGui").def("InputFloat", [](const char * a0, float * a1) -> bool { return ImGui::InputFloat(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputFloat", [](const char * a0, float * a1, float const & a2) -> bool { return ImGui::InputFloat(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputFloat", [](const char * a0, float * a1, float const & a2, float const & a3) -> bool { return ImGui::InputFloat(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputFloat", [](const char * a0, float * a1, float const & a2, float const & a3, const char * a4) -> bool { return ImGui::InputFloat(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputFloat", (bool (*)(const char *, float *, float, float, const char *, int)) &ImGui::InputFloat, "C++: ImGui::InputFloat(const char *, float *, float, float, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputFloat", [](const char * a0, Float & a1) -> bool { return ImGui::InputFloat(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputFloat", [](const char * a0, Float & a1, float const & a2) -> bool { return ImGui::InputFloat(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputFloat", [](const char * a0, Float & a1, float const & a2, float const & a3) -> bool { return ImGui::InputFloat(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputFloat", [](const char * a0, Float & a1, float const & a2, float const & a3, const char * a4) -> bool { return ImGui::InputFloat(a0, &a1.value, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputFloat", [](const char * a0, Float & a1, float a2, float a3, const char *a4, int a5) -> bool { return ImGui::InputFloat(a0, &a1.value, a2, a3, a4, a5); }, "C++: ImGui::InputFloat(const char *, float *, float, float, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::InputInt(const char *, int *, int, int, int) file:imgui.h line:473
-	M("ImGui").def("InputInt", [](const char * a0, int * a1) -> bool { return ImGui::InputInt(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputInt", [](const char * a0, int * a1, int const & a2) -> bool { return ImGui::InputInt(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputInt", [](const char * a0, int * a1, int const & a2, int const & a3) -> bool { return ImGui::InputInt(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputInt", (bool (*)(const char *, int *, int, int, int)) &ImGui::InputInt, "C++: ImGui::InputInt(const char *, int *, int, int, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputInt", [](const char * a0, Int & a1) -> bool { return ImGui::InputInt(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputInt", [](const char * a0, Int & a1, int const & a2) -> bool { return ImGui::InputInt(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputInt", [](const char * a0, Int & a1, int const & a2, int const & a3) -> bool { return ImGui::InputInt(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputInt", [](const char * a0, Int & a1, int a2, int a3, int a4) -> bool { return ImGui::InputInt(a0, &a1.value, a2, a3, a4); }, "C++: ImGui::InputInt(const char *, int *, int, int, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::InputDouble(const char *, double *, double, double, const char *, int) file:imgui.h line:477
-	M("ImGui").def("InputDouble", [](const char * a0, double * a1) -> bool { return ImGui::InputDouble(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputDouble", [](const char * a0, double * a1, double const & a2) -> bool { return ImGui::InputDouble(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputDouble", [](const char * a0, double * a1, double const & a2, double const & a3) -> bool { return ImGui::InputDouble(a0, a1, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputDouble", [](const char * a0, double * a1, double const & a2, double const & a3, const char * a4) -> bool { return ImGui::InputDouble(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("InputDouble", (bool (*)(const char *, double *, double, double, const char *, int)) &ImGui::InputDouble, "C++: ImGui::InputDouble(const char *, double *, double, double, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputDouble", [](const char * a0, Double & a1) -> bool { return ImGui::InputDouble(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputDouble", [](const char * a0, Double & a1, double const & a2) -> bool { return ImGui::InputDouble(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputDouble", [](const char * a0, Double & a1, double const & a2, double const & a3) -> bool { return ImGui::InputDouble(a0, &a1.value, a2, a3); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputDouble", [](const char * a0, Double & a1, double const & a2, double const & a3, const char * a4) -> bool { return ImGui::InputDouble(a0, &a1.value, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("InputDouble", [](const char * a0, Double & a1, double a2, double a3, const char * a4, int a5) -> bool { return ImGui::InputDouble(a0, &a1.value, a2, a3, a4, a5); }, "C++: ImGui::InputDouble(const char *, double *, double, double, const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("v"), pybind11::arg("step"), pybind11::arg("step_fast"), pybind11::arg("format"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::InputScalar(const char *, int, void *, const void *, const void *, const char *, int) file:imgui.h line:478
 	M("ImGui").def("InputScalar", [](const char * a0, int const & a1, void * a2) -> bool { return ImGui::InputScalar(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("data_type"), pybind11::arg("p_data"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -824,8 +893,8 @@ void bind_imgui_6(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("CollapsingHeader", (bool (*)(const char *, int)) &ImGui::CollapsingHeader, "C++: ImGui::CollapsingHeader(const char *, int) --> bool", pybind11::arg("label"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::CollapsingHeader(const char *, bool *, int) file:imgui.h line:508
-	M("ImGui").def("CollapsingHeader", [](const char * a0, bool * a1) -> bool { return ImGui::CollapsingHeader(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("CollapsingHeader", (bool (*)(const char *, bool *, int)) &ImGui::CollapsingHeader, "C++: ImGui::CollapsingHeader(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("CollapsingHeader", [](const char * a0, Bool & a1) -> bool { return ImGui::CollapsingHeader(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("CollapsingHeader", [](const char * a0, Bool & a1, int a2) -> bool { return ImGui::CollapsingHeader(a0, &a1.value, a2); }, "C++: ImGui::CollapsingHeader(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::SetNextItemOpen(bool, int) file:imgui.h line:509
 	M("ImGui").def("SetNextItemOpen", [](bool const & a0) -> void { return ImGui::SetNextItemOpen(a0); }, "", pybind11::arg("is_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -838,9 +907,9 @@ void bind_imgui_6(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("Selectable", (bool (*)(const char *, bool, int, const struct ImVec2 &)) &ImGui::Selectable, "C++: ImGui::Selectable(const char *, bool, int, const struct ImVec2 &) --> bool", pybind11::arg("label"), pybind11::arg("selected"), pybind11::arg("flags"), pybind11::arg("size"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::Selectable(const char *, bool *, int, const struct ImVec2 &) file:imgui.h line:515
-	M("ImGui").def("Selectable", [](const char * a0, bool * a1) -> bool { return ImGui::Selectable(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("Selectable", [](const char * a0, bool * a1, int const & a2) -> bool { return ImGui::Selectable(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("Selectable", (bool (*)(const char *, bool *, int, const struct ImVec2 &)) &ImGui::Selectable, "C++: ImGui::Selectable(const char *, bool *, int, const struct ImVec2 &) --> bool", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::arg("flags"), pybind11::arg("size"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Selectable", [](const char * a0, Bool & a1) -> bool { return ImGui::Selectable(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Selectable", [](const char * a0, Bool & a1, int const & a2) -> bool { return ImGui::Selectable(a0, &a1.value, a2); }, "", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("Selectable", [](const char * a0, Bool & a1, int a2, const struct ImVec2 & a3) -> bool { return ImGui::Selectable(a0, &a1.value, a2, a3); }, "C++: ImGui::Selectable(const char *, bool *, int, const struct ImVec2 &) --> bool", pybind11::arg("label"), pybind11::arg("p_selected"), pybind11::arg("flags"), pybind11::arg("size"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::ListBoxHeader(const char *, const struct ImVec2 &) file:imgui.h line:521
 	M("ImGui").def("ListBoxHeader", [](const char * a0) -> bool { return ImGui::ListBoxHeader(a0); }, "", pybind11::arg("label"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -931,8 +1000,8 @@ void bind_imgui_7(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("MenuItem", (bool (*)(const char *, const char *, bool, bool)) &ImGui::MenuItem, "C++: ImGui::MenuItem(const char *, const char *, bool, bool) --> bool", pybind11::arg("label"), pybind11::arg("shortcut"), pybind11::arg("selected"), pybind11::arg("enabled"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::MenuItem(const char *, const char *, bool *, bool) file:imgui.h line:546
-	M("ImGui").def("MenuItem", [](const char * a0, const char * a1, bool * a2) -> bool { return ImGui::MenuItem(a0, a1, a2); }, "", pybind11::arg("label"), pybind11::arg("shortcut"), pybind11::arg("p_selected"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("MenuItem", (bool (*)(const char *, const char *, bool *, bool)) &ImGui::MenuItem, "C++: ImGui::MenuItem(const char *, const char *, bool *, bool) --> bool", pybind11::arg("label"), pybind11::arg("shortcut"), pybind11::arg("p_selected"), pybind11::arg("enabled"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("MenuItem", [](const char * a0, const char * a1, Bool & a2) -> bool { return ImGui::MenuItem(a0, a1, &a2.value); }, "", pybind11::arg("label"), pybind11::arg("shortcut"), pybind11::arg("p_selected"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("MenuItem", [](const char * a0, const char * a1, Bool & a2, bool a3) -> bool { return ImGui::MenuItem(a0, a1, &a2.value, a3); }, "C++: ImGui::MenuItem(const char *, const char *, bool *, bool) --> bool", pybind11::arg("label"), pybind11::arg("shortcut"), pybind11::arg("p_selected"), pybind11::arg("enabled"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::BeginTooltip() file:imgui.h line:549
 	M("ImGui").def("BeginTooltip", (void (*)()) &ImGui::BeginTooltip, "C++: ImGui::BeginTooltip() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -968,8 +1037,8 @@ void bind_imgui_7(std::function< pybind11::module &(std::string const &namespace
 
 	// ImGui::BeginPopupModal(const char *, bool *, int) file:imgui.h line:567
 	M("ImGui").def("BeginPopupModal", [](const char * a0) -> bool { return ImGui::BeginPopupModal(a0); }, "", pybind11::arg("name"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginPopupModal", [](const char * a0, bool * a1) -> bool { return ImGui::BeginPopupModal(a0, a1); }, "", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginPopupModal", (bool (*)(const char *, bool *, int)) &ImGui::BeginPopupModal, "C++: ImGui::BeginPopupModal(const char *, bool *, int) --> bool", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginPopupModal", [](const char * a0, Bool & a1) -> bool { return ImGui::BeginPopupModal(a0, &a1.value); }, "", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginPopupModal", [](const char * a0, Bool & a1, int a2) -> bool { return ImGui::BeginPopupModal(a0, &a1.value, a2); }, "C++: ImGui::BeginPopupModal(const char *, bool *, int) --> bool", pybind11::arg("name"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::EndPopup() file:imgui.h line:568
 	M("ImGui").def("EndPopup", (void (*)()) &ImGui::EndPopup, "C++: ImGui::EndPopup() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -1023,8 +1092,8 @@ void bind_imgui_7(std::function< pybind11::module &(std::string const &namespace
 
 	// ImGui::BeginTabItem(const char *, bool *, int) file:imgui.h line:589
 	M("ImGui").def("BeginTabItem", [](const char * a0) -> bool { return ImGui::BeginTabItem(a0); }, "", pybind11::arg("label"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginTabItem", [](const char * a0, bool * a1) -> bool { return ImGui::BeginTabItem(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginTabItem", (bool (*)(const char *, bool *, int)) &ImGui::BeginTabItem, "C++: ImGui::BeginTabItem(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginTabItem", [](const char * a0, Bool & a1) -> bool { return ImGui::BeginTabItem(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginTabItem", [](const char * a0, Bool & a1, int a2) -> bool { return ImGui::BeginTabItem(a0, &a1.value, a2); }, "C++: ImGui::BeginTabItem(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::EndTabItem() file:imgui.h line:590
 	M("ImGui").def("EndTabItem", (void (*)()) &ImGui::EndTabItem, "C++: ImGui::EndTabItem() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -1925,8 +1994,8 @@ void bind_imgui_13(std::function< pybind11::module &(std::string const &namespac
 
 	// ImGui::BeginDock(const char *, bool *, int) file: line:13
 	M("ImGui").def("BeginDock", [](const char * a0) -> bool { return ImGui::BeginDock(a0); }, "", pybind11::arg("label"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginDock", [](const char * a0, bool * a1) -> bool { return ImGui::BeginDock(a0, a1); }, "", pybind11::arg("label"), pybind11::arg("opened"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("BeginDock", (bool (*)(const char *, bool *, int)) &ImGui::BeginDock, "C++: ImGui::BeginDock(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("opened"), pybind11::arg("extra_flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginDock", [](const char * a0, Bool & a1) -> bool { return ImGui::BeginDock(a0, &a1.value); }, "", pybind11::arg("label"), pybind11::arg("opened"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("BeginDock", [](const char * a0, Bool & a1, int a2) -> bool { return ImGui::BeginDock(a0, &a1.value, a2); }, "C++: ImGui::BeginDock(const char *, bool *, int) --> bool", pybind11::arg("label"), pybind11::arg("opened"), pybind11::arg("extra_flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::EndDock() file: line:16
 	M("ImGui").def("EndDock", (void (*)()) &ImGui::EndDock, "C++: ImGui::EndDock() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -2088,9 +2157,9 @@ void bind_imgui_15(std::function< pybind11::module &(std::string const &namespac
 		cl.def("Draw", (void (ImGui::MemoryEditor::*)(const void *, int, int)) &ImGui::MemoryEditor::Draw, "C++: ImGui::MemoryEditor::Draw(const void *, int, int) --> void", pybind11::arg("mem_data"), pybind11::arg("mem_size"), pybind11::arg("base_display_addr"), pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
 	// ImGui::RangeSliderFloat(const char *, float *, float *, float, float, const char *, float) file: line:3
-	M("ImGui").def("RangeSliderFloat", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4) -> bool { return ImGui::RangeSliderFloat(a0, a1, a2, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("RangeSliderFloat", [](const char * a0, float * a1, float * a2, float const & a3, float const & a4, const char * a5) -> bool { return ImGui::RangeSliderFloat(a0, a1, a2, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("display_format"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("RangeSliderFloat", (bool (*)(const char *, float *, float *, float, float, const char *, float)) &ImGui::RangeSliderFloat, "C++: ImGui::RangeSliderFloat(const char *, float *, float *, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("display_format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("RangeSliderFloat", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4) -> bool { return ImGui::RangeSliderFloat(a0, &a1.value, &a2.value, a3, a4); }, "", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("RangeSliderFloat", [](const char * a0, Float & a1, Float & a2, float const & a3, float const & a4, const char * a5) -> bool { return ImGui::RangeSliderFloat(a0, &a1.value, &a2.value, a3, a4, a5); }, "", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("display_format"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("RangeSliderFloat", [](const char *a0, Float & a1, Float & a2, float a3, float a4, const char * a5, float a6) -> bool { return ImGui::RangeSliderFloat(a0, &a1.value, &a2.value, a3, a4, a5, a6); }, "C++: ImGui::RangeSliderFloat(const char *, float *, float *, float, float, const char *, float) --> bool", pybind11::arg("label"), pybind11::arg("v1"), pybind11::arg("v2"), pybind11::arg("v_min"), pybind11::arg("v_max"), pybind11::arg("display_format"), pybind11::arg("power"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 }
 
@@ -2855,8 +2924,8 @@ void bind_imgui_internal_3(std::function< pybind11::module &(std::string const &
 	M("ImGui").def("FindBestWindowPosForPopup", (struct ImVec2 (*)(struct ImGuiWindow *)) &ImGui::FindBestWindowPosForPopup, "C++: ImGui::FindBestWindowPosForPopup(struct ImGuiWindow *) --> struct ImVec2", pybind11::arg("window"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::FindBestWindowPosForPopupEx(const struct ImVec2 &, const struct ImVec2 &, int *, const struct ImRect &, const struct ImRect &, enum ImGuiPopupPositionPolicy) file:imgui_internal.h line:1574
-	M("ImGui").def("FindBestWindowPosForPopupEx", [](const struct ImVec2 & a0, const struct ImVec2 & a1, int * a2, const struct ImRect & a3, const struct ImRect & a4) -> ImVec2 { return ImGui::FindBestWindowPosForPopupEx(a0, a1, a2, a3, a4); }, "", pybind11::arg("ref_pos"), pybind11::arg("size"), pybind11::arg("last_dir"), pybind11::arg("r_outer"), pybind11::arg("r_avoid"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("FindBestWindowPosForPopupEx", (struct ImVec2 (*)(const struct ImVec2 &, const struct ImVec2 &, int *, const struct ImRect &, const struct ImRect &, enum ImGuiPopupPositionPolicy)) &ImGui::FindBestWindowPosForPopupEx, "C++: ImGui::FindBestWindowPosForPopupEx(const struct ImVec2 &, const struct ImVec2 &, int *, const struct ImRect &, const struct ImRect &, enum ImGuiPopupPositionPolicy) --> struct ImVec2", pybind11::arg("ref_pos"), pybind11::arg("size"), pybind11::arg("last_dir"), pybind11::arg("r_outer"), pybind11::arg("r_avoid"), pybind11::arg("policy"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("FindBestWindowPosForPopupEx", [](const struct ImVec2 & a0, const struct ImVec2 & a1, Int & a2, const struct ImRect & a3, const struct ImRect & a4) -> ImVec2 { return ImGui::FindBestWindowPosForPopupEx(a0, a1, &a2.value, a3, a4); }, "", pybind11::arg("ref_pos"), pybind11::arg("size"), pybind11::arg("last_dir"), pybind11::arg("r_outer"), pybind11::arg("r_avoid"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("FindBestWindowPosForPopupEx", [](const struct ImVec2 & a0, const struct ImVec2 & a1, Int & a2, const struct ImRect & a3, const struct ImRect & a4, enum ImGuiPopupPositionPolicy a5) -> ImVec2 { return ImGui::FindBestWindowPosForPopupEx(a0, a1, &a2.value, a3, a4, a5); }, "C++: ImGui::FindBestWindowPosForPopupEx(const struct ImVec2 &, const struct ImVec2 &, int *, const struct ImRect &, const struct ImRect &, enum ImGuiPopupPositionPolicy) --> struct ImVec2", pybind11::arg("ref_pos"), pybind11::arg("size"), pybind11::arg("last_dir"), pybind11::arg("r_outer"), pybind11::arg("r_avoid"), pybind11::arg("policy"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::NavInitWindow(struct ImGuiWindow *, bool) file:imgui_internal.h line:1577
 	M("ImGui").def("NavInitWindow", (void (*)(struct ImGuiWindow *, bool)) &ImGui::NavInitWindow, "C++: ImGui::NavInitWindow(struct ImGuiWindow *, bool) --> void", pybind11::arg("window"), pybind11::arg("force_reinit"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -2994,7 +3063,7 @@ void bind_imgui_internal_4(std::function< pybind11::module &(std::string const &
 	M("ImGui").def("TabBarQueueChangeTabOrder", (void (*)(struct ImGuiTabBar *, const struct ImGuiTabItem *, int)) &ImGui::TabBarQueueChangeTabOrder, "C++: ImGui::TabBarQueueChangeTabOrder(struct ImGuiTabBar *, const struct ImGuiTabItem *, int) --> void", pybind11::arg("tab_bar"), pybind11::arg("tab"), pybind11::arg("dir"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::TabItemEx(struct ImGuiTabBar *, const char *, bool *, int) file:imgui_internal.h line:1622
-	M("ImGui").def("TabItemEx", (bool (*)(struct ImGuiTabBar *, const char *, bool *, int)) &ImGui::TabItemEx, "C++: ImGui::TabItemEx(struct ImGuiTabBar *, const char *, bool *, int) --> bool", pybind11::arg("tab_bar"), pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("TabItemEx", [](struct ImGuiTabBar * a0, const char * a1, Bool & a2, int a3) -> bool { return ImGui::TabItemEx(a0, a1, &a2.value, a3); }, "C++: ImGui::TabItemEx(struct ImGuiTabBar *, const char *, bool *, int) --> bool", pybind11::arg("tab_bar"), pybind11::arg("label"), pybind11::arg("p_open"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::TabItemCalcSize(const char *, bool) file:imgui_internal.h line:1623
 	M("ImGui").def("TabItemCalcSize", (struct ImVec2 (*)(const char *, bool)) &ImGui::TabItemCalcSize, "C++: ImGui::TabItemCalcSize(const char *, bool) --> struct ImVec2", pybind11::arg("label"), pybind11::arg("has_close_button"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -3125,8 +3194,8 @@ void bind_imgui_internal_5(std::function< pybind11::module &(std::string const &
 	M("ImGui").def("SeparatorEx", (void (*)(int)) &ImGui::SeparatorEx, "C++: ImGui::SeparatorEx(int) --> void", pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::ButtonBehavior(const struct ImRect &, unsigned int, bool *, bool *, int) file:imgui_internal.h line:1668
-	M("ImGui").def("ButtonBehavior", [](const struct ImRect & a0, unsigned int const & a1, bool * a2, bool * a3) -> bool { return ImGui::ButtonBehavior(a0, a1, a2, a3); }, "", pybind11::arg("bb"), pybind11::arg("id"), pybind11::arg("out_hovered"), pybind11::arg("out_held"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("ImGui").def("ButtonBehavior", (bool (*)(const struct ImRect &, unsigned int, bool *, bool *, int)) &ImGui::ButtonBehavior, "C++: ImGui::ButtonBehavior(const struct ImRect &, unsigned int, bool *, bool *, int) --> bool", pybind11::arg("bb"), pybind11::arg("id"), pybind11::arg("out_hovered"), pybind11::arg("out_held"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("ButtonBehavior", [](const struct ImRect & a0, unsigned int const & a1, Bool & a2, Bool & a3) -> bool { return ImGui::ButtonBehavior(a0, a1, &a2.value, &a3.value); }, "", pybind11::arg("bb"), pybind11::arg("id"), pybind11::arg("out_hovered"), pybind11::arg("out_held"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("ImGui").def("ButtonBehavior", [](const struct ImRect & a0, unsigned int a1, Bool & a2, Bool & a3, int a4) -> bool { return ImGui::ButtonBehavior(a0, a1, &a2.value, &a3.value, a4); }, "C++: ImGui::ButtonBehavior(const struct ImRect &, unsigned int, bool *, bool *, int) --> bool", pybind11::arg("bb"), pybind11::arg("id"), pybind11::arg("out_hovered"), pybind11::arg("out_held"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::DragBehavior(unsigned int, int, void *, float, const void *, const void *, const char *, float, int) file:imgui_internal.h line:1669
 	M("ImGui").def("DragBehavior", (bool (*)(unsigned int, int, void *, float, const void *, const void *, const char *, float, int)) &ImGui::DragBehavior, "C++: ImGui::DragBehavior(unsigned int, int, void *, float, const void *, const void *, const char *, float, int) --> bool", pybind11::arg("id"), pybind11::arg("data_type"), pybind11::arg("p_v"), pybind11::arg("v_speed"), pybind11::arg("p_min"), pybind11::arg("p_max"), pybind11::arg("format"), pybind11::arg("power"), pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());

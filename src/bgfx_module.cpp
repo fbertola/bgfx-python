@@ -23,6 +23,7 @@ void bind_bgfx_9(std::function< pybind11::module &(std::string const &namespace_
 void bind_bgfx_10(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_platform(std::function< pybind11::module &(std::string const &namespace_) > &M);
 
+void bind_imgui_type_wrappers(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_imgui(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_imgui_1(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_imgui_2(std::function< pybind11::module &(std::string const &namespace_) > &M);
@@ -85,6 +86,7 @@ PYBIND11_MODULE(bgfx_lib, root_module) {
 	bind_bgfx_10(M);
 	bind_platform(M);
 
+	bind_imgui_type_wrappers(M);
 	bind_imgui(M);
 	bind_imgui_1(M);
 	bind_imgui_2(M);
