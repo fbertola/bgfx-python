@@ -8,6 +8,8 @@ from bgfx.bgfx_lib import *
 from bgfx.shaderc import *
 from enum import Enum
 from pathlib import Path
+from hashlib import md5
+import shelve
 
 try:
     import numpy as np
@@ -32,6 +34,16 @@ class ShaderType(Enum):
     FRAGMENT = "f"
     VERTEX = "v"
     COMPUTE = "c"
+
+
+def _md5sum(filename, buf_size=8192):
+    m = md5()
+    with open(filename, 'rb') as f:
+        data = f.read(buf_size)
+        while data:
+            m.update(data)
+            data = f.read(buf_size)
+    return m.hexdigest()
 
 
 def _get_platform():
@@ -68,6 +80,12 @@ def _get_profile(shader_type):
             return windows_shader_types.get(shader_type) + "5_0"
 
 
+def _load_mem(content):
+    size = len(content)
+    memory = bgfx.copy(as_void_ptr(content), size)
+    return memory
+
+
 def as_void_ptr(obj):
     ctypes.pythonapi.PyCapsule_New.restype = ctypes.py_object
     ctypes.pythonapi.PyCapsule_New.argtypes = [
@@ -90,26 +108,47 @@ def as_void_ptr(obj):
     return capsule
 
 
-def load_mem(path):
-    with open(path, "rb") as f:
-        read_data = f.read()
-        size = len(read_data)
-        memory = bgfx.copy(as_void_ptr(read_data), size)
-        return memory
-
-
 def load_shader(
-    name: str, shader_type, include_dirs=(default_include_dir,), root_path=None
+    name: str, shader_type: ShaderType, include_dirs=(), root_path=None
 ):
     path = Path(".") if not root_path else root_path
-    complete_path = Path(path) / name
+    complete_path = str(Path(path) / name)
+    md5 = _md5sum(complete_path)
 
+    memory = None
+
+    with shelve.open("shaders_cache") as cache:
+        if complete_path in cache and cache[complete_path]["md5"] == md5:
+            memory = _load_mem(cache[complete_path]["content"])
+        else:
+
+            temp_file = compile_shader(complete_path, include_dirs, shader_type)
+
+            with open(temp_file, "rb") as f:
+                read_data = f.read()
+                cache[complete_path] = {
+                    "md5": md5,
+                    "content": read_data
+                }
+            memory = _load_mem(read_data)
+
+            os.unlink(temp_file)
+
+    handle = bgfx.createShader(memory)
+    bgfx.setName(handle, name)
+
+    return handle
+
+
+def compile_shader(complete_path, include_dirs, shader_type):
+    all_include_dirs = (default_include_dir,) + include_dirs
     temp_file = tempfile.NamedTemporaryFile(delete=False)
+
     options = shaderc.Options()
     options.shaderType = str(shader_type.value)[0]
-    options.inputFilePath = str(complete_path)
+    options.inputFilePath = complete_path
     options.outputFilePath = temp_file.name
-    options.includeDirs = include_dirs
+    options.includeDirs = all_include_dirs
     options.platform = _get_platform()
     options.profile = _get_profile(shader_type)
     options.debugInformation = False
@@ -129,9 +168,4 @@ def load_shader(
 
     shaderc.compileShader(options)
 
-    handle = bgfx.createShader(load_mem(temp_file.name))
-    bgfx.setName(handle, name)
-
-    os.unlink(temp_file.name)
-
-    return handle
+    return temp_file.name
