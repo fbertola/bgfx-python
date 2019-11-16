@@ -70,6 +70,7 @@ def bar(width, max_width, height, color):
 
 
 s_resourceColor = ImVec4(0.5, 0.5, 0.5, 1.0)
+s_frame_time = SampleData()
 
 
 def resource_bar(name, tooltip, num, _max, max_width, height):
@@ -100,7 +101,7 @@ def show_example_dialog():
     ImGui.TextWrapped("Your program's statistics")
     ImGui.Separator()
 
-    s_frame_time = SampleData()
+
 
     stats = bgfx.getStats()
     to_ms_cpu = 1000.0 / stats.cpuTimerFreq
