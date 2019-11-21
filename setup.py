@@ -79,7 +79,6 @@ setup(
     long_description_content_type='text/markdown',
     python_requires=">=3.6.0",
     include_package_data=True,
-    extra_requires=['glfw'],
     zip_safe=False,
     license='BSD',
     classifiers=[
