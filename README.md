@@ -19,6 +19,7 @@
   <a href="#key-features">Key Features</a> •
   <a href="#how-to-use">How To Use</a> •
   <a href="#build-cpp-bindings">Build CPP bindings</a> •
+  <a href="#using-imgui">Using ImGUI</a> •
   <a href="#examples">Examples</a> •
   <a href="#credits">Credits</a> •
   <a href="#license">License</a>
@@ -33,8 +34,8 @@
 * Uses _Pyind11_ and _Builder_ to natively wrap the C++ interface. No _CTypes_ or ugly C interfaces.
 * Unless specified, the GIL is released for every invocation and pointers are passed by reference. This will ensure great overall performances.
 * Maintains the original documentation; use `help()` on a class or function to view it.
-* On-the-fly compiles shaders, so you don't have to.
-* Ships with [ImGui](https://github.com/ocornut/imgui), integrated with BGFX's rendering pipeline.  
+* Compiles shaders on-the-fly, so you don't have to.
+* Ships with [ImGui](https://github.com/ocornut/imgui) integrated in the BGFX rendering pipeline.  
 
 ## How To Use
 
@@ -77,9 +78,53 @@ Building on MacOS X could be a little trickier, since system headers are in the 
 g++ -E -x c++ - -v < /dev/null
 ```
 
+## Using ImGUI
+
+Two modules are exposed:
+* *ImGui*, which provides a standard wrapper around all the ImGui funcions and classes.
+* *ImGuiExtra*, which provides some additional functions to integrate ImGui in the BGFX rendering pipline.
+
+To use it in your application, simply follow this template:
+
+```python
+# Setup the application
+def init():
+    ImGuiExtra.imguiCreate()
+
+# Destroy the application
+def destroy():
+    ImGuiExtra.imguiDestroy()
+
+# Update the application, rendering each fram
+def update():
+    ImGuiExtra.imguiBeginFrame(
+        mouse_x, mouse_y, buttons_states, 0, width, height
+    )
+
+    # Other ImGui drawing directives...
+
+    ImGuiExtra.imguiEndFrame()
+```
+ 
+All ImGui API that provides user input (such as _InputText_, _SliderFloat_, etc.) modifies their arguments by reference. However, in Python, such objects as integers, floats and strings are passed always by value. Because of this, *bgfx-python* provides special wrappers, that allow passing those variables by reference.
+
+For example, to use _SliderFloat_, you will need first to create a variable that will hold the state:
+
+```python
+f = ImGui.Float();
+```
+You can access the value in the following way: `f.value`
+
+To use it with _SliderFloat_ simply pass it to that function:
+
+```python
+ImGui.SliderFloat("float slider", f, 0.0, 1.0)
+```
+
 ## Examples
 
 You will find some examples in the `examples` folder, be sure to check them out.
+For a more advanced example, see the [Natrix](https://github.com/fbertola/Natrix) project.
 
 ## Credits
 
