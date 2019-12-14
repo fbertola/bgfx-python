@@ -108,3 +108,6 @@ venv.bak/
 
 # SciKit-Build files
 _skbuild/
+
+.DS_Store
+tags
