@@ -1344,7 +1344,6 @@ void bind_imgui_9(std::function< pybind11::module &(std::string const &namespace
 	M("ImGui").def("IsMouseReleased", (bool (*)(int)) &ImGui::IsMouseReleased, "C++: ImGui::IsMouseReleased(int) --> bool", pybind11::arg("button"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::IsMouseDragging(int, float) file:imgui.h line:674
-	M("ImGui").def("IsMouseDragging", []() -> bool { return ImGui::IsMouseDragging(); }, "", pybind11::call_guard<pybind11::gil_scoped_release>());
 	M("ImGui").def("IsMouseDragging", [](int const & a0) -> bool { return ImGui::IsMouseDragging(a0); }, "", pybind11::arg("button"), pybind11::call_guard<pybind11::gil_scoped_release>());
 	M("ImGui").def("IsMouseDragging", (bool (*)(int, float)) &ImGui::IsMouseDragging, "C++: ImGui::IsMouseDragging(int, float) --> bool", pybind11::arg("button"), pybind11::arg("lock_threshold"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
@@ -2336,8 +2335,8 @@ void bind_imgui_internal(std::function< pybind11::module &(std::string const &na
 		cl.def( pybind11::init<struct ImFontAtlas *>(), pybind11::arg("shared_font_atlas") );
 
 		cl.def_readwrite("Initialized", &ImGuiContext::Initialized);
-		cl.def_readwrite("FrameScopeActive", &ImGuiContext::FrameScopeActive);
-		cl.def_readwrite("FrameScopePushedImplicitWindow", &ImGuiContext::FrameScopePushedImplicitWindow);
+//		cl.def_readwrite("FrameScopeActive", &ImGuiContext::FrameScopeActive);
+//		cl.def_readwrite("FrameScopePushedImplicitWindow", &ImGuiContext::FrameScopePushedImplicitWindow);
 		cl.def_readwrite("FontAtlasOwnedByContext", &ImGuiContext::FontAtlasOwnedByContext);
 		cl.def_readwrite("IO", &ImGuiContext::IO);
 		cl.def_readwrite("Style", &ImGuiContext::Style);
@@ -2569,7 +2568,7 @@ void bind_imgui_internal_1(std::function< pybind11::module &(std::string const &
 		cl.def_readwrite("InnerClipRect", &ImGuiWindow::InnerClipRect);
 		cl.def_readwrite("WorkRect", &ImGuiWindow::WorkRect);
 		cl.def_readwrite("ClipRect", &ImGuiWindow::ClipRect);
-		cl.def_readwrite("ContentsRegionRect", &ImGuiWindow::ContentsRegionRect);
+		cl.def_readwrite("ContentRegionRect", &ImGuiWindow::ContentRegionRect);
 		cl.def_readwrite("LastFrameActive", &ImGuiWindow::LastFrameActive);
 		cl.def_readwrite("LastTimeActive", &ImGuiWindow::LastTimeActive);
 		cl.def_readwrite("ItemWidthDefault", &ImGuiWindow::ItemWidthDefault);
@@ -2577,7 +2576,7 @@ void bind_imgui_internal_1(std::function< pybind11::module &(std::string const &
 		cl.def_readwrite("StateStorage", &ImGuiWindow::StateStorage);
 		cl.def_readwrite("ColumnsStorage", &ImGuiWindow::ColumnsStorage);
 		cl.def_readwrite("FontWindowScale", &ImGuiWindow::FontWindowScale);
-		cl.def_readwrite("SettingsIdx", &ImGuiWindow::SettingsIdx);
+//		cl.def_readwrite("SettingsIdx", &ImGuiWindow::SettingsIdx);
 		cl.def_readwrite("DrawListInst", &ImGuiWindow::DrawListInst);
 		cl.def_readwrite("MemoryCompacted", &ImGuiWindow::MemoryCompacted);
 		cl.def_readwrite("MemoryDrawListIdxCapacity", &ImGuiWindow::MemoryDrawListIdxCapacity);
@@ -2610,7 +2609,7 @@ void bind_imgui_internal_1(std::function< pybind11::module &(std::string const &
 		cl.def_readwrite("NameOffset", &ImGuiTabItem::NameOffset);
 		cl.def_readwrite("Offset", &ImGuiTabItem::Offset);
 		cl.def_readwrite("Width", &ImGuiTabItem::Width);
-		cl.def_readwrite("WidthContents", &ImGuiTabItem::WidthContents);
+//		cl.def_readwrite("WidthContents", &ImGuiTabItem::WidthContents);
 	}
 	{ // ImGuiTabBar file:imgui_internal.h line:1435
 		pybind11::class_<ImGuiTabBar, std::shared_ptr<ImGuiTabBar>> cl(M(""), "ImGuiTabBar", "");
@@ -3004,11 +3003,11 @@ void bind_imgui_internal_4(std::function< pybind11::module &(std::string const &
 	// ImGui::IsNavInputDown(int) file:imgui_internal.h line:1596
 	M("ImGui").def("IsNavInputDown", (bool (*)(int)) &ImGui::IsNavInputDown, "C++: ImGui::IsNavInputDown(int) --> bool", pybind11::arg("n"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
-	// ImGui::IsNavInputPressed(int, enum ImGuiInputReadMode) file:imgui_internal.h line:1597
-	M("ImGui").def("IsNavInputPressed", (bool (*)(int, enum ImGuiInputReadMode)) &ImGui::IsNavInputPressed, "C++: ImGui::IsNavInputPressed(int, enum ImGuiInputReadMode) --> bool", pybind11::arg("n"), pybind11::arg("mode"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	// ImGui::IsNavInputTest(int, enum ImGuiInputReadMode) file:imgui_internal.h line:1597
+	M("ImGui").def("IsNavInputTest", (bool (*)(int, enum ImGuiInputReadMode)) &ImGui::IsNavInputTest, "C++: ImGui::IsNavInputTest(int, enum ImGuiInputReadMode) --> bool", pybind11::arg("n"), pybind11::arg("mode"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::IsNavInputPressedAnyOfTwo(int, int, enum ImGuiInputReadMode) file:imgui_internal.h line:1598
-	M("ImGui").def("IsNavInputPressedAnyOfTwo", (bool (*)(int, int, enum ImGuiInputReadMode)) &ImGui::IsNavInputPressedAnyOfTwo, "C++: ImGui::IsNavInputPressedAnyOfTwo(int, int, enum ImGuiInputReadMode) --> bool", pybind11::arg("n1"), pybind11::arg("n2"), pybind11::arg("mode"), pybind11::call_guard<pybind11::gil_scoped_release>());
+//	M("ImGui").def("IsNavInputPressedAnyOfTwo", (bool (*)(int, int, enum ImGuiInputReadMode)) &ImGui::IsNavInputPressedAnyOfTwo, "C++: ImGui::IsNavInputPressedAnyOfTwo(int, int, enum ImGuiInputReadMode) --> bool", pybind11::arg("n1"), pybind11::arg("n2"), pybind11::arg("mode"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::BeginDragDropTargetCustom(const struct ImRect &, unsigned int) file:imgui_internal.h line:1601
 	M("ImGui").def("BeginDragDropTargetCustom", (bool (*)(const struct ImRect &, unsigned int)) &ImGui::BeginDragDropTargetCustom, "C++: ImGui::BeginDragDropTargetCustom(const struct ImRect &, unsigned int) --> bool", pybind11::arg("bb"), pybind11::arg("id"), pybind11::call_guard<pybind11::gil_scoped_release>());
@@ -3188,7 +3187,7 @@ void bind_imgui_internal_5(std::function< pybind11::module &(std::string const &
 	M("ImGui").def("ScrollbarEx", (bool (*)(const struct ImRect &, unsigned int, enum ImGuiAxis, float *, float, float, int)) &ImGui::ScrollbarEx, "C++: ImGui::ScrollbarEx(const struct ImRect &, unsigned int, enum ImGuiAxis, float *, float, float, int) --> bool", pybind11::arg("bb"), pybind11::arg("id"), pybind11::arg("axis"), pybind11::arg("p_scroll_v"), pybind11::arg("avail_v"), pybind11::arg("contents_v"), pybind11::arg("rounding_corners"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::GetScrollbarID(struct ImGuiWindow *, enum ImGuiAxis) file:imgui_internal.h line:1664
-	M("ImGui").def("GetScrollbarID", (unsigned int (*)(struct ImGuiWindow *, enum ImGuiAxis)) &ImGui::GetScrollbarID, "C++: ImGui::GetScrollbarID(struct ImGuiWindow *, enum ImGuiAxis) --> unsigned int", pybind11::arg("window"), pybind11::arg("axis"), pybind11::call_guard<pybind11::gil_scoped_release>());
+//	M("ImGui").def("GetScrollbarID", (unsigned int (*)(struct ImGuiWindow *, enum ImGuiAxis)) &ImGui::GetScrollbarID, "C++: ImGui::GetScrollbarID(struct ImGuiWindow *, enum ImGuiAxis) --> unsigned int", pybind11::arg("window"), pybind11::arg("axis"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 	// ImGui::SeparatorEx(int) file:imgui_internal.h line:1665
 	M("ImGui").def("SeparatorEx", (void (*)(int)) &ImGui::SeparatorEx, "C++: ImGui::SeparatorEx(int) --> void", pybind11::arg("flags"), pybind11::call_guard<pybind11::gil_scoped_release>());

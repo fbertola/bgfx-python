@@ -705,8 +705,10 @@ void bind_bgfx_1(std::function< pybind11::module &(std::string const &namespace_
 
 		cl.def( pybind11::init( [](){ return new bgfx::ViewStats(); } ) );
 		cl.def_readwrite("view", &bgfx::ViewStats::view);
-		cl.def_readwrite("cpuTimeElapsed", &bgfx::ViewStats::cpuTimeElapsed);
-		cl.def_readwrite("gpuTimeElapsed", &bgfx::ViewStats::gpuTimeElapsed);
+		cl.def_readwrite("cpuTimeBegin", &bgfx::ViewStats::cpuTimeBegin);
+		cl.def_readwrite("gpuTimeBegin", &bgfx::ViewStats::gpuTimeBegin);
+		cl.def_readwrite("cpuTimeEnd", &bgfx::ViewStats::cpuTimeEnd);
+		cl.def_readwrite("gpuTimeEnd", &bgfx::ViewStats::gpuTimeEnd);
 	}
 	{ // bgfx::EncoderStats file:bgfx.h line:922
 		pybind11::class_<bgfx::EncoderStats, std::shared_ptr<bgfx::EncoderStats>> cl(M("bgfx"), "EncoderStats", "Encoder stats.\n\n \n C99 equivalent is `bgfx_encoder_stats_t`.");
