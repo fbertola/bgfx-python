@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 yum install -y centos-release-scl
-yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build mesa-libGL-devel byacc
+yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
 
 for PYBIN in "cp37-cp37m"; do
     "/opt/python/${PYBIN}/bin/pip" wheel -w /v/dist /v

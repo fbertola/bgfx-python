@@ -27,7 +27,6 @@ matrix:
       osx_image: xcode10.2
       language: shell
       before_install:
-        - nohup docker pull quay.io/pypa/manylinux2010_x86_64 >/dev/null 2>&1 </dev/null &
         - python3 --version ; pip3 --version ; sw_vers
         - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
       script:

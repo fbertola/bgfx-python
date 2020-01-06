@@ -1,5 +1,5 @@
 project(bgfx_python)
-cmake_minimum_required(VERSION 3.11.0)
+cmake_minimum_required(VERSION 3.6.1)
 
 find_package(Python3 COMPONENTS Development)
 find_package(PythonExtensions REQUIRED)
@@ -55,6 +55,9 @@ set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (APPLE)
     set(CMAKE_MODULE_LINKER_FLAGS "-framework Cocoa -framework QuartzCore -framework OpenGL -weak_framework Metal -weak_framework MetalKit ")
+elseif (WIN32)
+else()
+    set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lGLU -lglut -lpthread -lrt -ldl -Wl,--start-group")
 endif()
 
 add_library(bgfx_lib MODULE
@@ -107,9 +110,9 @@ else()
 
     execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND make -e config=debug64 shaderc bx bimg bgfx CFLAGS=-fPIC WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxDebug.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgDebug.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxDebug.a")
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxDebug.a")
 
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxDebug.a")
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libfcppDebug.a")

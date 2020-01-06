@@ -8,9 +8,7 @@ if [[ $(uname) == "Darwin" ]]; then
   done
   ls wheelhouse/*
 else
-  for f in dist/*.whl; do
-    docker run -i --rm -v $PWD:/v -w /v --net=host quay.io/pypa/manylinux2010_x86_64 /v/.travis/build_wheels_manylinux.sh
-  done
+  docker run -i --rm -v $PWD:/v -w /v --net=host quay.io/pypa/manylinux2010_x86_64 /v/.travis/build_wheels_manylinux.sh
   sudo chown -R $(id -nu):$(id -ng) .
   ls wheelhouse/*
 fi
