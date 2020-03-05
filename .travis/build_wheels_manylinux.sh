@@ -4,9 +4,11 @@ yum install -y centos-release-scl
 yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
 
 for PYBIN in "cp37-cp37m"; do
-    "/opt/python/${PYBIN}/bin/pip" wheel -w /v/dist /v
+    "/opt/python/${PYBIN}/bin/pip" wheel -w /v/dependencies/bgfx/.build/projects/dist /v
 done
 
-for whl in dist/*.whl; do
+cd /v/dependencies/bgfx/.build/projects/dist || exit
+
+for whl in ./*.whl; do
     auditwheel repair "$whl" --plat manylinux2010_x86_64 -w /v/wheelhouse/
 done
