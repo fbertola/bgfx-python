@@ -111,7 +111,7 @@ if (WIN32)
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libspirv-crossRelease.lib")
 
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D__STDC_FORMAT_MACROS ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS ")
 
     execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
     execute_process(COMMAND make -e ${DIST_COMMAND} WORKING_DIRECTORY ${BGFX_DIR})

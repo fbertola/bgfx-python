@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $(uname) == "Darwin" ]]; then
-  pip3 wheel -w dependencies/bgfx/.build/projects/dist
+  pip3 wheel -w dependencies/bgfx/.build/projects/dist .
   cd dependencies/bgfx/.build/projects/dist || exit
   ls ./*
   for f in ./*.whl; do
