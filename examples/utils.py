@@ -1,6 +1,6 @@
 from array import array
-import numpy as np
-from bgfx import bgfx, ImGui, ImVec2, ImVec4, ImGuiListClipper
+
+from bgfx import bgfx, ImGui, ImVec2, ImVec4
 
 
 class SampleData:
@@ -101,8 +101,6 @@ def show_example_dialog():
     ImGui.TextWrapped("Your program's statistics")
     ImGui.Separator()
 
-
-
     stats = bgfx.getStats()
     to_ms_cpu = 1000.0 / stats.cpuTimerFreq
     to_ms_gpu = 1000.0 / stats.gpuTimerFreq
@@ -110,7 +108,7 @@ def show_example_dialog():
 
     s_frame_time.push_sample(frame_ms * to_ms_cpu)
 
-    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpuTimerFreq/frame_ms):6.2f} FPS"
+    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpuTimerFreq / frame_ms):6.2f} FPS"
     ImGui.PushStyleColor(40, ImVec4(0.0, 0.5, 0.15, 1.0))
     ImGui.PushItemWidth(-1)
     ImGui.PlotHistogram(
