@@ -112,7 +112,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS ")
 
     execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
-    execute_process(COMMAND make -e ${DIST_COMMAND} WORKING_DIRECTORY ${BGFX_DIR})
+    execute_process(COMMAND make -e ${DIST_COMMAND} CFLAGS=-fPIC WORKING_DIRECTORY ${BGFX_DIR})
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
