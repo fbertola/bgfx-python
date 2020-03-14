@@ -24,6 +24,9 @@ extern "C"
 #define BGFX_SHADERC_VERSION_MAJOR 1
 #define BGFX_SHADERC_VERSION_MINOR 16
 
+#undef snprintf
+#undef vsnprintf
+
 namespace bgfx
 {
 	bool g_verbose = false;
