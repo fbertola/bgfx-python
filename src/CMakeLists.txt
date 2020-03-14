@@ -98,12 +98,10 @@ add_library(shaderc MODULE
 if (WIN32)
     set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
+
     execute_process(COMMAND ../bx/tools/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BGFX_DIR})
 
     execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
-    # execute_process(COMMAND sed -i -e 's/MultiThreaded/MultiThreadedDLL/g' *.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
-    # execute_process(COMMAND sed -i -e 's/MultiThreaded/MultiThreadedDLL/g' bimg.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
-    # execute_process(COMMAND sed -i -e 's/MultiThreaded/MultiThreadedDLL/g' bgfx.vcxproj WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 
     execute_process(COMMAND msbuild bgfx.sln /p:Configuration=Release WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 
