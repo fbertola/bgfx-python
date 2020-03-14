@@ -28,7 +28,6 @@ configuration:
 
 install:
   - git submodule update --init --recursive
-  - ..\bx\tools\bin\windows\genie --with-tools --with-examples %TOOLSET%
   # Install the required dependencies
   - "%PYTHON%\\python.exe -m pip install setuptools wheel scikit-build cmake ninja"
 
