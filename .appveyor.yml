@@ -4,6 +4,8 @@ os:
   - Visual Studio 2019
 
 environment:
+  VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
+
   matrix:
     - PYTHON: "C:\\Python37"
       PYTHON_VERSION: "3.7.x"
@@ -28,8 +30,8 @@ install:
   # the parent CMD process).
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
-  # Install the required dependencies
-  - "%PYTHON%\\python.exe -m pip install setuptools wheel scikit-build cmake ninja"
+  # Install the required dependencies to build the package
+  - "%PYTHON%\\python.exe -m pip install setuptools wheel"
 
   # Install Python (from the official .msi of http://python.org) and pip when
   # not already installed.
@@ -45,7 +47,7 @@ install:
 
 build_script:
   # Build the compiled extension
-  - call "%VS160COMNTOOLS%\..\..\VC\vcvarsall.bat"
+  - call "%VCVAR2019%" x86_amd64
   - "python -m pip wheel -w .\\dist .\\"
 
 artifacts:
