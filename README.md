@@ -9,6 +9,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/python-v3.6+-blue.svg">
   <a href="https://travis-ci.com/fbertola/bgfx-python"><img src="https://travis-ci.com/fbertola/bgfx-python.svg?branch=master"></a>
+  <a href="https://ci.appveyor.com/project/fbertola/bgfx-python/branch/master"><img src="https://ci.appveyor.com/api/projects/status/bu72q2ybqb6eqhbq/branch/master?svg=true"></a>
   <img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg">
   <a href="https://github.com/fbertola/bgfx-python/issues"><img src="https://img.shields.io/github/issues/fbertola/bgfx-python.svg"></a>
   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
@@ -61,6 +62,20 @@ Building on MacOS X > 10.14 requires you to also install the SDK headers:
 ```bash
 xcode-select --install
 open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+```
+
+### Installing on Windows
+
+The easiest way is to install [Visual Studio 2019 Community Edition](https://visualstudio.microsoft.com/it/vs/). If you have [Chocolatey](https://chocolatey.org/install) installed, then run:
+
+```bash
+choco install visualstudio2019community
+```
+
+Before building the package, make sure to activate all the environment variables required by the compiler:
+
+```bash
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 ```
 
 ## Build CPP bindings
