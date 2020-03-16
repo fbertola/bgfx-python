@@ -96,7 +96,7 @@ void bind_imgui(std::function< pybind11::module &(std::string const &namespace_)
 		cl.def( pybind11::init( [](ImVec2 const &o){ return new ImVec2(o); } ) );
 		cl.def_readwrite("x", &ImVec2::x);
 		cl.def_readwrite("y", &ImVec2::y);
-		cl.def("__getitem__", (float & (ImVec2::*)(unsigned long)) &ImVec2::operator[], "C++: ImVec2::operator[](unsigned long) --> float &", pybind11::return_value_policy::reference_internal, pybind11::arg("idx"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("__getitem__", (float & (ImVec2::*)(size_t)) &ImVec2::operator[], "C++: ImVec2::operator[](unsigned long) --> float &", pybind11::return_value_policy::reference_internal, pybind11::arg("idx"), pybind11::call_guard<pybind11::gil_scoped_release>());
 		cl.def("assign", (struct ImVec2 & (ImVec2::*)(const struct ImVec2 &)) &ImVec2::operator=, "C++: ImVec2::operator=(const struct ImVec2 &) --> struct ImVec2 &", pybind11::return_value_policy::reference_internal, pybind11::arg(""), pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
 	{ // ImVec4 file:imgui.h line:193
