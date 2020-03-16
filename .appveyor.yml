@@ -3,6 +3,12 @@ shallow_clone: false
 os:
   - Visual Studio 2019
 
+platform:
+  - x64
+
+configuration:
+  - Release
+
 environment:
   VCVAR2019: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
 
@@ -18,9 +24,6 @@ environment:
     - PYTHON: "C:\\Python36"
       PYTHON_VERSION: "3.6.x"
       PYTHON_ARCH: "32"
-
-configuration:
-  - Release
 
 install:
   - git submodule update --init --recursive
