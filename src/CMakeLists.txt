@@ -14,6 +14,8 @@ set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty/dear-im
 set(3RDPARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty" CACHE PATH "3RDPARTY dir" FORCE)
 set(PYBIND11_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/pybind11" CACHE PATH "PYBIND11 dir" FORCE)
 
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+
 if (APPLE)
     set(BGFX_BUILD_DIR osx64_clang)
     set(BGFX_BUILD_PROJ_DIR gmake-osx)
@@ -62,6 +64,10 @@ elseif (WIN32)
     include(FindWindowsSDK)
     include_directories("${BX_DIR}/include/compat/msvc")
     set(CMAKE_MODULE_LINKER_FLAGS "d3d12.lib d3d11.lib dxgi.lib psapi.lib d3dcompiler.lib")
+    get_windowssdk_include_dirs("${WINDOWSSDK_LATEST_DIR}" WINSDK_INCLUDE_DIRS)
+    foreach(X IN LISTS WINSDK_INCLUDE_DIRS)
+        include_directories("${X}")
+    endforeach()
 else()
     set(DIST_COMMAND dist-linux)
     set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lGLU -lglut -lpthread -lrt -ldl -Wl,--start-group")
@@ -90,8 +96,12 @@ add_library(shaderc MODULE
     shaderc_module.cpp)
 
 if (WIN32)
+    set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
+
     execute_process(COMMAND ../bx/tools/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR} WORKING_DIRECTORY ${BGFX_DIR})
+
+    execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
 
     execute_process(COMMAND msbuild bgfx.sln /p:Configuration=Release WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 
