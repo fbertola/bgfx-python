@@ -14,15 +14,15 @@ class Test(ExampleWindow):
         self.init_conf.type = bgfx.RendererType.Metal
         self.init_conf.resolution.width = self.width
         self.init_conf.resolution.height = self.height
-        # self.init_conf.resolution.reset = BGFX_RESET_VSYNC
+        self.init_conf.resolution.reset = BGFX_RESET_VSYNC
 
     def init(self, platform_data):
         self.init_conf.platformData = platform_data
+        bgfx.renderFrame()
         bgfx.init(self.init_conf)
 
         bgfx.setDebug(BGFX_DEBUG_TEXT)
         bgfx.setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0, 0)
-
         ImGuiExtra.imguiCreate()
 
     def shutdown(self):

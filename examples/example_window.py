@@ -52,13 +52,6 @@ class ExampleWindow(object):
 
     # noinspection PyProtectedMember
     def run(self):
-        glfw_native.glfwGetCocoaWindow.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
-        glfw_native.glfwGetCocoaWindow.restype = ctypes.c_void_p
-        glfw_native.glfwCreateWindow.argtypes = [
-            ctypes.c_int,
-            ctypes.c_int,
-            ctypes.c_char_p,
-        ]
         glfw_native.glfwCreateWindow.restype = ctypes.POINTER(glfw._GLFWwindow)
         glfw_native.glfwMakeContextCurrent.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
         glfw_native.glfwWindowShouldClose.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
