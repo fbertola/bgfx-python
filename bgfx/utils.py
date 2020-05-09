@@ -9,6 +9,7 @@ from bgfx.shaderc import *
 from enum import Enum
 from pathlib import Path
 from hashlib import md5
+from loguru import logger
 import shelve
 
 try:
@@ -25,6 +26,8 @@ except ImportError:
     import importlib_resources as pkg_resources
 
 import bgfx as _bgfx
+
+logger.disable("bgfx")
 
 with pkg_resources.path(_bgfx, "bgfx_shader.sh") as path:
     default_include_dir = str(path.parent)
@@ -53,7 +56,7 @@ def _get_platform():
 
 
 def _get_profile(shader_type):
-    renderer_type = bgfx.getRendererType()
+    renderer_type = bgfx.get_renderer_type()
     sys_platform = platform.system()
     windows_shader_types = {
         ShaderType.FRAGMENT: "ps_",
@@ -65,7 +68,7 @@ def _get_profile(shader_type):
         return "metal"
 
     if sys_platform == "Linux":
-        if renderer_type == bgfx.RendererType.Vulkan:
+        if renderer_type == bgfx.RendererType.VULKAN:
             return "spirv"
         else:
             if shader_type == ShaderType.COMPUTE:
@@ -73,8 +76,8 @@ def _get_profile(shader_type):
             else:
                 return "120"
 
-    if sys_platform == "Windows":
-        if renderer_type == bgfx.RendererType.Direct3D9:
+    if sys_platform == "Win32":
+        if renderer_type == bgfx.RendererType.DIRECT3D9:
             return windows_shader_types.get(shader_type) + "3_0"
         else:
             return windows_shader_types.get(shader_type) + "5_0"
@@ -115,13 +118,14 @@ def load_shader(
     complete_path = str(Path(path) / name)
     md5 = _md5sum(complete_path)
 
-    memory = None
+    logger.debug(f"Loading shader {name}: {md5}")
 
     with shelve.open("shaders_cache") as cache:
         if complete_path in cache and cache[complete_path]["md5"] == md5:
+            logger.debug(f"Shader {name} found in cache, skipping compilation")
             memory = _load_mem(cache[complete_path]["content"])
         else:
-
+            logger.debug(f"Shader {name} not found in cache, compiling...")
             temp_file = compile_shader(complete_path, include_dirs, shader_type)
 
             with open(temp_file, "rb") as f:
@@ -134,8 +138,8 @@ def load_shader(
 
             os.unlink(temp_file)
 
-    handle = bgfx.createShader(memory)
-    bgfx.setName(handle, name)
+    handle = bgfx.create_shader(memory)
+    bgfx.set_name(handle, name)
 
     return handle
 
@@ -160,7 +164,7 @@ def compile_shader(complete_path, include_dirs, shader_type):
     options.warningsAreErrors = False
     options.keepIntermediate = False
 
-    if platform.system() == "Windows":
+    if platform.system() == "Win32":
         options.optimize = True
         options.optimizationLevel = 1 if shader_type == ShaderType.COMPUTE else 3
 
