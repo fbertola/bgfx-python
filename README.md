@@ -22,6 +22,7 @@
   <a href="#build-cpp-bindings">Build CPP bindings</a> •
   <a href="#using-imgui">Using ImGUI</a> •
   <a href="#examples">Examples</a> •
+  <a href="#logging">Logging</a> •
   <a href="#credits">Credits</a> •
   <a href="#license">License</a>
 </p>
@@ -33,6 +34,7 @@
 ## Key Features
 
 * Uses _Pyind11_ and _Builder_ to natively wrap the C++ interface. No _CTypes_ or ugly C interfaces.
+* Functions, classes and methods respect the PEP 8 notation.
 * Unless specified, the GIL is released for every invocation and pointers are passed by reference. This will ensure great overall performances.
 * Maintains the original documentation; use `help()` on a class or function to view it.
 * Compiles shaders on-the-fly, so you don't have to.
@@ -130,10 +132,20 @@ f = ImGui.Float();
 ```
 You can access the value in the following way: `f.value`
 
-To use it with _SliderFloat_ simply pass it to that function:
+To use it with _slider_float_ simply pass it to that function:
 
 ```python
-ImGui.SliderFloat("float slider", f, 0.0, 1.0)
+ImGui.slider_float("float slider", f, 0.0, 1.0)
+```
+
+## Logging
+
+[Loguru](https://github.com/Delgan/loguru) is used for logging inside `bgfx_python`. By default the logger is disabled; to enable it, use the following instructions:
+
+```python
+from loguru import logger
+
+logger.enable("bgfx")
 ```
 
 ## Examples
