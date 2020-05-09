@@ -3,7 +3,7 @@
 yum install -y centos-release-scl
 yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
 
-for PYBIN in "cp37-cp37m"; do
+for PYBIN in $LINUX_PYTHON; do
     "/opt/python/${PYBIN}/bin/pip" wheel -w /v/dependencies/bgfx/.build/projects/dist /v
 done
 
