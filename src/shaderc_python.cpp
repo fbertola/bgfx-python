@@ -2427,34 +2427,34 @@ namespace bgfx
 
 void bind_shaderc(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
-    M("shaderc").def("compileShader", (int (*)(bgfx::Options & a0)) &bgfx::compileShader, "", pybind11::arg("options"), pybind11::call_guard<pybind11::gil_scoped_release>());
+    M("shaderc").def("compile_shader", (int (*)(bgfx::Options & a0)) &bgfx::compileShader, "", pybind11::arg("options"), pybind11::call_guard<pybind11::gil_scoped_release>());
     {
 		pybind11::class_<bgfx::Options, std::shared_ptr<bgfx::Options>> cl(M("shaderc"), "Options", "");
 		pybind11::handle cl_type = cl;
 
 		cl.def( pybind11::init( [](){ return new bgfx::Options(); } ) );
-		cl.def_readwrite("shaderType", &bgfx::Options::shaderType);
+		cl.def_readwrite("shader_type", &bgfx::Options::shaderType);
 		cl.def_readwrite("platform", &bgfx::Options::platform);
 		cl.def_readwrite("profile", &bgfx::Options::profile);
-		cl.def_readwrite("inputFilePath", &bgfx::Options::inputFilePath);
-		cl.def_readwrite("outputFilePath", &bgfx::Options::outputFilePath);
-		cl.def_readwrite("includeDirs", &bgfx::Options::includeDirs);
+		cl.def_readwrite("input_file_path", &bgfx::Options::inputFilePath);
+		cl.def_readwrite("output_file_path", &bgfx::Options::outputFilePath);
+		cl.def_readwrite("include_dirs", &bgfx::Options::includeDirs);
 		cl.def_readwrite("defines", &bgfx::Options::defines);
 		cl.def_readwrite("dependencies", &bgfx::Options::dependencies);
 		cl.def_readwrite("disasm", &bgfx::Options::disasm);
 		cl.def_readwrite("raw", &bgfx::Options::raw);
-		cl.def_readwrite("preprocessOnly", &bgfx::Options::preprocessOnly);
+		cl.def_readwrite("preprocess_only", &bgfx::Options::preprocessOnly);
 		cl.def_readwrite("depends", &bgfx::Options::depends);
-		cl.def_readwrite("debugInformation", &bgfx::Options::debugInformation);
-		cl.def_readwrite("avoidFlowControl", &bgfx::Options::avoidFlowControl);
-		cl.def_readwrite("noPreshader", &bgfx::Options::noPreshader);
-		cl.def_readwrite("partialPrecision", &bgfx::Options::partialPrecision);
-		cl.def_readwrite("preferFlowControl", &bgfx::Options::preferFlowControl);
-		cl.def_readwrite("backwardsCompatibility", &bgfx::Options::backwardsCompatibility);
-		cl.def_readwrite("warningsAreErrors", &bgfx::Options::warningsAreErrors);
-		cl.def_readwrite("keepIntermediate", &bgfx::Options::keepIntermediate);
+		cl.def_readwrite("debug_information", &bgfx::Options::debugInformation);
+		cl.def_readwrite("avoid_flow_control", &bgfx::Options::avoidFlowControl);
+		cl.def_readwrite("no_preshader", &bgfx::Options::noPreshader);
+		cl.def_readwrite("partial_precision", &bgfx::Options::partialPrecision);
+		cl.def_readwrite("prefer_flow_control", &bgfx::Options::preferFlowControl);
+		cl.def_readwrite("backwards_compatibility", &bgfx::Options::backwardsCompatibility);
+		cl.def_readwrite("warnings_are_errors", &bgfx::Options::warningsAreErrors);
+		cl.def_readwrite("keep_intermediate", &bgfx::Options::keepIntermediate);
 		cl.def_readwrite("optimize", &bgfx::Options::optimize);
-		cl.def_readwrite("optimizationLevel", &bgfx::Options::optimizationLevel);
+		cl.def_readwrite("optimization_level", &bgfx::Options::optimizationLevel);
 		cl.def("dump", (void (bgfx::Options::*)()) &bgfx::Options::dump, "C++: bgfx::Options::dump() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
 }

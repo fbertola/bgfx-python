@@ -101,14 +101,14 @@ def show_example_dialog():
     ImGui.text_wrapped("Your program's statistics")
     ImGui.separator()
 
-    stats = bgfx.getStats()
-    to_ms_cpu = 1000.0 / stats.cpuTimerFreq
-    to_ms_gpu = 1000.0 / stats.gpuTimerFreq
-    frame_ms = float(stats.cpuTimeEnd - stats.cpuTimeBegin)
+    stats = bgfx.get_stats()
+    to_ms_cpu = 1000.0 / stats.cpu_timer_freq
+    to_ms_gpu = 1000.0 / stats.gpu_timer_freq
+    frame_ms = float(stats.cpu_time_end - stats.cpu_time_begin)
 
     s_frame_time.push_sample(frame_ms * to_ms_cpu)
 
-    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpuTimerFreq / frame_ms):6.2f} FPS"
+    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpu_timer_freq / frame_ms):6.2f} FPS"
     ImGui.push_style_color(ImGui.Colors.PlotHistogram, ImGui.Vec4(0.0, 0.5, 0.15, 1.0))
     ImGui.push_item_width(-1)
     ImGui.plot_histogram(
@@ -125,105 +125,105 @@ def show_example_dialog():
     ImGui.pop_style_color()
 
     ImGui.text(
-        f"Submit CPU {(stats.cpuTimeEnd - stats.cpuTimeBegin) * to_ms_cpu:.3f}, GPU {(stats.gpuTimeEnd - stats.gpuTimeBegin) * to_ms_gpu:.3f} (L: {stats.maxGpuLatency})"
+        f"Submit CPU {(stats.cpu_time_end - stats.cpu_time_begin) * to_ms_cpu:.3f}, GPU {(stats.gpu_time_end - stats.gpu_time_begin) * to_ms_gpu:.3f} (L: {stats.max_gpu_latency})"
     )
 
-    if stats.gpuMemoryMax > 0:
-        ImGui.text(f"GPU mem: {stats.gpuMemoryUsed} / {stats.gpuMemoryMax}")
+    if stats.gpu_memory_max > 0:
+        ImGui.text(f"GPU mem: {stats.gpu_memory_used} / {stats.gpu_memory_max}")
 
     if ImGui.collapsing_header("\uf12e Resources", 1 << 5):
-        caps = bgfx.getCaps()
-        itemHeight = ImGui.get_text_line_height_with_spacing()
-        maxWidth = 90.0
+        caps = bgfx.get_caps()
+        item_height = ImGui.get_text_line_height_with_spacing()
+        max_width = 90.0
         ImGui.push_font(ImGui.Font.Mono)
         ImGui.text("Res: Num  / Max")
         resource_bar(
             "DIB",
             "Dynamic index buffers",
-            stats.numDynamicIndexBuffers,
-            caps.limits.maxDynamicIndexBuffers,
-            maxWidth,
-            itemHeight,
+            stats.num_dynamic_index_buffers,
+            caps.limits.max_dynamic_index_buffers,
+            max_width,
+            item_height,
         )
         resource_bar(
             "DVB",
             "Dynamic vertex buffers",
-            stats.numDynamicVertexBuffers,
-            caps.limits.maxDynamicVertexBuffers,
-            maxWidth,
-            itemHeight,
+            stats.num_dynamic_vertex_buffers,
+            caps.limits.max_dynamic_vertex_buffers,
+            max_width,
+            item_height,
         )
         resource_bar(
             " FB",
             "Frame buffers",
-            stats.numFrameBuffers,
-            caps.limits.maxFrameBuffers,
-            maxWidth,
-            itemHeight,
+            stats.num_frame_buffers,
+            caps.limits.max_frame_buffers,
+            max_width,
+            item_height,
         )
         resource_bar(
             " IB",
             "Index buffers",
-            stats.numIndexBuffers,
-            caps.limits.maxIndexBuffers,
-            maxWidth,
-            itemHeight,
+            stats.num_index_buffers,
+            caps.limits.max_index_buffers,
+            max_width,
+            item_height,
         )
         resource_bar(
             " OQ",
             "Occlusion queries",
-            stats.numOcclusionQueries,
-            caps.limits.maxOcclusionQueries,
-            maxWidth,
-            itemHeight,
+            stats.num_occlusion_queries,
+            caps.limits.max_occlusion_queries,
+            max_width,
+            item_height,
         )
         resource_bar(
             "  P",
             "Programs",
-            stats.numPrograms,
-            caps.limits.maxPrograms,
-            maxWidth,
-            itemHeight,
+            stats.num_programs,
+            caps.limits.max_programs,
+            max_width,
+            item_height,
         )
         resource_bar(
             "  S",
             "Shaders",
-            stats.numShaders,
-            caps.limits.maxShaders,
-            maxWidth,
-            itemHeight,
+            stats.num_shaders,
+            caps.limits.max_shaders,
+            max_width,
+            item_height,
         )
         resource_bar(
             "  T",
             "Textures",
-            stats.numTextures,
-            caps.limits.maxTextures,
-            maxWidth,
-            itemHeight,
+            stats.num_textures,
+            caps.limits.max_textures,
+            max_width,
+            item_height,
         )
         resource_bar(
             "  U",
             "Uniforms",
-            stats.numUniforms,
-            caps.limits.maxUniforms,
-            maxWidth,
-            itemHeight,
+            stats.num_uniforms,
+            caps.limits.max_uniforms,
+            max_width,
+            item_height,
         )
         resource_bar(
             " VB",
             "Vertex buffers",
-            stats.numVertexBuffers,
-            caps.limits.maxVertexBuffers,
-            maxWidth,
-            itemHeight,
+            stats.num_vertex_buffers,
+            caps.limits.max_vertex_buffers,
+            max_width,
+            item_height,
         )
         resource_bar(
             " VL",
             "Vertex layouts",
-            stats.numVertexLayouts,
-            caps.limits.maxVertexLayouts,
-            maxWidth,
-            itemHeight,
+            stats.num_vertex_layouts,
+            caps.limits.max_vertex_layouts,
+            max_width,
+            item_height,
         )
         ImGui.pop_font()
 

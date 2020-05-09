@@ -91,8 +91,8 @@ class ExampleWindow(object):
         data.ndt = display
         data.nwh = as_void_ptr(handle)
         data.context = None
-        data.backBuffer = None
-        data.backBufferDS = None
+        data.back_buffer = None
+        data.back_buffer_ds = None
 
         self.init(data)
 
