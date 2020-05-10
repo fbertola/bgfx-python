@@ -106,21 +106,21 @@ To use it in your application, simply follow this template:
 ```python
 # Setup the application
 def init():
-    ImGuiExtra.imguiCreate()
+    ImGuiExtra.imgui_create()
 
 # Destroy the application
 def destroy():
-    ImGuiExtra.imguiDestroy()
+    ImGuiExtra.imgui_destroy()
 
 # Update the application, rendering each fram
 def update():
-    ImGuiExtra.imguiBeginFrame(
+    ImGuiExtra.imgui_begin_frame(
         mouse_x, mouse_y, buttons_states, 0, width, height
     )
 
     # Other ImGui drawing directives...
 
-    ImGuiExtra.imguiEndFrame()
+    ImGuiExtra.imgui_end_frame()
 ```
  
 All ImGui API that provides user input (such as _InputText_, _SliderFloat_, etc.) modifies their arguments by reference. However, in Python, such objects as integers, floats and strings are passed always by value. Because of this, *bgfx-python* provides special wrappers, that allow passing those variables by reference.
