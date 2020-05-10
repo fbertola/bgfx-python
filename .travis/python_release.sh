@@ -6,6 +6,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   sudo port select --set python3 python$MAC_PYTHON;
   sudo port select --set pip pip$MAC_PYTHON;
   export PATH=$PATH:$(python3 -c "import site; print(site.USER_BASE)")/bin;
+  pip3 install --user setuptools wheel scikit-build cmake ninja delocate
   pip3 wheel -w dependencies/bgfx/.build/projects/dist .
   cd dependencies/bgfx/.build/projects/dist || exit
   ls ./*

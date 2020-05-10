@@ -60,7 +60,6 @@ jobs:
         - curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
         - source ./macports-ci install;
         - python3 --version ; pip3 --version ; sw_vers
-        - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
       script:
         - bash -x -e .travis/python_release.sh
       after_success: bash -x -e .travis/after_success.sh
