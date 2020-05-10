@@ -12,18 +12,6 @@ git:
 jobs:
   include:
     - compiler: gcc
-      name: "Linux Python 3.8"
-      os: linux
-      python: 3.7
-      env: LINUX_PYTHON="cp38-cp38m"
-      dist: xenial
-      before_install:
-        - nohup docker pull quay.io/pypa/manylinux2010_x86_64 >/dev/null 2>&1 </dev/null &
-      script:
-        - bash -x -e .travis/python_release.sh
-      after_success: bash -x -e .travis/after_success.sh
-
-    - compiler: gcc
       name: "Linux Python 3.7"
       os: linux
       python: 3.7
@@ -54,6 +42,8 @@ jobs:
       osx_image: xcode10.2
       language: shell
       before_install:
+        - curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
+        - source ./macports-ci install;
         - python3 --version ; pip3 --version ; sw_vers
         - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
       script:
@@ -67,6 +57,8 @@ jobs:
       osx_image: xcode10.2
       language: shell
       before_install:
+        - curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
+        - source ./macports-ci install;
         - python3 --version ; pip3 --version ; sw_vers
         - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
       script:
@@ -80,6 +72,8 @@ jobs:
       osx_image: xcode10.2
       language: shell
       before_install:
+        - curl -LO https://raw.githubusercontent.com/GiovanniBussi/macports-ci/master/macports-ci;
+        - source ./macports-ci install;
         - python3 --version ; pip3 --version ; sw_vers
         - pip3 install --user setuptools wheel scikit-build cmake ninja delocate
       script:
