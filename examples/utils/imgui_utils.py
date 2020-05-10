@@ -94,11 +94,12 @@ def resource_bar(name, tooltip, num, _max, max_width, height):
 
 
 def show_example_dialog():
-    ImGui.set_next_window_pos(ImGui.Vec2(10.0, 70.0), 1 << 2)
-    ImGui.set_next_window_size(ImGui.Vec2(300.0, 500.0), 1 << 2)
+    ImGui.set_next_window_pos(ImGui.Vec2(10.0, 70.0), ImGui.Condition.FirstUseEver)
+    ImGui.set_next_window_size(ImGui.Vec2(300.0, 500.0), ImGui.Condition.FirstUseEver)
 
     ImGui.begin("\uf080 Statistics")
-    ImGui.text_wrapped("Your program's statistics")
+    renderer_name = bgfx.get_renderer_name(bgfx.get_renderer_type())
+    ImGui.text_wrapped(f"Current renderer: {renderer_name}")
     ImGui.separator()
 
     stats = bgfx.get_stats()
