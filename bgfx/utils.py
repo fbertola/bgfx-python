@@ -149,27 +149,27 @@ def compile_shader(complete_path, include_dirs, shader_type):
     temp_file = tempfile.NamedTemporaryFile(delete=False)
 
     options = shaderc.Options()
-    options.shaderType = str(shader_type.value)[0]
-    options.inputFilePath = complete_path
-    options.outputFilePath = temp_file.name
-    options.includeDirs = all_include_dirs
+    options.shader_type = str(shader_type.value)[0]
+    options.input_file_path = complete_path
+    options.output_file_path = temp_file.name
+    options.include_dirs = all_include_dirs
     options.platform = _get_platform()
     options.profile = _get_profile(shader_type)
-    options.debugInformation = False
-    options.avoidFlowControl = False
-    options.noPreshader = False
-    options.partialPrecision = False
-    options.preferFlowControl = False
-    options.backwardsCompatibility = False
-    options.warningsAreErrors = False
-    options.keepIntermediate = False
+    options.debug_information = False
+    options.avoid_flow_control = False
+    options.no_preshader = False
+    options.partial_precision = False
+    options.prefer_flow_control = False
+    options.backwards_compatibility = False
+    options.warnings_are_errors = False
+    options.keep_intermediate = False
 
     if platform.system() == "Win32":
         options.optimize = True
-        options.optimizationLevel = 1 if shader_type == ShaderType.COMPUTE else 3
+        options.optimization_level = 1 if shader_type == ShaderType.COMPUTE else 3
 
     temp_file.close()
 
-    shaderc.compileShader(options)
+    shaderc.compile_shader(options)
 
     return temp_file.name

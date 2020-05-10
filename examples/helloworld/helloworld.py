@@ -2,10 +2,10 @@ from bgfx import bgfx, ImGuiExtra, BGFX_CLEAR_COLOR, BGFX_CLEAR_DEPTH, \
     BGFX_DEBUG_TEXT, BGFX_RESET_VSYNC
 from examples.example_window import ExampleWindow
 from examples.helloworld import python_image
-from examples.utils import show_example_dialog
+from examples.utils.imgui_utils import show_example_dialog
 
 
-class Test(ExampleWindow):
+class HelloWorld(ExampleWindow):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
@@ -21,7 +21,7 @@ class Test(ExampleWindow):
         bgfx.init(self.init_conf)
 
         bgfx.set_debug(BGFX_DEBUG_TEXT)
-        bgfx.set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0, 0)
+        bgfx.set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0, 0)
         ImGuiExtra.imgui_create()
 
     def shutdown(self):
@@ -64,5 +64,5 @@ class Test(ExampleWindow):
 
 
 if __name__ == "__main__":
-    test = Test(1280, 720, "examples/HelloWorld")
+    test = HelloWorld(1280, 720, "examples/HelloWorld")
     test.run()
