@@ -79,9 +79,6 @@ setup(
     long_description_content_type='text/markdown',
     python_requires=">=3.6.0",
     include_package_data=True,
-    install_requires=[
-      "loguru"
-    ],
     zip_safe=False,
     license='BSD',
     classifiers=[
