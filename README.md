@@ -7,13 +7,17 @@
 <h4 align="center">Python 3.6+ wrapper for the BGFX library.</h4>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/python-v3.6+-blue.svg">
-  <a href="https://travis-ci.com/fbertola/bgfx-python"><img src="https://travis-ci.com/fbertola/bgfx-python.svg?branch=master"></a>
-  <a href="https://ci.appveyor.com/project/fbertola/bgfx-python/branch/master"><img src="https://ci.appveyor.com/api/projects/status/bu72q2ybqb6eqhbq/branch/master?svg=true"></a>
-  <img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg">
+  <img src="https://img.shields.io/pypi/pyversions/bgfx-python">
+  <img src="https://img.shields.io/pypi/v/bgfx-python">
+  <img src="https://img.shields.io/pypi/wheel/bgfx-python">
+  <a href="https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/1.0.0/link"><img src="https://api.bintray.com/packages/fbertola/bgfx-python-wheels/bgfx-python/images/download.svg?version=1.0.0"/></a>
+  <br />
   <a href="https://github.com/fbertola/bgfx-python/issues"><img src="https://img.shields.io/github/issues/fbertola/bgfx-python.svg"></a>
   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
-  <a href="https://opensource.org/licenses/BSD"><img src="https://img.shields.io/badge/license-BSD-blue.svg"></a>
+  <a href="https://opensource.org/licenses/BSD"><img src="https://img.shields.io/badge/license-BSD--2%20clause-blue.svg"></a>
+  <br />
+  <a href="https://travis-ci.com/fbertola/bgfx-python"><img src="https://travis-ci.com/fbertola/bgfx-python.svg?branch=master"></a>
+  <a href="https://ci.appveyor.com/project/fbertola/bgfx-python/branch/master"><img src="https://ci.appveyor.com/api/projects/status/bu72q2ybqb6eqhbq/branch/master?svg=true"></a>
 </p>
 
 <p align="center">
@@ -42,6 +46,20 @@
 
 ## How To Use
 
+### Precompiled wheels
+
+Precompiled wheels are available for Windows, Linux and MacOS.
+To install the latest published release, simply run:
+
+```bash
+$ pip install bgfx-python
+```
+
+Linux wheels are built with the help of the [ManyLinux](https://github.com/pypa/manylinux) project and, unfortunately, are too large for the PyPi repository.
+You can download those wheels from the [Bintray Repository](https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/1.0.0/link).
+
+### Install from source
+
 To install the latest version, you'll need to clone this repository and its submodules:
 
 ```bash
@@ -54,7 +72,7 @@ Then, make sure to have `make`, `cmake` and `ninja` installed in your system.
 Finally, simply build and install the wheel.
 
 ```bash
-$ python setup.py install
+$ pip setup.py install
 ``` 
 
 ### Installing on MacOS 
