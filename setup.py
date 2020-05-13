@@ -22,7 +22,7 @@ version = "1.0.1"
 
 
 class UploadCommand(Command):
-    """Support setup.py upload."""tw
+    """Support setup.py upload."""
 
     description = 'Build and publish the package.'
     user_options = []
