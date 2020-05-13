@@ -10,7 +10,6 @@
   <img src="https://img.shields.io/pypi/pyversions/bgfx-python">
   <img src="https://img.shields.io/pypi/v/bgfx-python">
   <img src="https://img.shields.io/pypi/wheel/bgfx-python">
-  <a href="https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/1.0.0/link"><img src="https://api.bintray.com/packages/fbertola/bgfx-python-wheels/bgfx-python/images/download.svg?version=1.0.0"/></a>
   <br />
   <a href="https://github.com/fbertola/bgfx-python/issues"><img src="https://img.shields.io/github/issues/fbertola/bgfx-python.svg"></a>
   <img src="https://img.shields.io/badge/contributions-welcome-orange.svg">
@@ -56,7 +55,7 @@ $ pip install bgfx-python
 ```
 
 Linux wheels are built with the help of the [ManyLinux](https://github.com/pypa/manylinux) project and, unfortunately, are too large for the PyPi repository.
-You can download those wheels from the [Bintray Repository](https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/1.0.0/link).
+You can download those wheels from the [Bintray Repository](https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/).
 
 ### Install from source
 

@@ -18,11 +18,11 @@ except FileNotFoundError:
     long_description = ""
 
 package_name = "bgfx-python"
-version = "1.0.0"
+version = "1.0.1"
 
 
 class UploadCommand(Command):
-    """Support setup.py upload."""
+    """Support setup.py upload."""tw
 
     description = 'Build and publish the package.'
     user_options = []
