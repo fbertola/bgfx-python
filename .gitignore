@@ -111,3 +111,4 @@ _skbuild/
 
 .DS_Store
 tags
+upload.sh
