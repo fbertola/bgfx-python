@@ -16,7 +16,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   cd ../../../../.. || exit
   ls wheelhouse/*
 else
-  docker run -i --rm -v $PWD:/v -w /v -e LINUX_PYTHON=$LINUX_PYTHON --net=host quay.io/pypa/manylinux2010_x86_64 /v/.travis/build_wheels_manylinux.sh
+  docker run -i --rm -v $PWD:/v -w /v -e LINUX_PYTHON=$LINUX_PYTHON --net=host quay.io/pypa/manylinux2014_x86_64 /v/.travis/build_wheels_manylinux.sh
   sudo chown -R $(id -nu):$(id -ng) .
   ls wheelhouse/*
 fi

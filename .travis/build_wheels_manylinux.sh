@@ -10,7 +10,7 @@ done
 cd /v/dependencies/bgfx/.build/projects/dist || exit
 
 for whl in ./*.whl; do
-    # auditwheel repair "$whl" --plat manylinux2010_x86_64 -w /v/wheelhouse/
+    # auditwheel repair "$whl" --plat manylinux2014_x86_64 -w /v/wheelhouse/
     auditwheel show "$whl"
     cp $whl /v/wheelhouse
 done
