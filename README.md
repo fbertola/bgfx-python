@@ -54,9 +54,6 @@ To install the latest published release, simply run:
 $ pip install bgfx-python
 ```
 
-Linux wheels are built with the help of the [ManyLinux](https://github.com/pypa/manylinux) project and, unfortunately, are too large for the PyPi repository.
-You can download those wheels from the [Bintray Repository](https://bintray.com/fbertola/bgfx-python-wheels/bgfx-python/).
-
 ### Install from source
 
 To install the latest version, you'll need to clone this repository and its submodules:
