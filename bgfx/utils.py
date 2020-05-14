@@ -118,14 +118,14 @@ def load_shader(
     complete_path = str(Path(path) / name)
     md5 = _md5sum(complete_path)
 
-    logger.debug(f"Loading shader \"{name}\": {md5}")
+    logger.debug("Loading shader '{}': {}".format(name, md5))
 
     with shelve.open("shaders_cache") as cache:
         if complete_path in cache and cache[complete_path]["md5"] == md5:
-            logger.debug(f"Shader \"{name}\" found in cache, skipping compilation")
+            logger.debug("Shader '{}' found in cache, skipping compilation".format(name))
             memory = _load_mem(cache[complete_path]["content"])
         else:
-            logger.debug(f"Shader \"{name}\" not found in cache, compiling...")
+            logger.debug("Shader '{}' not found in cache, compiling...".format(name))
             temp_file = compile_shader(complete_path, include_dirs, shader_type)
 
             with open(temp_file, "rb") as f:
