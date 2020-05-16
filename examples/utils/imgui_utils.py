@@ -105,7 +105,7 @@ def show_example_dialog():
     stats = bgfx.get_stats()
     to_ms_cpu = 1000.0 / stats.cpu_timer_freq
     to_ms_gpu = 1000.0 / stats.gpu_timer_freq
-    frame_ms = float(stats.cpu_time_end - stats.cpu_time_begin)
+    frame_ms = max(float(stats.cpu_time_end - stats.cpu_time_begin), 1.0e-9)
 
     s_frame_time.push_sample(frame_ms * to_ms_cpu)
 
