@@ -48,26 +48,32 @@ env:
     - CIBW_BEFORE_BUILD_LINUX="yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc"
     - CIBW_MANYLINUX_X86_64_IMAGE=manylinux2014
 
+services:
+  - xvfb
+
 addons:
   apt:
     packages:
       - libgl1-mesa-dev
 
-  homebrew:
-    update: true
-    packages:
-    - cmake
-    - ninja
+install:
+  - python3 -m pip install setuptools wheel scikit-build cmake ninja loguru pytest pytest pytest-xdist
+
+script:
+  - python3 setup.py install
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      python3 -m pytest --forked tests/ || travis_terminate 1
+    fi
 
 branches:
   only:
     - master
 
 stages:
-#  - test
+  - test
   - name: deploy
-    if: repo = fbertola/bgfx-python
-#    if: tag =~ ^v\d+\.\d+\.\d+$ AND repo = fbertola/bgfx-python
+    if: tag =~ ^v\d+\.\d+\.\d+$ AND repo = fbertola/bgfx-python
 
 notifications:
   email: false
