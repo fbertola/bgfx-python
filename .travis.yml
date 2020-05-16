@@ -63,8 +63,9 @@ script:
   - python3 setup.py install
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      cd tests && export PYTHONPATH=.
-      python3 -m pytest --forked . || travis_terminate 1
+      export PYTHONPATH=.
+      cp $VIRTUAL_ENV/lib/python3.*/site-packages/bgfx*/bgfx/*.so ./bgfx
+      python3 -m pytest --forked tests/ || travis_terminate 1
     fi
 
 branches:
