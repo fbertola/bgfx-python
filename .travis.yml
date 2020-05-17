@@ -58,6 +58,9 @@ addons:
       - freeglut3-dev
       - libglew-dev
       - libgl1-mesa-dev
+      - libglu-dev
+      - libglu1-mesa-dev
+      - libx11-dev
 
 install:
   - python3 -m pip install setuptools wheel scikit-build cmake ninja loguru pytest pytest-xdist
