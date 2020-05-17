@@ -4,6 +4,7 @@ exclude .editorconfig .travis.yml .env appveyor.yml tox.ini pytest.ini
 
 
 recursive-include src *
+recursive-include examples *.py
 recursive-include bgfx *.sh
 recursive-include docs Makefile *.rst *.py *.bat
 recursive-include docs/_templates *.html
