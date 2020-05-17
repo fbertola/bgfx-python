@@ -45,7 +45,7 @@ env:
     - CIBW_SKIP="*-manylinux_i686"
     - CIBW_BUILD="cp36-* cp37-* cp38-*"
     - CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
-    - CIBW_BEFORE_BUILD_LINUX="yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang cmake ninja-build freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc"
+    - CIBW_BEFORE_BUILD_LINUX="yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc"
     - CIBW_MANYLINUX_X86_64_IMAGE=manylinux2014
 
 services:
@@ -54,10 +54,13 @@ services:
 addons:
   apt:
     packages:
+      - freeglut3
+      - freeglut3-dev
+      - libglew-dev
       - libgl1-mesa-dev
 
 install:
-  - python3 -m pip install setuptools wheel scikit-build cmake ninja loguru pytest pytest pytest-xdist
+  - python3 -m pip install setuptools wheel scikit-build cmake ninja loguru pytest pytest-xdist
 
 script:
   - python3 setup.py install

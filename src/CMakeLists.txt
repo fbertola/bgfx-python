@@ -70,7 +70,7 @@ elseif (WIN32)
     endforeach()
 else()
     set(DIST_COMMAND linux-release64)
-    set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lpthread -lrt -ldl -Wl,--start-group")
+    set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lGLU -lglut -lpthread -lrt -ldl -Wl,--start-group")
 endif()
 
 add_library(bgfx_lib MODULE
@@ -117,9 +117,15 @@ if (WIN32)
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/spirv-crossRelease.lib")
 
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS ")
 
-    execute_process(COMMAND make -e projgen WORKING_DIRECTORY ${BGFX_DIR})
+    if (APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -g -O3 -msse2 ")
+        execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake WORKING_DIRECTORY ${BGFX_DIR})
+    else()
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -fno-var-tracking-assignments -g -O3 -msse2 ")
+        execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake WORKING_DIRECTORY ${BGFX_DIR})
+    endif()
+
     execute_process(COMMAND make -e ${DIST_COMMAND} CFLAGS+="-fPIC" WORKING_DIRECTORY ${BGFX_DIR})
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
@@ -136,5 +142,11 @@ endif()
 
 python_extension_module(bgfx_lib)
 python_extension_module(shaderc)
+
+# Strip binary for release builds
+if (CMAKE_STRIP)
+    add_custom_command(TARGET shaderc POST_BUILD
+            COMMAND ${CMAKE_STRIP} -S $<TARGET_FILE:shaderc>)
+endif ()
 
 install(TARGETS bgfx_lib shaderc LIBRARY DESTINATION bgfx)
