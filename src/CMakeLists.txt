@@ -145,8 +145,13 @@ python_extension_module(shaderc)
 
 # Strip binary for release builds
 if (CMAKE_STRIP)
-    add_custom_command(TARGET shaderc POST_BUILD
-            COMMAND ${CMAKE_STRIP} -S $<TARGET_FILE:shaderc>)
+    if(APPLE)
+        add_custom_command(TARGET bgfx_lib POST_BUILD COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:bgfx_lib>)
+        add_custom_command(TARGET shaderc POST_BUILD COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:shaderc>)
+    else()
+        add_custom_command(TARGET bgfx_lib POST_BUILD COMMAND ${CMAKE_STRIP} -s $<TARGET_FILE:bgfx_lib>)
+        add_custom_command(TARGET shaderc POST_BUILD COMMAND ${CMAKE_STRIP} -s $<TARGET_FILE:shaderc>)
+    endif()
 endif ()
 
 install(TARGETS bgfx_lib shaderc LIBRARY DESTINATION bgfx)

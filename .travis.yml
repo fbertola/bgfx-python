@@ -27,7 +27,8 @@ jobs:
       services: docker
       install: python3 -m pip install cibuildwheel==1.3.0
       script: python3 -m cibuildwheel --output-dir wheelhouse
-      after_success: bash -x -e .travis/after_success.sh
+      after_success: ls -lah wheelhouse
+#      after_success: bash -x -e .travis/after_success.sh
 
     - stage: deploy
       name: "Build and deploy macOS wheels"
@@ -37,11 +38,12 @@ jobs:
       osx_image: xcode10.2
       install: python3 -m pip install cibuildwheel==1.3.0
       script: python3 -m cibuildwheel --output-dir wheelhouse
-      after_success: bash -x -e .travis/after_success.sh
+      after_success: ls -lah wheelhouse
+#      after_success: bash -x -e .travis/after_success.sh
 
 env:
   global:
-    - CIBW_BUILD_VERBOSITY=0
+    - CIBW_BUILD_VERBOSITY=1
     - CIBW_SKIP="*-manylinux_i686"
     - CIBW_BUILD="cp36-* cp37-* cp38-*"
     - CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
