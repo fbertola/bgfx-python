@@ -70,7 +70,7 @@ elseif (WIN32)
     endforeach()
 else()
     set(DIST_COMMAND linux-release64)
-    set(CMAKE_MODULE_LINKER_FLAGS "-lrt -ldl -lX11 -lGL -lGLU -lglut -lpthread -Wl,--start-group")
+    set(CMAKE_MODULE_LINKER_FLAGS "-lrt -ldl -lGL -lGLU -lglut -lpthread -Wl,--start-group")
 endif()
 
 add_library(bgfx_lib MODULE
@@ -122,7 +122,7 @@ else()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -g -O3 -msse2 ")
         execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake WORKING_DIRECTORY ${BGFX_DIR})
     else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -fno-var-tracking-assignments -g -O3 -msse2 ")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG ")
         execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake WORKING_DIRECTORY ${BGFX_DIR})
     endif()
 
