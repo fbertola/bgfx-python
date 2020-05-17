@@ -55,18 +55,21 @@ addons:
   apt:
     packages:
       - build-essential
-      - gcc-9
-      - g++-9
+      - gcc-8
+      - g++-8
       - freeglut3
       - freeglut3-dev
-      - mesa
+      - libglew-dev
+      - libgl1-mesa-dev
+      - libglu-dev
+      - libglu1-mesa-dev
       - libx11-dev
 
 install:
   - python3 -m pip install setuptools wheel scikit-build cmake glfw ninja numpy loguru pytest pytest-xdist
 
 script:
-  - export CC=gcc-9 CXX=g++-9
+  - export CC=gcc-8 CXX=g++-8
   - python3 setup.py install
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
