@@ -70,7 +70,7 @@ elseif (WIN32)
     endforeach()
 else()
     set(DIST_COMMAND linux-release64)
-    set(CMAKE_MODULE_LINKER_FLAGS "-lrt -ldl -lGL -lGLU -lglut -lpthread -Wl,--start-group")
+    set(CMAKE_MODULE_LINKER_FLAGS "-lrt -ldl -lglut -lGLU -lGL -lm")
 endif()
 
 add_library(bgfx_lib MODULE
