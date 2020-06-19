@@ -62,6 +62,8 @@ addons:
       - libglew-dev
       - libglu-dev
 
+compiler: clang
+
 install:
   - python3 -m pip install setuptools wheel scikit-build cmake glfw ninja numpy loguru pytest pytest-xdist
 
@@ -81,8 +83,8 @@ branches:
 stages:
 #  - test
   - name: deploy
-#    if: repo = fbertola/bgfx-python
-    if: tag =~ ^v\d+\.\d+\.\d+$ AND repo = fbertola/bgfx-python
+    if: repo = fbertola/bgfx-python
+#    if: tag =~ ^v\d+\.\d+\.\d+$ AND repo = fbertola/bgfx-python
 
 notifications:
   email: false
