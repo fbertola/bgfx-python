@@ -43,7 +43,7 @@ jobs:
 
 env:
   global:
-    - CIBW_BUILD_VERBOSITY=1
+    - CIBW_BUILD_VERBOSITY=0
     - CIBW_SKIP="*-manylinux_i686"
     - CIBW_BUILD="cp36-* cp37-* cp38-*"
     - CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
