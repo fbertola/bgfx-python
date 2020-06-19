@@ -64,5 +64,5 @@ class HelloWorld(ExampleWindow):
 
 
 if __name__ == "__main__":
-    test = HelloWorld(1280, 720, "examples/HelloWorld")
+    test = HelloWorld(1280, 720, "examples/helloworld")
     test.run()

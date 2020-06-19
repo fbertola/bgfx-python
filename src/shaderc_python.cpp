@@ -10,22 +10,22 @@
 #include <bx/commandline.h>
 #include <bx/filepath.h>
 
+#undef snprintf
+#undef vsnprintf
+
 #define MAX_TAGS 256
 extern "C"
 {
 #include <fpp.h>
 } // extern "C"
 
-#define BGFX_SHADER_BIN_VERSION 6
+#define BGFX_SHADER_BIN_VERSION 8
 #define BGFX_CHUNK_MAGIC_CSH BX_MAKEFOURCC('C', 'S', 'H', BGFX_SHADER_BIN_VERSION)
 #define BGFX_CHUNK_MAGIC_FSH BX_MAKEFOURCC('F', 'S', 'H', BGFX_SHADER_BIN_VERSION)
 #define BGFX_CHUNK_MAGIC_VSH BX_MAKEFOURCC('V', 'S', 'H', BGFX_SHADER_BIN_VERSION)
 
 #define BGFX_SHADERC_VERSION_MAJOR 1
 #define BGFX_SHADERC_VERSION_MINOR 16
-
-#undef snprintf
-#undef vsnprintf
 
 namespace bgfx
 {
@@ -515,7 +515,7 @@ namespace bgfx
 		}
 		replace[len] = '\0';
 
-		BX_CHECK(len >= bx::strLen(_replace), "");
+		BX_ASSERT(len >= bx::strLen(_replace), "");
 		for (bx::StringView ptr = bx::strFind(_str, _find)
 			; !ptr.isEmpty()
 			; ptr = bx::strFind(ptr.getPtr() + len, _find)
@@ -871,7 +871,7 @@ namespace bgfx
 
 		bx::printf(
 			  "shaderc, bgfx shader compiler tool, version %d.%d.%d.\n"
-			  "Copyright 2011-2019 Branimir Karadzic. All rights reserved.\n"
+			  "Copyright 2011-2020 Branimir Karadzic. All rights reserved.\n"
 			  "License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause\n\n"
 			, BGFX_SHADERC_VERSION_MAJOR
 			, BGFX_SHADERC_VERSION_MINOR
@@ -934,7 +934,7 @@ namespace bgfx
 		return word;
 	}
 
-	bool _compileShader(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, Options& _options, bx::FileWriter* _writer)
+	bool compileShader(const char* _varying, const char* _comment, char* _shader, uint32_t _shaderLen, Options& _options, bx::FileWriter* _writer)
 	{
 		uint32_t glsl  = 0;
 		uint32_t essl  = 0;
@@ -1311,22 +1311,22 @@ namespace bgfx
 			if ('f' == _options.shaderType)
 			{
 				bx::write(_writer, BGFX_CHUNK_MAGIC_FSH);
-				bx::write(_writer, inputHash);
-				bx::write(_writer, uint32_t(0) );
 			}
 			else if ('v' == _options.shaderType)
 			{
 				bx::write(_writer, BGFX_CHUNK_MAGIC_VSH);
-				bx::write(_writer, uint32_t(0) );
-				bx::write(_writer, outputHash);
 			}
 			else
 			{
 				bx::write(_writer, BGFX_CHUNK_MAGIC_CSH);
-				bx::write(_writer, uint32_t(0) );
-				bx::write(_writer, outputHash);
 			}
 
+			bx::write(_writer, inputHash);
+			bx::write(_writer, outputHash);
+		}
+
+		if (raw)
+		{
 			if (0 != glsl)
 			{
 				bx::write(_writer, uint16_t(0) );
@@ -1893,21 +1893,6 @@ namespace bgfx
 							"\t} \\\n"
 							);
 
-						if (hlsl != 0
-						&&  hlsl <= 3)
-						{
-//								preprocessor.writef(
-//									"\tgl_Position.xy += u_viewTexel.xy * gl_Position.w; \\\n"
-//									);
-						}
-
-						if (0 != spirv)
-						{
-							preprocessor.writef(
-								"\tgl_Position.y = -gl_Position.y; \\\n"
-								);
-						}
-
 						preprocessor.writef(
 							"\treturn _varying_"
 							);
@@ -1965,7 +1950,14 @@ namespace bgfx
 							const bx::StringView preprocessedInput(preprocessor.m_preprocessed.c_str() );
 
 							if (!bx::strFind(preprocessedInput, "layout(std430").isEmpty()
-							||  !bx::strFind(preprocessedInput, "image2D").isEmpty() )
+							||  !bx::strFind(preprocessedInput, "image2D").isEmpty()
+							|| (_options.shaderType == 'f'
+								&&  (!bx::strFind(preprocessedInput, "floatBitsToUint").isEmpty() ||
+									 !bx::strFind(preprocessedInput, "floatBitsToInt").isEmpty() ||
+									 !bx::strFind(preprocessedInput, "intBitsToFloat").isEmpty() ||
+									 !bx::strFind(preprocessedInput, "uintBitsToFloat").isEmpty()
+									) )
+								)
 							{
 								glsl = 430;
 							}
@@ -1976,9 +1968,14 @@ namespace bgfx
 									|| !bx::findIdentifierMatch(input, s_ARB_shader_texture_lod).isEmpty()
 									|| !bx::findIdentifierMatch(input, s_EXT_shader_texture_lod).isEmpty()
 									;
+
+								const bool usesGpuShader5 = true
+									&& _options.shaderType != 'f'
+									&& !bx::findIdentifierMatch(input, s_ARB_gpu_shader5).isEmpty()
+									;
+
 								const bool usesInstanceID   = !bx::findIdentifierMatch(input, "gl_InstanceID").isEmpty();
 								const bool usesGpuShader4   = !bx::findIdentifierMatch(input, s_EXT_gpu_shader4).isEmpty();
-								const bool usesGpuShader5   = !bx::findIdentifierMatch(input, s_ARB_gpu_shader5).isEmpty();
 								const bool usesTexelFetch   = !bx::findIdentifierMatch(input, s_texelFetch).isEmpty();
 								const bool usesTextureMS    = !bx::findIdentifierMatch(input, s_ARB_texture_multisample).isEmpty();
 								const bool usesTextureArray = !bx::findIdentifierMatch(input, s_textureArray).isEmpty();
@@ -2330,8 +2327,6 @@ namespace bgfx
 	int compileShader(Options& options)
 	{
 		g_verbose = false;
-
-
 		bool compiled = false;
 
 	    std::string dir;
@@ -2398,7 +2393,7 @@ namespace bgfx
 				return bx::kExitFailure;
 			}
 
-			compiled = _compileShader(varying, "\0", data, size, options, writer);
+			compiled = compileShader(varying, "\0", data, size, options, writer);
 
 			bx::close(writer);
 			delete writer;

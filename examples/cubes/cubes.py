@@ -281,5 +281,5 @@ class Cubes(ExampleWindow):
 
 
 if __name__ == "__main__":
-    cubes = Cubes(1280, 720, "examples/Cubes")
+    cubes = Cubes(1280, 720, "examples/cubes")
     cubes.run()
