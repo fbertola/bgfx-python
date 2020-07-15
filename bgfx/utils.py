@@ -1,16 +1,17 @@
-import ctypes
 from array import ArrayType
-
-import os
-import platform
-import tempfile
-from bgfx.bgfx_lib import *
-from bgfx.shaderc import *
+import ctypes
 from enum import Enum
+from hashlib import sha256
+import os
 from pathlib import Path
-from hashlib import md5
-from loguru import logger
+import platform
 import shelve
+import tempfile
+
+import bgfx as _bgfx
+import bgfx.bgfx_lib as bgfx_lib
+import bgfx.shaderc.shaderc as shaderc
+from loguru import logger
 
 try:
     import numpy as np
@@ -25,7 +26,6 @@ except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
 
-import bgfx as _bgfx
 
 logger.disable("bgfx")
 
@@ -40,8 +40,8 @@ class ShaderType(Enum):
 
 
 def _md5sum(filename, buf_size=8192):
-    m = md5()
-    with open(filename, 'rb') as f:
+    m = sha256()
+    with open(filename, "rb") as f:
         data = f.read(buf_size)
         while data:
             m.update(data)
@@ -56,7 +56,7 @@ def _get_platform():
 
 
 def _get_profile(shader_type):
-    renderer_type = bgfx.get_renderer_type()
+    renderer_type = bgfx_lib.bgfx.get_renderer_type()
     sys_platform = platform.system()
     windows_shader_types = {
         ShaderType.FRAGMENT: "ps_",
@@ -67,8 +67,8 @@ def _get_profile(shader_type):
     if sys_platform == "Darwin":
         return "metal"
 
-    if sys_platform == "Linux":
-        if renderer_type == bgfx.RendererType.VULKAN:
+    elif sys_platform == "Linux":
+        if renderer_type == bgfx_lib.bgfx.RendererType.VULKAN:
             return "spirv"
         else:
             if shader_type == ShaderType.COMPUTE:
@@ -76,16 +76,19 @@ def _get_profile(shader_type):
             else:
                 return "120"
 
-    if sys_platform == "Win32":
-        if renderer_type == bgfx.RendererType.DIRECT3D9:
+    elif sys_platform == "Windows":
+        if renderer_type == bgfx_lib.bgfx.RendererType.DIRECT3D9:
             return windows_shader_types.get(shader_type) + "3_0"
         else:
             return windows_shader_types.get(shader_type) + "5_0"
 
+    else:
+        raise ValueError(f"'{sys_platform}' is not supported!")
+
 
 def _load_mem(content):
     size = len(content)
-    memory = bgfx.copy(as_void_ptr(content), size)
+    memory = bgfx_lib.bgfx.copy(as_void_ptr(content), size)
     return memory
 
 
@@ -111,9 +114,7 @@ def as_void_ptr(obj):
     return capsule
 
 
-def load_shader(
-    name: str, shader_type: ShaderType, include_dirs=(), root_path=None
-):
+def load_shader(name: str, shader_type: ShaderType, include_dirs=(), root_path=None):
     path = Path(".") if not root_path else root_path
     complete_path = str(Path(path) / name)
     md5 = _md5sum(complete_path)
@@ -122,7 +123,9 @@ def load_shader(
 
     with shelve.open("shaders_cache") as cache:
         if complete_path in cache and cache[complete_path]["md5"] == md5:
-            logger.debug("Shader '{}' found in cache, skipping compilation".format(name))
+            logger.debug(
+                "Shader '{}' found in cache, skipping compilation".format(name)
+            )
             memory = _load_mem(cache[complete_path]["content"])
         else:
             logger.debug("Shader '{}' not found in cache, compiling...".format(name))
@@ -130,16 +133,13 @@ def load_shader(
 
             with open(temp_file, "rb") as f:
                 read_data = f.read()
-                cache[complete_path] = {
-                    "md5": md5,
-                    "content": read_data
-                }
+                cache[complete_path] = {"md5": md5, "content": read_data}
             memory = _load_mem(read_data)
 
             os.unlink(temp_file)
 
-    handle = bgfx.create_shader(memory)
-    bgfx.set_name(handle, name)
+    handle = bgfx_lib.bgfx.create_shader(memory)
+    bgfx_lib.bgfx.set_name(handle, name)
 
     return handle
 

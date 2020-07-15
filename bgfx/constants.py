@@ -1,4 +1,4 @@
-from ctypes import c_uint64, c_uint32, c_uint16, c_uint8
+from ctypes import c_uint16, c_uint32, c_uint64, c_uint8
 
 BGFX_STATE_WRITE_G = c_uint64(0x0000000000000002).value
 BGFX_STATE_WRITE_B = c_uint64(0x0000000000000004).value

@@ -1,13 +1,13 @@
 # noinspection PyPackageRequirements
 import ctypes
 import sys
+
+# noinspection PyUnresolvedReferences
+from bgfx import as_void_ptr, bgfx
 import glfw
 
 # noinspection PyProtectedMember
 from glfw import _glfw as glfw_native
-
-# noinspection PyUnresolvedReferences
-from bgfx import bgfx, ImGuiExtra, as_void_ptr
 
 
 class OSMesaContext(object):
@@ -67,7 +67,7 @@ class OSMesaContext(object):
 
         self.init(data)
 
-        for i in range(0, 10):
+        for _ in range(0, 10):
             self.update(1.0)
 
         self.shutdown()
