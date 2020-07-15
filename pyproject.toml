@@ -1,2 +1,69 @@
+[tool.poetry]
+name = "bgfx-python"
+version = "1.0.2"
+description = "Python wrapper for BGFX Library"
+authors = [
+    "Federico Bertola"
+]
+license = "MIT"
+
+readme = "README.md"
+
+repository = "https://github.com/fbertola/bgfx-python"
+
+keywords = ["cpp", "bgfx", "opengl", "metal", "directx", "vulkan"]
+
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Multimedia :: Graphics"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+loguru = "^0.5.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.4.3"
+pytest-mock = "^1.9"
+black = "^19.10b0"
+pytest-sugar = "^0.9.2"
+flake8 = "^3.8.3"
+flake8-bandit = "^2.1.2"
+flake8-black = "^0.2.0"
+flake8-bugbear = "^20.1.4"
+flake8-import-order = "^0.18.1"
+safety = "^1.9.0"
+nox = "^2020.5.24"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | tests/.*/setup.py
+)/
+'''
+
 [build-system]
 requires = ["setuptools", "wheel", "scikit-build", "cmake", "ninja", "loguru"]
+
+

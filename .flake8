@@ -1,0 +1,7 @@
+[flake8]
+select = B,B9,BLK,C,E,F,I,S,W
+ignore = E203,E501,W503,E731,F405,F403,F401
+max-line-length = 128
+per-file-ignores = tests/*:S101
+import-order-style = google
+application-import-names = src,tests
