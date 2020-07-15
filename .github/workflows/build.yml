@@ -27,6 +27,9 @@ jobs:
 
       - name: Build wheels
         run: |
+          if [[ ! -e /usr/include ]]; then
+              export SDKROOT="$(xcrun --show-sdk-path)"
+          fi
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD_VERBOSITY: 0
