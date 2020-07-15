@@ -29,12 +29,12 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          - CIBW_BUILD_VERBOSITY=0
-          - CIBW_SKIP="*-manylinux_i686"
-          - CIBW_BUILD="cp36-* cp37-* cp38-*"
-          - CIBW_REPAIR_WHEEL_COMMAND_MACOS="delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
-          - CIBW_BEFORE_BUILD_LINUX="yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc"
-          - CIBW_MANYLINUX_X86_64_IMAGE=manylinux2014
+          CIBW_BUILD_VERBOSITY: 0
+          CIBW_SKIP: "*-manylinux_i686"
+          CIBW_BUILD: "cp36-* cp37-* cp38-*"
+          CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
+          CIBW_BEFORE_BUILD_LINUX: "yum install -y devtoolset-8-gcc devtoolset-8-gcc-c++ clang freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
   build_sdist:
       name: Build source distribution
@@ -45,7 +45,7 @@ jobs:
         - uses: actions/setup-python@v2
           name: Install Python
           with:
-            python-version: '3.7'
+            python-version: "3.7"
 
         - name: Build sdist
           run: python setup.py sdist
