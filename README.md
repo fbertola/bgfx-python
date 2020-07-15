@@ -185,7 +185,7 @@ This software uses the following open source packages:
 
     BSD 2-Clause License
     
-    Copyright (c) 2019, Federico Bertola
+    Copyright (c) 2020, Federico Bertola
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
