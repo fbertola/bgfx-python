@@ -41,9 +41,9 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
 
       - name: Upload artifact
-          uses: actions/upload-artifact@v2
-          with:
-            path: wheelhouse/*.whl
+        uses: actions/upload-artifact@v2
+        with:
+          path: wheelhouse/*.whl
 
   build_sdist:
       name: Build source distribution
