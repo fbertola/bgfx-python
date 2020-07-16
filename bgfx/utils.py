@@ -164,7 +164,7 @@ def compile_shader(complete_path, include_dirs, shader_type):
     options.warnings_are_errors = False
     options.keep_intermediate = False
 
-    if platform.system() == "Win32":
+    if platform.system() == "Windows":
         options.optimize = True
         options.optimization_level = 1 if shader_type == ShaderType.COMPUTE else 3
 
