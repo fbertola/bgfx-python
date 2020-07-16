@@ -81,6 +81,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     license='BSD',
+    install_requires=[
+        'loguru'
+    ],
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Intended Audience :: Developers',
