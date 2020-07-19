@@ -27,4 +27,4 @@ jobs:
       - name: Run tests
         run: |
           rm -rf bgfx
-          /usr/bin/xvfb-run --auto-servernum nox -rs tests -- -v tests
+          /usr/bin/xvfb-run --auto-servernum nox -rs tests -- tests
