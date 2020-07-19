@@ -24,10 +24,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry nox
 
-      - name: Remove project directory
-        run: rm -rf bgfx
-
       - name: Run tests
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: nox -rs tests -- -v tests
+        run: |
+          rm -rf bgfx
+          /usr/bin/xvfb-run --auto-servernum nox -rs tests -- tests
