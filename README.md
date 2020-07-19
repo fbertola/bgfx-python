@@ -16,6 +16,7 @@
   <a href="https://opensource.org/licenses/BSD"><img src="https://img.shields.io/badge/license-BSD--2%20clause-blue.svg"></a>
   <br />
   <img src="https://github.com/fbertola/bgfx-python/workflows/build/badge.svg">
+  <img src="https://github.com/fbertola/bgfx-python/workflows/tests/badge.svg">
   <a href="https://ci.appveyor.com/project/fbertola/bgfx-python/branch/master"><img src="https://ci.appveyor.com/api/projects/status/bu72q2ybqb6eqhbq/branch/master?svg=true"></a>
 </p>
 
