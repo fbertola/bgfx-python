@@ -1,3 +1,4 @@
+import os
 from ctypes import Structure, c_float, c_uint32, sizeof
 from pathlib import Path
 
@@ -141,6 +142,10 @@ class Cubes(ExampleWindow):
         self.init_conf.debug = True
         self.init_conf.resolution.width = self.width
         self.init_conf.resolution.height = self.height
+
+        if "GITHUB_ACTIONS" in os.environ:
+            self.init_conf.type = bgfx.RendererType.NOOP
+
         self.init_conf.resolution.reset = BGFX_RESET_VSYNC
 
     def init(self, platform_data):
