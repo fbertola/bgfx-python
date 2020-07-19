@@ -27,6 +27,6 @@ jobs:
 
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1.2
-          with:
-            working-directory: ./
-            run: rm -rf bgfx && nox -rs tests -- tests
+        with:
+          working-directory: ./
+          run: rm -rf bgfx && nox -rs tests -- tests
