@@ -59,6 +59,6 @@ def safety(session):
 @nox.session(python="3.7")
 def tests(session):
     args = session.posargs or ["--cov", "-m", "not e2e"]
-    session.run("poetry", "install", "--no-dev", external=True)
+    session.run("poetry", "install", external=True)
     install_with_constraints(session, "pytest", "pytest-mock")
     session.run("pytest", *args)
