@@ -60,5 +60,5 @@ def safety(session):
 def tests(session):
     args = session.posargs or ["--cov", "-m", "not e2e"]
     session.run("poetry", "install", external=True)
-    install_with_constraints(session, "pytest", "pytest-mock")
+    install_with_constraints(session, "pytest", "pytest-mock", "bgfx-python")
     session.run("pytest", *args)
