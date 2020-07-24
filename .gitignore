@@ -112,3 +112,5 @@ _skbuild/
 .DS_Store
 tags
 upload.sh
+examples/shaders_cache.db
+examples/textures/shaders_cache.db
