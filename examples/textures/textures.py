@@ -57,17 +57,6 @@ class PosColorTexVertex(Structure):
 
 num_vertices = 24
 
-cube_vertices = (PosColorTexVertex * num_vertices)(
-    PosColorTexVertex(-1.0, 1.0, 1.0, 0xFF000000,0,1),
-    PosColorTexVertex(1.0, 1.0, 1.0, 0xFF0000FF,1,1),
-    PosColorTexVertex(-1.0, -1.0, 1.0, 0xFF00FF00,0,0),
-    PosColorTexVertex(1.0, -1.0, 1.0, 0xFF00FFFF,1,0),
-    PosColorTexVertex(-1.0, 1.0, -1.0, 0xFFFF0000,0,1),
-    PosColorTexVertex(1.0, 1.0, -1.0, 0xFFFF00FF,1,1),
-    PosColorTexVertex(-1.0, -1.0, -1.0, 0xFFFFFF00,0,0),
-    PosColorTexVertex(1.0, -1.0, -1.0, 0xFFFFFFFF,0,1),
-)
-
 cube_vertices = (PosColorTexVertex * 24)(
     PosColorTexVertex(-1.0,   1.0,  1.0,  0xFF000000,       0,     0    ),
     PosColorTexVertex( 1.0,   1.0,  1.0,  0xFF000000,       1,     0    ),
@@ -112,23 +101,8 @@ cube_indices = (np.array([
 	17, 18, 19,
 	20, 21, 22,
 	21, 23, 22],dtype=np.uint16))
-#    0, 1, 2,  # 0
-#    1, 3, 2,
-#    4, 6, 5,  # 2
-#    5, 6, 7,
-#    0, 2, 4,  # 4
-#    4, 2, 6,
-#    1, 5, 3,  # 6
-#    5, 7, 3,
-#    0, 4, 1,  # 8
-#    4, 5, 1,
-#    2, 3, 6,  # 10
-#    6, 3, 7,
-
-
 
 root_path = Path(__file__).parent.parent / "shaders"
-
 
 class Textures(ExampleWindow):
     def __init__(self, width, height, title):
@@ -173,22 +147,19 @@ class Textures(ExampleWindow):
             as_void_ptr(cube_vertices), sizeof(PosColorTexVertex) * num_vertices
         )
         self.vertex_buffer = bgfx.create_vertex_buffer(vb_memory, self.vertex_layout)
-
-       
-
         
+        # Create index buffer
         ib_memory = bgfx.copy(as_void_ptr(cube_indices), cube_indices.nbytes)
         self.index_buffer = bgfx.create_index_buffer(ib_memory)
 
-        # Create texture
+        # Create texture uniform
         self.texture_uniform = bgfx.create_uniform("s_tex",  bgfx.UniformType.SAMPLER)
        
+        # Load the image using PIL and make the texture
         logo = Image.open(Path(__file__).parent /"python_logo.png")
         logo_memory = bgfx.copy(as_void_ptr(logo.tobytes()), len(logo.tobytes()))
         self.logo_texture = bgfx.create_texture2d(logo.width,logo.height,False,1,bgfx.TextureFormat.RGBA8, BGFX_TEXTURE_RT ,logo_memory)
-        #bgfx.TextureFormat.R32F, BGFX_SAMPLER_MAG_ANISOTROPIC| BGFX_TEXTURE_RT| BGFX_SAMPLER_U_BORDER | BGFX_SAMPLER_V_BORDER,tex_memory) 
-
-
+       
         # Create program from shaders.
         self.main_program = bgfx.create_program(
             load_shader(
@@ -236,7 +207,7 @@ class Textures(ExampleWindow):
         for yy in range(-2, 2):
             for xx in range(-2, 2):
                 mtx = rotate_xy(
-                    self.elapsed_time + xx * 0.21, self.elapsed_time + yy * 0.37
+                    self.elapsed_time + xx * 0.51, self.elapsed_time + yy * 0.27
                 )
                 mtx[3, 0] =  4+ xx * 3.5
                 mtx[3, 1] =  2 + yy * 3.5
@@ -247,6 +218,7 @@ class Textures(ExampleWindow):
                 bgfx.set_vertex_buffer(0, self.vertex_buffer, 0, num_vertices)
                 bgfx.set_index_buffer(self.index_buffer,0,cube_indices.size)
 
+                # Set the texture
                 bgfx.set_texture(0, self.texture_uniform, self.logo_texture)
 
                 bgfx.set_state(0
