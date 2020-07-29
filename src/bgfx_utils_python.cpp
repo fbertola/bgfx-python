@@ -416,7 +416,7 @@ void bind_bgfx_utils(std::function< pybind11::module &(std::string const &namesp
 		cl.def_readwrite("m_groups", &Mesh::m_groups);
 		cl.def("load", (void (Mesh::*)(int *, bool)) &Mesh::load, "C++: Mesh::load(int *, bool) --> void", pybind11::arg("_reader"), pybind11::arg("_ramcopy"), pybind11::call_guard<pybind11::gil_scoped_release>());
 		cl.def("unload", (void (Mesh::*)()) &Mesh::unload, "C++: Mesh::unload() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
-		cl.def("submit", (void (Mesh::*)(unsigned short, struct bgfx::ProgramHandle, const void *, unsigned long long) const) &Mesh::submit, "C++: Mesh::submit(unsigned short, struct bgfx::ProgramHandle, const void *, unsigned long long) const --> void", pybind11::arg("_id"), pybind11::arg("_program"), pybind11::arg("_mtx"), pybind11::arg("_state"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("submit", (void (Mesh::*)(unsigned short, struct bgfx::ProgramHandle, const void *, uint64_t) const) &Mesh::submit, "C++: Mesh::submit(unsigned short, struct bgfx::ProgramHandle, const void *, unsigned long long) const --> void", pybind11::arg("_id"), pybind11::arg("_program"), pybind11::arg("_mtx"), pybind11::arg("_state"), pybind11::call_guard<pybind11::gil_scoped_release>());
 	}
 
     M("bgfx").def("mesh_load", (struct Mesh * (*)(const char *, const bool)) &meshLoad, "C++: meshLoad(const char *, bool) --> struct bgfx::TextureHandle", pybind11::arg("_filePath"), pybind11::arg("_ramcopy"), pybind11::call_guard<pybind11::gil_scoped_release>());
