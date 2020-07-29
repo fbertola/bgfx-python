@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bgfx-python"
-version = "1.0.2"
+version = "1.0.3"
 description = "Python wrapper for BGFX Library"
 authors = [
     "Federico Bertola"

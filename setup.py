@@ -18,7 +18,7 @@ except FileNotFoundError:
     long_description = ""
 
 package_name = "bgfx-python"
-version = "1.0.2"
+version = "1.0.3"
 
 
 class UploadCommand(Command):
