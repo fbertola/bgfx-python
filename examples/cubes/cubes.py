@@ -124,7 +124,7 @@ bgfx_states = (
     BGFX_STATE_PT_POINTS,
 )
 
-root_path = Path(__file__).parent.parent / "shaders"
+root_path = Path(__file__).parent.parent / "assets" / "shaders"
 
 
 class Cubes(ExampleWindow):

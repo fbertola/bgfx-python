@@ -88,7 +88,7 @@ cube_indices = (np.array([
     20, 21, 22,
     21, 23, 22], dtype=np.uint16))
 
-root_path = Path(__file__).parent.parent / "shaders"
+root_path = Path(__file__).parent.parent / "assets" / "shaders"
 
 
 class Textures(ExampleWindow):
@@ -96,11 +96,6 @@ class Textures(ExampleWindow):
         super().__init__(width, height, title)
 
         self.elapsed_time = 0
-        self.write_r = ImGui.Bool(True)
-        self.write_g = ImGui.Bool(True)
-        self.write_b = ImGui.Bool(True)
-        self.write_a = ImGui.Bool(True)
-        self.primitive_geometry = ImGui.Int(0)
 
         self.init_conf = bgfx.Init()
         self.init_conf.debug = True
@@ -143,7 +138,7 @@ class Textures(ExampleWindow):
         self.texture_uniform = bgfx.create_uniform("s_tex", bgfx.UniformType.SAMPLER)
 
         # Load the image using PIL and make the texture
-        logo = Image.open(Path(__file__).parent / "python_logo.png")
+        logo = Image.open(Path(__file__).parent.parent / "assets" / "textures" / "python_logo.png")
         logo_memory = bgfx.copy(as_void_ptr(logo.tobytes()), len(logo.tobytes()))
         self.logo_texture = bgfx.create_texture2d(logo.width, logo.height, False, 1, bgfx.TextureFormat.RGBA8,
                                                   BGFX_TEXTURE_RT, logo_memory)
