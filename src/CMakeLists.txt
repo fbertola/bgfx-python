@@ -38,6 +38,7 @@ include_directories("${BGFX_DIR}/src")
 include_directories("${BGFX_DIR}/include")
 include_directories("${BGFX_DIR}/include/bgfx")
 include_directories("${BGFX_DIR}/examples")
+include_directories("${BGFX_DIR}/examples/common")
 include_directories("${BGFX_DIR}/tools/shaderc")
 include_directories("${BGFX_DIR}/3rdparty/fcpp")
 include_directories("${BGFX_DIR}/3rdparty/dxsdk/include")
@@ -81,7 +82,10 @@ add_library(bgfx_lib MODULE
     ${IMGUI_DIR}/imgui_draw.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${BGFX_DIR}/examples/common/imgui/imgui.cpp
+    ${3RDPARTY_DIR}/meshoptimizer/src/indexcodec.cpp
+    ${3RDPARTY_DIR}/meshoptimizer/src/vertexcodec.cpp
     bgfx_python.cpp
+    bgfx_utils_python.cpp
     imgui_python.cpp
     imgui_extra_python.cpp
     bgfx_module.cpp)
@@ -129,9 +133,9 @@ else()
     endif()
 
     execute_process(COMMAND make -e ${DIST_COMMAND} CFLAGS+="-fPIC" WORKING_DIRECTORY ${BGFX_DIR})
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
     target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
+    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
 
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
     target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libfcppRelease.a")

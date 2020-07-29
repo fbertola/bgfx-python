@@ -414,12 +414,12 @@ void bind_imgui(std::function< pybind11::module &(std::string const &namespace_)
 		},
 		"call to mark popup as open (don't call every frame!). popups are closed when user click outside, or if CloseCurrentPopup() is called within a BeginPopup()/EndPopup() block. By default, Selectable()/MenuItem() are calling CloseCurrentPopup(). Popup identifiers are relative to the current ID-stack (so OpenPopup and BeginPopup needs to be at the same level)."
 	);
-	M("ImGui").def("open_popup_on_item_click", [](std::string str_id = "", int mouse_button = 1)
-		{
-			ImGui::OpenPopupOnItemClick(str_id.c_str(), mouse_button);
-		},
-		"helper to open popup when clicked on last item. return true when just opened."
-	);
+//	M("ImGui").def("open_popup_on_item_click", [](std::string str_id = "", int mouse_button = 1)
+//		{
+//			ImGui::OpenPopupOnItemClick(str_id.c_str(), mouse_button);
+//		},
+//		"helper to open popup when clicked on last item. return true when just opened."
+//	);
 	M("ImGui").def("begin_popup", [](std::string str_id, ImGuiWindowFlags flags)->bool
 		{
 			return ImGui::BeginPopup(str_id.c_str(), flags);

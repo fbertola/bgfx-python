@@ -1,17 +1,19 @@
-from array import ArrayType
 import ctypes
-from enum import Enum
-from hashlib import sha256
 import os
-from pathlib import Path
 import platform
 import shelve
 import tempfile
+from array import ArrayType
+from enum import Enum
+from hashlib import sha256
+from pathlib import Path
+from typing import List
 
-import bgfx as _bgfx
 import bgfx.bgfx_lib as bgfx_lib
 import bgfx.shaderc.shaderc as shaderc
 from loguru import logger
+
+import bgfx as _bgfx
 
 try:
     import numpy as np
@@ -25,7 +27,6 @@ try:
 except ImportError:
     # Try backported to PY<37 `importlib_resources`.
     import importlib_resources as pkg_resources
-
 
 logger.disable("bgfx")
 
@@ -173,3 +174,21 @@ def compile_shader(complete_path, include_dirs, shader_type):
     shaderc.compile_shader(options)
 
     return temp_file.name
+
+
+class Mesh:
+    def __init__(self, file_path: Path, ram_copy=False):
+        logger.debug(f"Loading mesh (RAM {ram_copy}): {file_path}")
+        self.internal_mesh = bgfx_lib.bgfx.mesh_load(str(file_path), ram_copy)
+
+    def submit(
+        self,
+        view_id: int,
+        program: bgfx_lib.bgfx.ProgramHandle,
+        matrix: List[float],
+        state=_bgfx.BGFX_STATE_MASK,
+    ):
+        self.internal_mesh.submit(view_id, program, as_void_ptr(matrix), state)
+
+    def destroy(self):
+        self.internal_mesh.unload()
