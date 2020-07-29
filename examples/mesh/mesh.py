@@ -26,7 +26,7 @@ logger.enable("bgfx")
 root_path = Path(__file__).parent.parent / "assets" / "shaders"
 
 
-class Mesh(ExampleWindow):
+class MeshExample(ExampleWindow):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
 
@@ -117,5 +117,5 @@ class Mesh(ExampleWindow):
 
 
 if __name__ == "__main__":
-    textures = Textures(1280, 720, "examples/mesh")
+    textures = MeshExample(1280, 720, "examples/mesh")
     textures.run()
