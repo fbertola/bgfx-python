@@ -1,8 +1,9 @@
 from examples.cubes.cubes import Cubes
 from examples.helloworld.helloworld import HelloWorld
-from examples.mesh.mesh import Mesh
+from examples.mesh.mesh import MeshExample
 
 from tests.osmesa_context import OSMesaContext
+
 
 # This test suite use OSMesa to perform rendering on devices that does not
 # have a GPU. Paired with XVFB, this will allow to test the library
