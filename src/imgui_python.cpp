@@ -299,6 +299,60 @@ void bind_imgui(std::function< pybind11::module &(std::string const &namespace_)
 //			.def_readonly("width", &Image::m_width)
 //			.def_readonly("height", &Image::m_height);
 
+	{ // ImGuiIO file:imgui.h line:1338
+		pybind11::class_<ImGuiIO, std::shared_ptr<ImGuiIO>> cl(M("ImGui"), "IO", "");
+		pybind11::handle cl_type = cl;
+
+		cl.def( pybind11::init( [](){ return new ImGuiIO(); } ) );
+		cl.def( pybind11::init( [](ImGuiIO const &o){ return new ImGuiIO(o); } ) );
+		cl.def_readwrite("config_flags", &ImGuiIO::ConfigFlags);
+		cl.def_readwrite("backend_flags", &ImGuiIO::BackendFlags);
+		cl.def_readwrite("display_size", &ImGuiIO::DisplaySize);
+		cl.def_readwrite("delta_time", &ImGuiIO::DeltaTime);
+		cl.def_readwrite("ini_saving_rate", &ImGuiIO::IniSavingRate);
+		cl.def_readwrite("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime);
+		cl.def_readwrite("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist);
+		cl.def_readwrite("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold);
+		cl.def_readwrite("key_repeat_delay", &ImGuiIO::KeyRepeatDelay);
+		cl.def_readwrite("key_repeat_rate", &ImGuiIO::KeyRepeatRate);
+		cl.def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale);
+		cl.def_readwrite("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling);
+		cl.def_readwrite("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale);
+		cl.def_readwrite("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor);
+		cl.def_readwrite("config_mac_o_s_x_behaviors", &ImGuiIO::ConfigMacOSXBehaviors);
+		cl.def_readwrite("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink);
+		cl.def_readwrite("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges);
+		cl.def_readwrite("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly);
+		cl.def_readwrite("config_windows_memory_compact_timer", &ImGuiIO::ConfigWindowsMemoryCompactTimer);
+		cl.def_readwrite("mouse_pos", &ImGuiIO::MousePos);
+		cl.def_readwrite("mouse_wheel", &ImGuiIO::MouseWheel);
+		cl.def_readwrite("mouse_wheel_h", &ImGuiIO::MouseWheelH);
+		cl.def_readwrite("key_ctrl", &ImGuiIO::KeyCtrl);
+		cl.def_readwrite("key_shift", &ImGuiIO::KeyShift);
+		cl.def_readwrite("key_alt", &ImGuiIO::KeyAlt);
+		cl.def_readwrite("key_super", &ImGuiIO::KeySuper);
+		cl.def_readwrite("want_capture_mouse", &ImGuiIO::WantCaptureMouse);
+		cl.def_readwrite("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard);
+		cl.def_readwrite("want_text_input", &ImGuiIO::WantTextInput);
+		cl.def_readwrite("want_set_mouse_pos", &ImGuiIO::WantSetMousePos);
+		cl.def_readwrite("want_save_ini_settings", &ImGuiIO::WantSaveIniSettings);
+		cl.def_readwrite("nav_active", &ImGuiIO::NavActive);
+		cl.def_readwrite("nav_visible", &ImGuiIO::NavVisible);
+		cl.def_readwrite("framerate", &ImGuiIO::Framerate);
+		cl.def_readwrite("metrics_render_vertices", &ImGuiIO::MetricsRenderVertices);
+		cl.def_readwrite("metrics_render_indices", &ImGuiIO::MetricsRenderIndices);
+		cl.def_readwrite("metrics_render_windows", &ImGuiIO::MetricsRenderWindows);
+		cl.def_readwrite("metrics_active_windows", &ImGuiIO::MetricsActiveWindows);
+		cl.def_readwrite("metrics_active_allocations", &ImGuiIO::MetricsActiveAllocations);
+		cl.def_readwrite("mouse_delta", &ImGuiIO::MouseDelta);
+		cl.def_readwrite("mouse_pos_prev", &ImGuiIO::MousePosPrev);
+		cl.def_readwrite("input_queue_characters", &ImGuiIO::InputQueueCharacters);
+		cl.def("add_input_character", (void (ImGuiIO::*)(unsigned int)) &ImGuiIO::AddInputCharacter, "C++: ImGuiIO::AddInputCharacter(unsigned int) --> void", pybind11::arg("c"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("add_input_characters_utf8", (void (ImGuiIO::*)(const char *)) &ImGuiIO::AddInputCharactersUTF8, "C++: ImGuiIO::AddInputCharactersUTF8(const char *) --> void", pybind11::arg("str"), pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("clear_input_characters", (void (ImGuiIO::*)()) &ImGuiIO::ClearInputCharacters, "C++: ImGuiIO::ClearInputCharacters() --> void", pybind11::call_guard<pybind11::gil_scoped_release>());
+		cl.def("assign", (struct ImGuiIO & (ImGuiIO::*)(const struct ImGuiIO &)) &ImGuiIO::operator=, "C++: ImGuiIO::operator=(const struct ImGuiIO &) --> struct ImGuiIO &", pybind11::return_value_policy::reference_internal, pybind11::arg(""), pybind11::call_guard<pybind11::gil_scoped_release>());
+	}
+
 	py::class_<ImGuiStyle>(M("ImGui"), "GuiStyle")
 		.def(py::init())
 			.def_readwrite("alpha", &ImGuiStyle::Alpha)
@@ -403,6 +457,7 @@ void bind_imgui(std::function< pybind11::module &(std::string const &namespace_)
 		py::arg("name"), py::arg("shortcut"), py::arg("selected") = Bool(false), py::arg("enabled") = true);
 	M("ImGui").def("end_menu", &ImGui::EndMenu);
 
+    M("ImGui").def("get_io", (struct ImGuiIO & (*)()) &ImGui::GetIO, "C++: ImGui::GetIO() --> struct ImGuiIO &", pybind11::return_value_policy::reference, pybind11::call_guard<pybind11::gil_scoped_release>());
 	M("ImGui").def("begin_tooltip", &ImGui::BeginTooltip);
 	M("ImGui").def("end_tooltip", &ImGui::EndTooltip);
 	M("ImGui").def("set_tooltip", [](const char* text){ ImGui::SetTooltip("%s", text); });
