@@ -4,6 +4,10 @@ from examples.mesh.mesh import Mesh
 
 from tests.osmesa_context import OSMesaContext
 
+# This test suite use OSMesa to perform rendering on devices that does not
+# have a GPU. Paired with XVFB, this will allow to test the library
+# loading and the basic rendering calls.
+
 
 def test_helloworld_example():
     HelloWorld.__bases__ = (OSMesaContext,)
