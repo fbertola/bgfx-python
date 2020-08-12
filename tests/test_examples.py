@@ -14,18 +14,15 @@ def test_helloworld_example():
     HelloWorld.__bases__ = (OSMesaContext,)
     test = HelloWorld(1280, 720, "Test")
     test.run()
-    test.shutdown()
 
 
 def test_cubes_example():
     Cubes.__bases__ = (OSMesaContext,)
     test = Cubes(1280, 720, "Test")
     test.run()
-    test.shutdown()
 
 
 def test_mesh_example():
     MeshExample.__bases__ = (OSMesaContext,)
     test = MeshExample(1280, 720, "Test")
     test.run()
-    test.shutdown()
