@@ -88,7 +88,7 @@ class ExampleWindow(object):
             display = glfw_native.glfwGetX11Display()
 
         data = bgfx.PlatformData()
-        data.ndt = display
+        data.ndt = as_void_ptr(display) if display else None
         data.nwh = as_void_ptr(handle)
         data.context = None
         data.back_buffer = None
