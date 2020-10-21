@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <pybind11/stl.h>
 
+#include "custom_types.h"
+
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -15,6 +17,29 @@
 	PYBIND11_DECLARE_HOLDER_TYPE(T, T*);
 	PYBIND11_MAKE_OPAQUE(std::shared_ptr<void>);
 #endif
+
+//void bind_types(std::function< pybind11::module &(std::string const &namespace_) > &M)
+//{
+//	pybind11::class_<Bool>(M("bgfx"), "Bool")
+//		.def(pybind11::init())
+//		.def(pybind11::init<bool>())
+//		.def_readwrite("value", &Bool::value);
+//
+//	pybind11::class_<Float>(M("bgfx"), "Float")
+//		.def(pybind11::init())
+//		.def(pybind11::init<float>())
+//		.def_readwrite("value", &Float::value);
+//
+//	pybind11::class_<Int>(M("bgfx"), "Int")
+//		.def(pybind11::init())
+//		.def(pybind11::init<int>())
+//		.def_readwrite("value", &Int::value);
+//
+//	pybind11::class_<String>(M("bgfx"), "String")
+//		.def(pybind11::init())
+//		.def(pybind11::init<std::string>())
+//		.def_readwrite("value", &String::value);
+//}
 
 void bind_bgfx(std::function< pybind11::module &(std::string const &namespace_) > &M)
 {
@@ -345,7 +370,6 @@ void bind_bgfx(std::function< pybind11::module &(std::string const &namespace_) 
 #include <functional>
 #include <string>
 #include <pybind11/stl.h>
-
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -1336,7 +1360,7 @@ void bind_bgfx_7(std::function< pybind11::module &(std::string const &namespace_
 	M("bgfx").def("set_view_order", []() -> void { return bgfx::setViewOrder(); }, "", pybind11::call_guard<pybind11::gil_scoped_release>());
 	M("bgfx").def("set_view_order", [](unsigned short const & a0) -> void { return bgfx::setViewOrder(a0); }, "", pybind11::arg("_id"), pybind11::call_guard<pybind11::gil_scoped_release>());
 	M("bgfx").def("set_view_order", [](unsigned short const & a0, unsigned short const & a1) -> void { return bgfx::setViewOrder(a0, a1); }, "", pybind11::arg("_id"), pybind11::arg("_num"), pybind11::call_guard<pybind11::gil_scoped_release>());
-	M("bgfx").def("set_view_order", (void (*)(unsigned short, unsigned short, const unsigned short *)) &bgfx::setViewOrder, "Post submit view reordering.\n\n \n First view id.\n \n\n Number of views to remap.\n \n\n View remap id table. Passing `NULL` will reset view ids\n   to default state.\n\n \n C99 equivalent is `bgfx_set_view_order`.\n\nC++: bgfx::setViewOrder(unsigned short, unsigned short, const unsigned short *) --> void", pybind11::arg("_id"), pybind11::arg("_num"), pybind11::arg("_remap"), pybind11::call_guard<pybind11::gil_scoped_release>());
+	M("bgfx").def("set_view_order", (void (*)(unsigned short, unsigned short, const void *)) &bgfx::setViewOrder, "Post submit view reordering.\n\n \n First view id.\n \n\n Number of views to remap.\n \n\n View remap id table. Passing `NULL` will reset view ids\n   to default state.\n\n \n C99 equivalent is `bgfx_set_view_order`.\n\nC++: bgfx::setViewOrder(unsigned short, unsigned short, const unsigned short *) --> void", pybind11::arg("_id"), pybind11::arg("_num"), pybind11::arg("_remap"), pybind11::call_guard<pybind11::gil_scoped_release>());
 
 }
 
