@@ -9,6 +9,7 @@
 
 typedef std::function< pybind11::module & (std::string const &) > ModuleGetter;
 
+//void bind_types(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_bgfx(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_unknown_unknown(std::function< pybind11::module &(std::string const &namespace_) > &M);
 void bind_bgfx_1(std::function< pybind11::module &(std::string const &namespace_) > &M);
@@ -48,6 +49,7 @@ PYBIND11_MODULE(bgfx_lib, root_module) {
 
 	//pybind11::class_<std::shared_ptr<void>>(M(""), "_encapsulated_data_");
 
+//    bind_types(M);
 	bind_bgfx(M);
 	bind_unknown_unknown(M);
 	bind_bgfx_1(M);
