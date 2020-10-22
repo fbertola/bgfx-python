@@ -60,7 +60,7 @@ def bar(width, max_width, height, color):
     item_hovered |= ImGui.is_item_hovered(0)
 
     ImGui.same_line()
-    ImGui.invisible_button("", ImGui.Vec2(max(1.0, max_width - width), height))
+    ImGui.invisible_button("", ImGui.Vec2(max(1.0, max_width - width), height), 0)
     item_hovered |= ImGui.is_item_hovered(0)
 
     ImGui.pop_style_var(2)
