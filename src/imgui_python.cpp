@@ -16,7 +16,6 @@
 #include <memory>
 #include <mutex>
 
-#include "custom_types.h"
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
@@ -28,6 +27,40 @@
 namespace py = pybind11;
 
 typedef py::array_t<uint8_t, py::array::c_style> ndarray_uint8;
+
+
+struct Bool
+{
+	Bool(): value(false) {}
+	Bool(bool v): value(v) {}
+
+	bool value;
+	bool null = false;
+};
+
+struct Float
+{
+	Float(): value(0.0f) {}
+	Float(float v): value(v) {}
+
+	float value;
+};
+
+struct Int
+{
+	Int(): value(0) {}
+	Int(int v): value(v) {}
+
+	int value;
+};
+
+struct String
+{
+	String(): value("") {}
+	String(const std::string& v): value(v) {}
+
+	std::string value;
+};
 
 
 void  AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddLine(a, b, col, thickness); }
@@ -211,6 +244,26 @@ void bind_imgui(std::function< pybind11::module &(std::string const &namespace_)
 		.value("BotLeft", ImDrawCornerFlags_BotLeft)
 		.value("All", ImDrawCornerFlags_All)
 		.export_values();
+
+	py::class_<Bool>(M("ImGui"), "Bool")
+		.def(py::init())
+		.def(py::init<bool>())
+		.def_readwrite("value", &Bool::value);
+
+	py::class_<Float>(M("ImGui"), "Float")
+		.def(py::init())
+		.def(py::init<float>())
+		.def_readwrite("value", &Float::value);
+
+	py::class_<Int>(M("ImGui"), "Int")
+		.def(py::init())
+		.def(py::init<int>())
+		.def_readwrite("value", &Int::value);
+
+	py::class_<String>(M("ImGui"), "String")
+		.def(py::init())
+		.def(py::init<std::string>())
+		.def_readwrite("value", &String::value);
 
 	py::class_<ImVec2>(M("ImGui"), "Vec2")
 		.def(py::init())
