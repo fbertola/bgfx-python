@@ -8,8 +8,6 @@
 #include <cstdint>
 #include <pybind11/stl.h>
 
-#include "custom_types.h"
-
 
 #ifndef BINDER_PYBIND11_TYPE_CASTER
 	#define BINDER_PYBIND11_TYPE_CASTER
