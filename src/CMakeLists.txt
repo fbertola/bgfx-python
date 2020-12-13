@@ -1,11 +1,12 @@
 project(bgfx_python)
 cmake_minimum_required(VERSION 3.6.1)
 
-find_package(Python3 COMPONENTS Development)
-find_package(PythonExtensions REQUIRED)
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
+execute_process(COMMAND cling-config --cmake OUTPUT_VARIABLE CPPYY_MODULE_PATH OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
-message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
+include(FindCppyy)
+
+message(STATUS "CPPYY_FOUND = ${Cppyy_FOUND}")
 
 set(BX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bx" CACHE PATH "BX dir" FORCE)
 set(BIMG_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bimg" CACHE PATH "BIMG dir" FORCE)
@@ -13,8 +14,6 @@ set(BGFX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx" CACHE PATH "BGFX
 set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty/dear-imgui" CACHE PATH "IMGUI dir" FORCE)
 set(3RDPARTY_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/bgfx/3rdparty" CACHE PATH "3RDPARTY dir" FORCE)
 set(PYBIND11_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../dependencies/pybind11" CACHE PATH "PYBIND11 dir" FORCE)
-
-set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 if (APPLE)
     set(BGFX_BUILD_DIR osx64_clang)
@@ -31,30 +30,6 @@ message(STATUS "BX_DIR = ${BX_DIR}")
 message(STATUS "BIMG_DIR = ${BIMG_DIR}")
 message(STATUS "BGFX_DIR = ${BGFX_DIR}")
 message(STATUS "PYBIND11_DIR = ${PYBIND11_DIR}")
-
-include_directories("${BX_DIR}/include")
-include_directories("${BIMG_DIR}/include")
-include_directories("${BGFX_DIR}/src")
-include_directories("${BGFX_DIR}/include")
-include_directories("${BGFX_DIR}/include/bgfx")
-include_directories("${BGFX_DIR}/examples")
-include_directories("${BGFX_DIR}/examples/common")
-include_directories("${BGFX_DIR}/tools/shaderc")
-include_directories("${BGFX_DIR}/3rdparty/fcpp")
-include_directories("${BGFX_DIR}/3rdparty/dxsdk/include")
-include_directories("${BGFX_DIR}/3rdparty/glslang")
-include_directories("${BGFX_DIR}/3rdparty/glslang/StandAlone")
-include_directories("${BGFX_DIR}/3rdparty/glslang/glslang/Public")
-include_directories("${BGFX_DIR}/3rdparty/glsl-optimizer/include")
-include_directories("${BGFX_DIR}/3rdparty/glsl-optimizer/src/glsl")
-include_directories("${BGFX_DIR}/3rdparty/spirv-cross")
-include_directories("${BGFX_DIR}/3rdparty/spirv-tools/include")
-include_directories("${BGFX_DIR}/3rdparty/webgpu")
-include_directories("${BGFX_DIR}/3rdparty/webgpu/include")
-include_directories("${IMGUI_DIR}")
-include_directories("${IMGUI_DIR}/widgets")
-include_directories("${3RDPARTY_DIR}")
-include_directories("${PYBIND11_DIR}/include")
 
 set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
 
@@ -76,31 +51,6 @@ else()
     set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lGLU -lglut -lpthread -lrt -ldl -Wl,--start-group")
 endif()
 
-add_library(bgfx_lib MODULE
-    ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp
-    ${IMGUI_DIR}/imgui_draw.cpp
-    ${IMGUI_DIR}/imgui_widgets.cpp
-    ${BGFX_DIR}/examples/common/imgui/imgui.cpp
-    ${3RDPARTY_DIR}/meshoptimizer/src/indexcodec.cpp
-    ${3RDPARTY_DIR}/meshoptimizer/src/vertexcodec.cpp
-    bgfx_python.cpp
-    bgfx_utils_python.cpp
-    imgui_python.cpp
-    imgui_extra_python.cpp
-    bgfx_module.cpp)
-
-add_library(shaderc MODULE
-    ${BGFX_DIR}/tools/shaderc/shaderc_glsl.cpp
-    ${BGFX_DIR}/tools/shaderc/shaderc_hlsl.cpp
-    ${BGFX_DIR}/tools/shaderc/shaderc_metal.cpp
-    ${BGFX_DIR}/tools/shaderc/shaderc_pssl.cpp
-    ${BGFX_DIR}/tools/shaderc/shaderc_spirv.cpp
-    ${BGFX_DIR}/src/vertexlayout.cpp
-    ${BGFX_DIR}/src/shader_spirv.cpp
-    shaderc_python.cpp
-    shaderc_module.cpp)
-
 if (WIN32)
     set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
@@ -110,20 +60,7 @@ if (WIN32)
     execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
 
     execute_process(COMMAND msbuild bgfx.sln /p:Configuration=Release WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
-
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bimgRelease.lib")
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bxRelease.lib")
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bgfxRelease.lib")
-
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/bxRelease.lib")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/fcppRelease.lib")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/glslangRelease.lib")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/glsl-optimizerRelease.lib")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/spirv-optRelease.lib")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/spirv-crossRelease.lib")
-
 else()
-
     if (APPLE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -g -O3 -msse2 ")
         execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake WORKING_DIRECTORY ${BGFX_DIR})
@@ -133,31 +70,13 @@ else()
     endif()
 
     execute_process(COMMAND make -e ${DIST_COMMAND} CFLAGS+="-fPIC" WORKING_DIRECTORY ${BGFX_DIR})
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a")
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
-    target_link_libraries(bgfx_lib "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a")
-
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libfcppRelease.a")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libglslangRelease.a")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libglsl-optimizerRelease.a")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libspirv-optRelease.a")
-    target_link_libraries(shaderc "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libspirv-crossRelease.a")
-
 endif()
 
-python_extension_module(bgfx_lib)
-python_extension_module(shaderc)
-
-# Strip binary for release builds
-if (CMAKE_STRIP)
-    if(APPLE)
-        add_custom_command(TARGET bgfx_lib POST_BUILD COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:bgfx_lib>)
-        add_custom_command(TARGET shaderc POST_BUILD COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:shaderc>)
-    else()
-        add_custom_command(TARGET bgfx_lib POST_BUILD COMMAND ${CMAKE_STRIP} -s $<TARGET_FILE:bgfx_lib>)
-        add_custom_command(TARGET shaderc POST_BUILD COMMAND ${CMAKE_STRIP} -s $<TARGET_FILE:shaderc>)
-    endif()
-endif ()
-
-install(TARGETS bgfx_lib shaderc LIBRARY DESTINATION bgfx)
+cppyy_add_bindings(
+   "bgfx_python"
+   LANGUAGE_STANDARD "17"
+   INCLUDE_DIRS "${BX_DIR}/include;${BIMG_DIR}/include;${BGFX_DIR}/include"
+   LINK_LIBRARIES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a;${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a;${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a;${Cppyy_DIR}/lib/libCling.so;${Cppyy_DIR}/lib/libCoreLegacy.so"
+   H_DIRS "${BGFX_DIR}/include/bgfx"
+   H_FILES "bgfx.h"
+)
