@@ -125,6 +125,50 @@ version = "4.4.0"
 colorama = "*"
 
 [[package]]
+category = "main"
+description = "Cling-based Python-C++ bindings"
+name = "cppyy"
+optional = false
+python-versions = "*"
+version = "1.8.4"
+
+[package.dependencies]
+CPyCppyy = "1.11.5"
+cppyy-backend = "1.14.1"
+cppyy-cling = "6.21.4"
+
+[[package]]
+category = "main"
+description = "C/C++ wrapper for Cling"
+name = "cppyy-backend"
+optional = false
+python-versions = "*"
+version = "1.14.1"
+
+[package.dependencies]
+cppyy-cling = ">=6.21.4"
+
+[[package]]
+category = "main"
+description = "Re-packaged Cling, as backend for cppyy"
+name = "cppyy-cling"
+optional = false
+python-versions = "*"
+version = "6.21.4"
+
+[[package]]
+category = "main"
+description = "Cling-based Python-C++ bindings for CPython"
+name = "cpycppyy"
+optional = false
+python-versions = "*"
+version = "1.11.5"
+
+[package.dependencies]
+cppyy-backend = ">=1.14.1"
+cppyy-cling = ">=6.21.4"
+
+[[package]]
 category = "dev"
 description = "Distribution utilities"
 name = "distlib"
@@ -658,7 +702,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=3.5,<3.7.3 || >3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "jaraco.test (>=3.2.0)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [metadata]
-content-hash = "95352c4596af7bd465225047c727b353073f47f56152b10f7e0b10958c3c5f24"
+content-hash = "fd3463560a1c34f5d4d34cd21dc64e796eaba3077d6903f10fc5a83b981795bc"
 lock-version = "1.0"
 python-versions = "^3.7"
 
@@ -706,6 +750,22 @@ colorama = [
 colorlog = [
     {file = "colorlog-4.4.0-py2.py3-none-any.whl", hash = "sha256:f14f30f58e2ce6ef40b0088307cac7efb9ecff5605fa2267a2d29955f26aff23"},
     {file = "colorlog-4.4.0.tar.gz", hash = "sha256:0272c537469ab1e63b9915535874d15b671963c9325db0c4891a2aeff97ce3d1"},
+]
+cppyy = [
+    {file = "cppyy-1.8.4.tar.gz", hash = "sha256:4c772db1716a104f58c406f5ad6b97704b044a6f0f52f358882bee6dfbaa3a41"},
+]
+cppyy-backend = [
+    {file = "cppyy-backend-1.14.1.tar.gz", hash = "sha256:be69fc0afd48a25a0359627857926aa7d39b8ee731b14cab0d8990b0a60825f0"},
+]
+cppyy-cling = [
+    {file = "cppyy-cling-6.21.4.tar.gz", hash = "sha256:7379be5c7a9fcaddcb4b6564b690f0bdaaec63b14ce4ef280a4b4c28b4582289"},
+    {file = "cppyy_cling-6.21.4-py2.py3-none-macosx_10_12_x86_64.whl", hash = "sha256:d0b407bd06a670cf7eb69149f8b900d87733947ffc52bb9a0854abf5dd7f3fa8"},
+    {file = "cppyy_cling-6.21.4-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:027c3b69cc0b4365b5ea37704499360091372c6fc2e25d830ad0372673a80643"},
+    {file = "cppyy_cling-6.21.4-py2.py3-none-win32.whl", hash = "sha256:411f6d46c31e523941ed0082185fc270d8ae30d735af89b7d70786bfac09eed7"},
+    {file = "cppyy_cling-6.21.4-py2.py3-none-win_amd64.whl", hash = "sha256:e1fc9d26b8df6785754505e8acb8bf50919199826766e64f2aca2b3bb0e17781"},
+]
+cpycppyy = [
+    {file = "CPyCppyy-1.11.5.tar.gz", hash = "sha256:9037dd7aeae1dc86f875088f7b108305b17aefa1df56424f1fc153b24aac5c32"},
 ]
 distlib = [
     {file = "distlib-0.3.1-py2.py3-none-any.whl", hash = "sha256:8c09de2c67b3e7deef7184574fc060ab8a793e7adbb183d942c389c8b13c52fb"},
