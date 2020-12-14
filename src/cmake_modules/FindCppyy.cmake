@@ -1,28 +1,3 @@
-#.rst:
-# FindCppyy
-# -------
-#
-# Find Cppyy
-#
-# This module finds an installed Cppyy.  It sets the following variables:
-#
-# ::
-#
-#   Cppyy_FOUND - set to true if Cppyy is found
-#   Cppyy_DIR - the directory where Cppyy is installed
-#   Cppyy_EXECUTABLE - the path to the cppyy-generator executable
-#   Cppyy_INCLUDE_DIRS - Where to find the ROOT header files.
-#   Cppyy_VERSION - the version number of the Cppyy backend.
-#
-#
-# The module also defines the following functions:
-#
-#   cppyy_add_bindings - Generate a set of bindings from a set of header files.
-#
-# The minimum required version of Cppyy can be specified using the
-# standard syntax, e.g.  find_package(Cppyy 4.19)
-#
-#
 
 get_filename_component(BACKEND_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
 get_filename_component(BACKEND_PREFIX "${BACKEND_PREFIX}" PATH)
@@ -57,147 +32,9 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(Cppyy
 )
 mark_as_advanced(Cppyy_VERSION)
 
-#
-# Generate a set of bindings from a set of header files. Somewhat like CMake's
-# add_library(), the output is a compiler target. In addition ancilliary files
-# are also generated to allow a complete set of bindings to be compiled,
-# packaged and installed.
-#
-#   cppyy_add_bindings(
-#       pkg
-#       [LANGUAGE_STANDARD std]
-#       [LINKDEFS linkdef...]
-#       [IMPORTS pcm...]
-#       [GENERATE_OPTIONS option...]
-#       [COMPILE_OPTIONS option...]
-#       [INCLUDE_DIRS dir...]
-#       [LINK_LIBRARIES library...]
-#       [H_DIRS H_DIRSectory]
-#       H_FILES h_file...)
-#
-# The bindings are based on https://cppyy.readthedocs.io/en/latest/, and can be
-# used as per the documentation provided via the cppyy.gbl namespace. First add
-# the directory of the <pkg>.rootmap file to the LD_LIBRARY_PATH environment
-# variable, then "import cppyy; from cppyy.gbl import <some-C++-entity>".
-#
-# Alternatively, use "import <pkg>". This convenience wrapper supports
-# "discovery" of the available C++ entities using, for example Python 3's command
-# line completion support.
-#
-# This function creates setup.py, setup.cfg, and MANIFEST.in appropriate
-# for the package in the build directory. It also creates the package directory PKG,
-# and within it a tests subdmodule PKG/tests/test_bindings.py to sanity test the bindings.
-# Further, it creates PKG/pythonizors/, which can contain files of the form
-# pythonize_*.py, with functions of the form pythonize_<NAMESPACE>_*.py, which will
-# be consumed by the initialization routine and added as pythonizors for their associated
-# namespace on import.
-#
-# The setup.py and setup.cfg are prepared to create a Wheel. They can be customized
-# for the particular package by modifying the templates in pkg_templates/.
-#
-# The bindings are generated/built/packaged using 3 environments:
-#
-#   - One compatible with the header files being bound. This is used to
-#     generate the generic C++ binding code (and some ancilliary files) using
-#     a modified C++ compiler. The needed options must be compatible with the
-#     normal build environment of the header files.
-#
-#   - One to compile the generated, generic C++ binding code using a standard
-#     C++ compiler. The resulting library code is "universal" in that it is
-#     compatible with both Python2 and Python3.
-#
-#   - One to package the library and ancilliary files into standard Python2/3
-#     wheel format. The packaging is done using native Python tooling.
-#
-# Arguments and options:
-#
-#   pkg                 The name of the package to generate. This can be either
-#                       of the form "simplename" (e.g. "Akonadi"), or of the
-#                       form "namespace.simplename" (e.g. "KF5.Akonadi").
-#
-#   IMPORTS pcm         Files which contain previously-generated bindings
-#                       which pkg depends on.
-#
-#   LANGUAGE_STANDARD std
-#                       The version of C++ in use, "14" by default.
-#
-#   GENERATE_OPTIONS option
-#                       Options which will be passed to the rootcling invocation
-#                       in the cppyy-generate utility. cppyy-generate is used to
-#                       create the bindings map.
-#
-#   LINKDEFS def        Files or lines which contain extra #pragma content
-#                       for the linkdef.h file used by rootcling. See
-#                       https://root.cern.ch/root/html/guides/users-guide/AddingaClass.html#the-linkdef.h-file.
-#
-#   EXTRA_CODES code    Files which contain extra code needed by the bindings.
-#                       Customisation is by routines named "c13n_<something>";
-#                       each such routine is passed the module for <pkg>:
-#
-#                           def c13n_doit(pkg_module):
-#                               print(pkg_module.__dict__)
-#
-#                       The files and individual routines within files are
-#                       processed in alphabetical order.
-#
-#   EXTRA_HEADERS hdr   Files which contain extra headers needed by the bindings.
-#
-#   COMPILE_OPTIONS option
-#                       Options which are to be passed into the compile/link
-#                       command.
-#
-#   INCLUDE_DIRS dir    Include directories.
-#
-#   LINK_LIBRARIES library
-#                       Libraries to link against.
-#
-#   NAMESPACES          List of C++ namespaces which should be imported into the
-#                       bindings' __init__.py. This avoids having to write imports
-#                       of the form `from PKG import NAMESPACE`.
-#
-#   EXTRA_PKG_FILES     Extra files to copy into the package. Note that non-python
-#                       files will need to be added to the MANIFEST.in.in template.
-#
-#   H_DIRS directory    Base directories for H_FILES.
-#
-#   H_FILES h_file      Header files for which to generate bindings in pkg.
-#                       Absolute filenames, or filenames relative to H_DIRS. All
-#                       definitions found directly in these files will contribute
-#                       to the bindings. (NOTE: This means that if "forwarding
-#                       headers" are present, the real "legacy" headers must be
-#                       specified as H_FILES).
-#
-#                       All header files which contribute to a given C++ namespace
-#                       should be grouped into a single pkg to ensure a 1-to-1
-#                       mapping with the implementing Python class.
-#
-# Returns via PARENT_SCOPE variables:
-#
-#   CPPYY_LIB_TARGET    The target cppyy bindings shared library.
-#
-#   SETUP_PY_FILE       The generated setup.py.
-#
-#   INIT_PY_FILE       The generated setup.py.
-#
-#   PY_WHEEL_FILE       The finished .whl package file
-#
-# Examples:
-#
-# cppyy_add_bindings(
-#    "${PROJECT_NAME}" "${PROJECT_VERSION}" "user" "user@gmail.com"
-#    LANGUAGE_STANDARD "14"
-#    GENERATE_OPTIONS "-D__PIC__;-Wno-macro-redefined"
-#    INCLUDE_DIRS     ${PCL_INCLUDE_DIRS}
-#    LINKDEFS         LinkDef.h
-#    LINK_LIBRARIES   ${PCL_LIBRARIES}
-#    H_DIRS           ${HEADER_PATH}
-#    H_FILES          ${LIB_HEADERS}
-#    NAMESPACES       pcl
-# )
-
 function(cppyy_add_bindings pkg)
-    set(simple_args LANGUAGE_STANDARD)
-    set(list_args IMPORTS GENERATE_OPTIONS COMPILE_OPTIONS INCLUDE_DIRS LINK_LIBRARIES H_DIRS H_FILES LINKDEFS EXTRA_CODES EXTRA_HEADERS NAMESPACES)
+    set(simple_args LANGUAGE_STANDARD TARGET_DIR)
+    set(list_args IMPORTS GENERATE_OPTIONS COMPILE_OPTIONS INCLUDE_DIRS LINK_OPTIONS LINK_LIBRARIES H_DIRS H_FILES LINKDEFS EXTRA_CODES EXTRA_HEADERS NAMESPACES)
     cmake_parse_arguments(
         ARG
         ""
@@ -226,6 +63,10 @@ function(cppyy_add_bindings pkg)
         set(ARG_LANGUAGE_STANDARD "14")
     endif()
 
+    if("${ARG_TARGET_DIR}" STREQUAL "")
+        set(ARG_LANGUAGE_STANDARD ${pkg})
+    endif()
+
     ################################################################
     #
     # Make H_FILES with absolute paths.
@@ -252,6 +93,11 @@ function(cppyy_add_bindings pkg)
     list(APPEND tmp ${h_file})
     endforeach(h_file)
     set(ARG_H_FILES ${tmp})
+
+    set(linker_args)
+    foreach(link_option IN LISTS ARG_LINK_OPTIONS)
+        list(APPEND linker_args "SHELL:${link_option}")
+    endforeach()
 
     ###################################################
     #
@@ -388,10 +234,17 @@ function(cppyy_add_bindings pkg)
     target_include_directories(${lib_name} PRIVATE ${Cppyy_INCLUDE_DIRS} ${ARG_INCLUDE_DIRS})
     target_compile_options(${lib_name} PRIVATE ${ARG_COMPILE_OPTIONS})
     target_link_libraries(${lib_name} PUBLIC ${ARG_LINK_LIBRARIES})
+    target_link_options(${lib_name} PRIVATE ${linker_args})
 
-    # FIXME: make configurable
-    target_link_options(${lib_name} PRIVATE "SHELL:-framework Cocoa" "SHELL:-framework QuartzCore" "SHELL:-framework OpenGL" "SHELL:-weak_framework Metal" "SHELL:-weak_framework MetalKit")
-    # FIXME: make configurable
-    install(TARGETS ${lib_name} LIBRARY DESTINATION bgfx)
+    install(TARGETS ${lib_name} LIBRARY DESTINATION ${ARG_TARGET_DIR})
+    install(FILES ${pcm_file} ${rootmap_file} ${extra_map_file} DESTINATION ${ARG_TARGET_DIR})
+
+    if (CMAKE_STRIP)
+        if(APPLE)
+            add_custom_command(TARGET ${lib_name} POST_BUILD COMMAND ${CMAKE_STRIP} -x $<TARGET_FILE:${lib_name}>)
+        else()
+            add_custom_command(TARGET ${lib_name} POST_BUILD COMMAND ${CMAKE_STRIP} -s $<TARGET_FILE:${lib_name}>)
+        endif()
+    endif ()
 
 endfunction(cppyy_add_bindings)

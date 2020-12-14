@@ -31,24 +31,20 @@ message(STATUS "BIMG_DIR = ${BIMG_DIR}")
 message(STATUS "BGFX_DIR = ${BGFX_DIR}")
 message(STATUS "PYBIND11_DIR = ${PYBIND11_DIR}")
 
-set_property(GLOBAL PROPERTY POSITION_INDEPENDENT_CODE ON)
-
 if (APPLE)
     set(DIST_COMMAND osx-release64)
-    include_directories("${BX_DIR}/include/compat/osx")
     set(SDKROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
-    set(CMAKE_MODULE_LINKER_FLAGS "-framework Cocoa -framework QuartzCore -framework OpenGL -weak_framework Metal -weak_framework MetalKit ")
+    set(LINKER_OPTIONS "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit")
 elseif (WIN32)
     include(FindWindowsSDK)
-    include_directories("${BX_DIR}/include/compat/msvc")
-    set(CMAKE_MODULE_LINKER_FLAGS "d3d12.lib d3d11.lib dxgi.lib psapi.lib d3dcompiler.lib")
-    get_windowssdk_include_dirs("${WINDOWSSDK_LATEST_DIR}" WINSDK_INCLUDE_DIRS)
-    foreach(X IN LISTS WINSDK_INCLUDE_DIRS)
-        include_directories("${X}")
-    endforeach()
+    set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib")
+    #get_windowssdk_include_dirs("${WINDOWSSDK_LATEST_DIR}" WINSDK_INCLUDE_DIRS)
+    #foreach(X IN LISTS WINSDK_INCLUDE_DIRS)
+    #    include_directories("${X}")
+    #endforeach()
 else()
     set(DIST_COMMAND linux-release64)
-    set(CMAKE_MODULE_LINKER_FLAGS "-lGL -lGLU -lglut -lpthread -lrt -ldl -Wl,--start-group")
+    set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group")
 endif()
 
 if (WIN32)
@@ -75,8 +71,16 @@ endif()
 cppyy_add_bindings(
    "bgfx_python"
    LANGUAGE_STANDARD "17"
+   TARGET_DIR "bgfx"
    INCLUDE_DIRS "${BX_DIR}/include;${BIMG_DIR}/include;${BGFX_DIR}/include"
+   LINK_OPTIONS ${LINKER_OPTIONS}
    LINK_LIBRARIES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimgRelease.a;${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbxRelease.a;${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfxRelease.a;${Cppyy_DIR}/lib/libCling.so;${Cppyy_DIR}/lib/libCoreLegacy.so"
    H_DIRS "${BGFX_DIR}/include/bgfx"
    H_FILES "bgfx.h"
 )
+
+install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/shadercRelease" DESTINATION bgfx)
+install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/geometrycRelease" DESTINATION bgfx)
+install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/geometryvRelease" DESTINATION bgfx)
+install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/texturecRelease" DESTINATION bgfx)
+install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/texturevRelease" DESTINATION bgfx)
