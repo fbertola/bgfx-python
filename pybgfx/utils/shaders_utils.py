@@ -1,25 +1,16 @@
-import ctypes
 import os
 import platform
 import shelve
+import subprocess
 import tempfile
-from array import ArrayType
 from enum import Enum
 from hashlib import sha256
 from pathlib import Path
-import subprocess
-from typing import List, Optional, Any
+from typing import List, Optional
 
-from pybgfx import bgfx
 from loguru import logger
 
-try:
-    import numpy as np
-
-    _is_numpy_array = lambda obj: type(obj) is np.ndarray
-except Exception:
-    _is_numpy_array = lambda obj: False
-
+from pybgfx import bgfx
 
 logger.disable("pybgfx")
 
@@ -75,28 +66,6 @@ def _load_mem(content):
     size = len(content)
     memory = bgfx.copy(as_void_ptr(content), size)
     return memory
-
-
-def as_void_ptr(obj):
-    ctypes.pythonapi.PyCapsule_New.restype = ctypes.py_object
-    ctypes.pythonapi.PyCapsule_New.argtypes = [
-        ctypes.c_void_p,
-        ctypes.c_char_p,
-        ctypes.c_void_p,
-    ]
-
-    if type(obj) == ArrayType:
-        obj = obj.buffer_info()[0]
-
-    if _is_numpy_array(obj):
-        obj = obj.ctypes.data_as(ctypes.POINTER(ctypes.c_void_p))
-
-    if type(obj) != ctypes.c_void_p:
-        obj = ctypes.cast(obj, ctypes.c_void_p)
-
-    capsule = ctypes.pythonapi.PyCapsule_New(obj, None, None)
-
-    return capsule
 
 
 def load_shader(

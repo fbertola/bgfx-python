@@ -1,41 +1,27 @@
-"""
-Support utilities for bindings.
-"""
-import glob
-import json
-from distutils.command.clean import clean
-from distutils.util import get_platform
-from setuptools.command.build_py import build_py
-from wheel.bdist_wheel import bdist_wheel
 import gettext
+import glob
+import importlib.util
 import inspect
+import json
 import os
 import re
-import setuptools
-import subprocess
 import sys
-try:
-    #
-    # Python2.
-    #
-    from imp import load_source
-except ImportError:
-    #
-    # Python3.
-    #
-    import importlib.util
-
-    def load_source(module_name, file_path, add_to_sys=False):
-        spec = importlib.util.spec_from_file_location(module_name, file_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        # Optional; only necessary if you want to be able to import the module
-        # by name later.
-        if add_to_sys:
-            sys.modules[module_name] = module
-        return module
 
 import cppyy
+from loguru import logger
+
+logger.disable("pybgfx")
+
+
+def load_source(module_name, file_path, add_to_sys=False):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    # Optional; only necessary if you want to be able to import the module
+    # by name later.
+    if add_to_sys:
+        sys.modules[module_name] = module
+    return module
 
 
 gettext.install(__name__)
@@ -43,54 +29,47 @@ gettext.install(__name__)
 # Keep PyCharm happy.
 _ = _
 
-
 PRIMITIVE_TYPES = re.compile(r"\b(bool|char|short|int|unsigned|long|float|double)\b")
 
 
-def add_pythonizations(py_files, noisy=False):
+def add_pythonizations(py_files):
     for py_file in py_files:
-        if noisy:
-            print('check', py_file, 'for pythonizors')
-        if not os.path.basename(py_file).startswith('pythonize'):
-            continue
-        module_name = inspect.getmodulename(py_file)
-        module      = load_source(module_name, py_file)
-        funcs       = inspect.getmembers(module, predicate=inspect.isroutine)
+        logger.debug("check {} for pythonizors".format(py_file))
 
-        pythonizors = {}
+        if not os.path.basename(py_file).startswith("pythonize"):
+            continue
+
+        module_name = inspect.getmodulename(py_file)
+        module = load_source(module_name, py_file)
+        funcs = inspect.getmembers(module, predicate=inspect.isroutine)
+
         for name, func in funcs:
-            if not name.startswith('pythonize'):
+            if not name.startswith("pythonize"):
                 continue
-            tokens = name.split('_')
+
+            tokens = name.split("_")
+
             if len(tokens) > 1:
                 namespace = tokens[1]
-                if noisy:
-                    print('added pythonization', func, namespace)
-                if namespace == 'gbl':
+
+                logger.debug(
+                    "added pythonization {} to namespace {}".format(func, namespace)
+                )
+
+                if namespace == "gbl":
                     cppyy.py.add_pythonization(func)
                 else:
                     cppyy.py.add_pythonization(func, namespace)
 
 
-
-def initialise(pkg, lib_file, map_file, noisy=False):
-    """
-    Initialise the bindings module.
-
-    :param pkg:             The bindings package.
-    :param __init__py:      Base __init__.py file of the bindings.
-    :param cmake_shared_library_prefix:
-                            ${cmake_shared_library_prefix}
-    :param cmake_shared_library_suffix:
-                            ${cmake_shared_library_suffix}
-    """
+def initialise(pkg, lib_file, map_file):
     def add_to_pkg(file, keyword, simplenames, children):
         def map_operator_name(name):
             """
             Map the given C++ operator name on the python equivalent.
             """
             CPPYY__idiv__ = "__idiv__"
-            CPPYY__div__  = "__div__"
+            CPPYY__div__ = "__div__"
             gC2POperatorMapping = {
                 "[]": "__getitem__",
                 "()": "__call__",
@@ -155,9 +134,9 @@ def initialise(pkg, lib_file, map_file, noisy=False):
         # Ignore some names based on heuristics.
         #
         simplename = simplenames[0]
-        if simplename in ('void', 'sizeof', 'const'):
+        if simplename in ("void", "sizeof", "const"):
             return
-        if simplename[0] in '0123456789':
+        if simplename[0] in "0123456789":
             #
             # Don't attempt to look up numbers (i.e. non-type template parameters).
             #
@@ -172,42 +151,44 @@ def initialise(pkg, lib_file, map_file, noisy=False):
         try:
             entity = getattr(cppyy.gbl, simplename)
         except AttributeError as e:
-            if noisy:
-                print(_("Unable to lookup {}:{} cppyy.gbl.{} ({})").format(file, keyword, simplename, children))
-            #raise
+            logger.error(
+                "Unable to lookup {}:{} cppyy.gbl.{} ({})".format(
+                    file, keyword, simplename, children
+                )
+            )
+            # raise
         else:
             if getattr(entity, "__module__", None) == "cppyy.gbl":
                 setattr(entity, "__module__", pkg)
             setattr(pkg_module, simplename, entity)
 
     pkg_dir = os.path.dirname(__file__)
-
-    if "." in pkg:
-        pkg_namespace, pkg_simplename = pkg.rsplit(".", 1)
-    else:
-        pkg_namespace, pkg_simplename = "", pkg
     pkg_module = sys.modules[pkg]
+
     #
     # Load the library.
     #
-    cppyy.add_include_path(pkg_dir)
+    cppyy.add_include_path(pkg_dir + "/include")
+    cppyy.add_include_path(pkg_dir + "/include/bx")
     cppyy.load_reflection_info(os.path.join(pkg_dir, lib_file))
 
     #
     # Load pythonizations
     #
     try:
-        pythonization_files = glob.glob(os.path.join(pkg_dir, '**/pythonize*.py'), recursive=True)
+        pythonization_files = glob.glob(
+            os.path.join(pkg_dir, "**/pythonize*.py"), recursive=True
+        )
     except TypeError:
         # versions older than 3.5 do not support 'recursive'
         # TODO: below is good enough for most cases, but not recursive
-        pythonization_files = glob.glob(os.path.join(pkg_dir, 'pythonize*.py'))
-    add_pythonizations(pythonization_files, noisy=noisy)
+        pythonization_files = glob.glob(os.path.join(pkg_dir, "pythonize*.py"))
+    add_pythonizations(pythonization_files)
 
     #
     # Parse the map file.
     #
-    with open(os.path.join(pkg_dir, map_file), 'r') as map_file:
+    with open(os.path.join(pkg_dir, map_file), "r") as map_file:
         files = json.load(map_file)
 
     #
@@ -216,8 +197,7 @@ def initialise(pkg, lib_file, map_file, noisy=False):
     #
     for file in files:
         for child in file["children"]:
-            if not child["kind"] in ('class', 'var', 'namespace', 'typedef'):
+            if not child["kind"] in ("class", "var", "namespace", "typedef"):
                 continue
-            simplenames = child["name"].split('::')
-            print(simplenames)
+            simplenames = child["name"].split("::")
             add_to_pkg(file["name"], child["kind"], simplenames, child)

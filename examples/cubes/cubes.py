@@ -59,62 +59,66 @@ cube_vertices = (PosColorVertex * num_vertices)(
 )
 
 cube_vertices = (PosColorVertex * num_vertices)(
-    PosColorVertex(-1.0, 1.0, 1.0, 0xff000000),
-    PosColorVertex(1.0, 1.0, 1.0, 0xff0000ff),
-    PosColorVertex(-1.0, -1.0, 1.0, 0xff00ff00),
-    PosColorVertex(1.0, -1.0, 1.0, 0xff00ffff),
-    PosColorVertex(-1.0, 1.0, -1.0, 0xffff0000),
-    PosColorVertex(1.0, 1.0, -1.0, 0xffff00ff),
-    PosColorVertex(-1.0, -1.0, -1.0, 0xffffff00),
-    PosColorVertex(1.0, -1.0, -1.0, 0xffffffff),
+    PosColorVertex(-1.0, 1.0, 1.0, 0xFF000000),
+    PosColorVertex(1.0, 1.0, 1.0, 0xFF0000FF),
+    PosColorVertex(-1.0, -1.0, 1.0, 0xFF00FF00),
+    PosColorVertex(1.0, -1.0, 1.0, 0xFF00FFFF),
+    PosColorVertex(-1.0, 1.0, -1.0, 0xFFFF0000),
+    PosColorVertex(1.0, 1.0, -1.0, 0xFFFF00FF),
+    PosColorVertex(-1.0, -1.0, -1.0, 0xFFFFFF00),
+    PosColorVertex(1.0, -1.0, -1.0, 0xFFFFFFFF),
 )
 
-primitives = (np.array([
-    0, 1, 2,  # 0
-    1, 3, 2,
-    4, 6, 5,  # 2
-    5, 6, 7,
-    0, 2, 4,  # 4
-    4, 2, 6,
-    1, 5, 3,  # 6
-    5, 7, 3,
-    0, 4, 1,  # 8
-    4, 5, 1,
-    2, 3, 6,  # 10
-    6, 3, 7,
-], dtype=np.uint16), np.array([
-    0, 1, 2,
-    3,
-    7,
-    1,
-    5,
-    0,
-    4,
-    2,
-    6,
-    7,
-    4,
-    5,
-], dtype=np.uint16), np.array([
-    0, 1,
-    0, 2,
-    0, 4,
-    1, 3,
-    1, 5,
-    2, 3,
-    2, 6,
-    3, 7,
-    4, 5,
-    4, 6,
-    5, 7,
-    6, 7,
-], dtype=np.uint16), np.array([
-    0, 2, 3, 1, 5, 7, 6, 4,
-    0, 2, 6, 4, 5, 7, 3, 1,
-    0,
-], dtype=np.uint16), np.array([
-    0, 1, 2, 3, 4, 5, 6, 7
-], dtype=np.uint16))
+primitives = (
+    np.array(
+        [
+            0,
+            1,
+            2,  # 0
+            1,
+            3,
+            2,
+            4,
+            6,
+            5,  # 2
+            5,
+            6,
+            7,
+            0,
+            2,
+            4,  # 4
+            4,
+            2,
+            6,
+            1,
+            5,
+            3,  # 6
+            5,
+            7,
+            3,
+            0,
+            4,
+            1,  # 8
+            4,
+            5,
+            1,
+            2,
+            3,
+            6,  # 10
+            6,
+            3,
+            7,
+        ],
+        dtype=np.uint16,
+    ),
+    np.array([0, 1, 2, 3, 7, 1, 5, 0, 4, 2, 6, 7, 4, 5,], dtype=np.uint16),
+    np.array(
+        [0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7,],
+        dtype=np.uint16,
+    ),
+    np.array([0, 2, 3, 1, 5, 7, 6, 4, 0, 2, 6, 4, 5, 7, 3, 1, 0,], dtype=np.uint16),
+    np.array([0, 1, 2, 3, 4, 5, 6, 7], dtype=np.uint16),
+)
 
 bgfx_states = (
     0,

@@ -2,7 +2,7 @@ import tempfile
 
 import nox
 
-locations = "bgfx", "tests", "noxfile.py"
+locations = "pybgfx", "tests", "examples", "noxfile.py"
 
 
 def install_with_constraints(session, *args, **kwargs):
