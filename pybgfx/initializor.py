@@ -178,10 +178,10 @@ def initialise(pkg, lib_file, map_file, noisy=False):
         else:
             if getattr(entity, "__module__", None) == "cppyy.gbl":
                 setattr(entity, "__module__", pkg)
-            # setattr(pkg_module, simplename, entity)
+            setattr(pkg_module, simplename, entity)
 
     pkg_dir = os.path.dirname(__file__)
-    # pkg_dir = os.path.abspath("./src/bgfx_python")
+
     if "." in pkg:
         pkg_namespace, pkg_simplename = pkg.rsplit(".", 1)
     else:
@@ -190,6 +190,7 @@ def initialise(pkg, lib_file, map_file, noisy=False):
     #
     # Load the library.
     #
+    cppyy.add_include_path(pkg_dir)
     cppyy.load_reflection_info(os.path.join(pkg_dir, lib_file))
 
     #
@@ -218,4 +219,5 @@ def initialise(pkg, lib_file, map_file, noisy=False):
             if not child["kind"] in ('class', 'var', 'namespace', 'typedef'):
                 continue
             simplenames = child["name"].split('::')
+            print(simplenames)
             add_to_pkg(file["name"], child["kind"], simplenames, child)
