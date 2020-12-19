@@ -3,10 +3,13 @@ import time
 import sys
 
 # noinspection PyPackageRequirements
+import cppyy
 import glfw
 
 # noinspection PyUnresolvedReferences
-from bgfx import bgfx, ImGuiExtra, as_void_ptr
+from pybgfx import bgfx
+
+from pybgfx.utils import as_void_ptr
 
 # noinspection PyPackageRequirements,PyProtectedMember
 from glfw import _glfw as glfw_native
@@ -65,6 +68,7 @@ class ExampleWindow(object):
         glfw.init()
 
         glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
+
         self.window = glfw.create_window(
             self.width, self.height, self.title, None, None
         )
@@ -74,25 +78,19 @@ class ExampleWindow(object):
         handle, display = None, None
 
         if sys.platform == "darwin":
-            glfw_native.glfwGetCocoaWindow.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
-            glfw_native.glfwGetCocoaWindow.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetCocoaWindow(self.window)
+            handle = glfw.get_cocoa_window(self.window)
         elif sys.platform == "win32":
-            glfw_native.glfwGetWin32Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
-            glfw_native.glfwGetWin32Window.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetWin32Window(self.window)
+            handle = glfw.get_win32_window(self.window)
         elif sys.platform == "linux":
-            glfw_native.glfwGetX11Window.argtypes = [ctypes.POINTER(glfw._GLFWwindow)]
-            glfw_native.glfwGetX11Window.restype = ctypes.c_void_p
-            handle = glfw_native.glfwGetX11Window(self.window)
-            display = glfw_native.glfwGetX11Display()
+            handle = glfw.get_x11_window(self.window)
+            display = glfw.get_x11_display()
 
         data = bgfx.PlatformData()
-        data.ndt = as_void_ptr(display) if display else None
+        data.ndt = as_void_ptr(display) if display else cppyy.nullptr
         data.nwh = as_void_ptr(handle)
-        data.context = None
-        data.back_buffer = None
-        data.back_buffer_ds = None
+        data.context = cppyy.nullptr
+        data.backBuffer = cppyy.nullptr
+        data.backBufferDS = cppyy.nullptr
 
         self.init(data)
 
@@ -111,6 +109,7 @@ class ExampleWindow(object):
             self.update(frame_time)
 
         self.shutdown()
+        glfw.destroy_window(self.window)
         glfw.terminate()
 
     def _handle_window_resize(self, window, width, height):
@@ -118,4 +117,3 @@ class ExampleWindow(object):
         self.height = height
 
         self.resize(width, height)
-

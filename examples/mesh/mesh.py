@@ -14,8 +14,8 @@ from bgfx import (
     BGFX_RESET_VSYNC,
     as_void_ptr,
     ShaderType,
-    load_shader, Mesh
-
+    load_shader,
+    Mesh,
 )
 from examples.example_window import ExampleWindow
 from examples.utils.imgui_utils import show_example_dialog
@@ -57,7 +57,9 @@ class MeshExample(ExampleWindow):
         self.time_uniform = bgfx.create_uniform("u_time", bgfx.UniformType.VEC4)
 
         # Load Bunny mesh
-        self.mesh = Mesh(Path(__file__).parent.parent / "assets" / "meshes" / "bunny.bin")
+        self.mesh = Mesh(
+            Path(__file__).parent.parent / "assets" / "meshes" / "bunny.bin"
+        )
 
         # Create program from shaders.
         self.main_program = bgfx.create_program(
@@ -101,11 +103,12 @@ class MeshExample(ExampleWindow):
 
         bgfx.touch(0)
 
-        mtx = rotate_xy(
-            0, self.elapsed_time * 0.37
-        )
+        mtx = rotate_xy(0, self.elapsed_time * 0.37)
 
-        bgfx.set_uniform(self.time_uniform, as_void_ptr((c_float * 4)(self.elapsed_time, 0.0, 0.0, 0.0)))
+        bgfx.set_uniform(
+            self.time_uniform,
+            as_void_ptr((c_float * 4)(self.elapsed_time, 0.0, 0.0, 0.0)),
+        )
         self.mesh.submit(0, self.main_program, mtx)
 
         bgfx.frame()

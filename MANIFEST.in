@@ -5,14 +5,14 @@ exclude .editorconfig .travis.yml .env appveyor.yml tox.ini pytest.ini
 
 recursive-include src *
 recursive-include examples *.py
-recursive-include bgfx *.pcm *.rootmap *.map
-recursive-include bgfx *.sh
+recursive-include pybgfx *.pcm *.rootmap *.map
+recursive-include pybgfx *.sh
 recursive-include docs Makefile *.rst *.py *.bat
 recursive-include docs/_templates *.html
 recursive-include docs/_static *.js *.css *.png
 recursive-exclude docs requirements*.txt
-recursive-exclude bgfx *.pyi
-recursive-exclude bgfx *.typed
+recursive-exclude pybgfx *.pyi
+recursive-exclude pybgfx *.typed
 
 prune .github
 prune docs/build
