@@ -170,6 +170,7 @@ def initialise(pkg, lib_file, map_file):
     #
     cppyy.add_include_path(pkg_dir + "/include")
     cppyy.add_include_path(pkg_dir + "/include/bx")
+    cppyy.add_include_path(pkg_dir + "/include/imgui")
     cppyy.load_reflection_info(os.path.join(pkg_dir, lib_file))
 
     #
@@ -197,6 +198,7 @@ def initialise(pkg, lib_file, map_file):
     #
     for file in files:
         for child in file["children"]:
+            print(child["kind"] + " -- " + child["name"])
             if not child["kind"] in ("class", "var", "namespace", "typedef"):
                 continue
             simplenames = child["name"].split("::")
