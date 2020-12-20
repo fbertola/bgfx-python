@@ -14,7 +14,7 @@ from pybgfx import bgfx
 
 logger.disable("pybgfx")
 
-default_include_dir = os.path.dirname(__file__)
+default_include_dir = os.path.dirname(__file__) + "/include/shaders"
 
 
 class ShaderType(Enum):
