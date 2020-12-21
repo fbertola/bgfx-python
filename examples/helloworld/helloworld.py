@@ -2,6 +2,7 @@ import os
 
 # noinspection PyUnresolvedReferences
 from pybgfx import bgfx
+from pybgfx.utils.imgui import ImGuiExtra
 
 from pybgfx.constants import (
     BGFX_CLEAR_COLOR,
@@ -12,7 +13,7 @@ from pybgfx.constants import (
 from examples.example_window import ExampleWindow
 from examples.helloworld import python_image
 
-# from examples.utils.imgui_utils import show_example_dialog
+from examples.utils.imgui_utils import show_example_dialog
 
 
 class HelloWorld(ExampleWindow):
@@ -36,21 +37,21 @@ class HelloWorld(ExampleWindow):
 
         bgfx.setDebug(BGFX_DEBUG_TEXT)
         bgfx.setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0, 0)
-        # ImGuiExtra.imgui_create()
+        ImGuiExtra.create()
 
     def shutdown(self):
-        # ImGuiExtra.imgui_destroy()
+        ImGuiExtra.destroy()
         bgfx.shutdown()
 
     def update(self, dt):
-        # mouse_x, mouse_y, buttons_states = self.get_mouse_state()
-        # ImGuiExtra.imgui_begin_frame(
-        #     int(mouse_x), int(mouse_y), buttons_states, 0, self.width, self.height
-        # )
-        #
-        # show_example_dialog()
-        #
-        # ImGuiExtra.imgui_end_frame()
+        mouse_x, mouse_y, buttons_states = self.get_mouse_state()
+        ImGuiExtra.beginFrame(
+            int(mouse_x), int(mouse_y), buttons_states, 0, self.width, self.height
+        )
+
+        show_example_dialog()
+
+        ImGuiExtra.endFrame()
 
         bgfx.setViewRect(0, 0, 0, self.width, self.height)
         bgfx.touch(0)
