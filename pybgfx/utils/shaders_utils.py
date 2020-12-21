@@ -10,6 +10,7 @@ from typing import List, Optional
 
 from loguru import logger
 
+# noinspection PyUnresolvedReferences
 from pybgfx import bgfx
 
 logger.disable("pybgfx")
