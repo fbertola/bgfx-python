@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install setuptools wheel scikit-build cmake ninja loguru cibuildwheel==1.5.2 cppyy libgcc
+          pip install setuptools wheel scikit-build cmake ninja loguru cibuildwheel==1.5.2 cppyy clang
 
       - name: Build wheels
         shell: bash
