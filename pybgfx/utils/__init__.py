@@ -1,5 +1,6 @@
 import ctypes
 from array import ArrayType
+from typing import Any
 
 try:
     import numpy
@@ -9,7 +10,15 @@ except Exception:
     _is_numpy_array = lambda obj: False
 
 
-def as_void_ptr(obj):
+def as_void_ptr(obj: Any) -> ctypes.py_object:
+    """
+    Creates a Python Capsule to pass 'void *' arguments to C++ APIs.
+    Caveat: for other types of pointers, use the `ctypes` interface
+    or `cppyy.nullptr` for NULL pointers.
+
+    :param obj: the referenced object
+    :return: a Python Capsule representing a pointer to the object
+    """
     ctypes.pythonapi.PyCapsule_New.restype = ctypes.py_object
     ctypes.pythonapi.PyCapsule_New.argtypes = [
         ctypes.c_void_p,
