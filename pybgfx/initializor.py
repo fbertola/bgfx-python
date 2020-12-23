@@ -71,7 +71,10 @@ def initialise(pkg, lib_file, map_file):
     #
     cppyy.add_include_path(pkg_dir + "/include")
     cppyy.add_include_path(pkg_dir + "/include/bx")
+    cppyy.add_include_path(pkg_dir + "/include/bimg")
+    cppyy.add_include_path(pkg_dir + "/include/bgfx")
     cppyy.add_include_path(pkg_dir + "/include/imgui")
+    cppyy.add_include_path(pkg_dir + "/include/examples/common")
     cppyy.load_reflection_info(os.path.join(pkg_dir, lib_file))
 
     #

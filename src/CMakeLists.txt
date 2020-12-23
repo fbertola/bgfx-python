@@ -56,7 +56,8 @@ if(APPLE)
   endif()
   set(SDKROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
   set(LINKER_OPTIONS
-      "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit")
+      "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
+  )
 elseif(WIN32)
   include(FindWindowsSDK)
   set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib")
@@ -68,7 +69,7 @@ else()
   else()
     set(DIST_COMMAND linux-debug64)
   endif()
-  set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group")
+  set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,-U,__main_")
 endif()
 
 if(WIN32)
@@ -104,6 +105,8 @@ endif()
 string(
   CONCAT LINKER_LIBRARIES
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimg_encode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbimg_decode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libbgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/libexample-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
@@ -118,10 +121,20 @@ string(
          "${BGFX_DIR}/include/bgfx;"
          "${IMGUI_DIR};"
          "${EXAMPLES_COMMON_DIR};"
-         "${3RDPARTY_DIR}")
+         "${3RDPARTY_DIR};"
+         "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-string(CONCAT H_DIRS "${BGFX_DIR}/include;" "${BGFX_DIR}/include/bgfx;" "${IMGUI_DIR};" "${EXAMPLES_COMMON_DIR};"
-              "${3RDPARTY_DIR}")
+string(
+  CONCAT H_DIRS
+         "${BGFX_DIR}/include;"
+         "${BX_DIR}/include;"
+         "${BGFX_DIR}/include/bgfx;"
+         "${IMGUI_DIR};"
+         "${3RDPARTY_DIR};"
+         "${EXAMPLES_COMMON_DIR};"
+         "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra_utils.h")
 
 # cmake-format: off
 cppyy_add_bindings(
@@ -132,7 +145,7 @@ cppyy_add_bindings(
    LINK_OPTIONS ${LINKER_OPTIONS}
    LINK_LIBRARIES ${LINKER_LIBRARIES}
    H_DIRS ${H_DIRS}
-   H_FILES "bgfx.h;platform.h;imgui.h;imgui/imgui.h"
+   H_FILES ${H_FILES}
 )
 # cmake-format: on
 
@@ -146,11 +159,26 @@ install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/texturec${CMAKE_BUILD_TY
         DESTINATION "pybgfx/bin")
 install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/texturev${CMAKE_BUILD_TYPE}${CMAKE_EXECUTABLE_SUFFIX}"
         DESTINATION "pybgfx/bin")
-install(FILES "${BGFX_DIR}/include/bgfx/bgfx.h" "${BGFX_DIR}/include/bgfx/defines.h"
-              "${BGFX_DIR}/include/bgfx/embedded_shader.h" DESTINATION "pybgfx/include")
-install(FILES "${BGFX_DIR}/include/bgfx/platform.h" DESTINATION "pybgfx/include/bx")
-install(FILES "${BX_DIR}/include/bx/bx.h" DESTINATION "pybgfx/include/bx")
-install(FILES "${BIMG_DIR}/include/bimg/bimg.h" DESTINATION "pybgfx/include/bimg")
+
+file(GLOB bgfx_headers "${BGFX_DIR}/include/bgfx/*.h")
+install(FILES ${bgfx_headers} DESTINATION "pybgfx/include/bgfx")
+
+file(GLOB bx_headers "${BX_DIR}/include/bx/*.h")
+install(FILES ${bx_headers} DESTINATION "pybgfx/include/bx")
+
+file(GLOB bx_inline_headers "${BX_DIR}/include/bx/inline/*.inl")
+install(FILES ${bx_inline_headers} DESTINATION "pybgfx/include/bx/inline")
+
+file(GLOB tinystl_headers "${BX_DIR}/include/tinystl/*.h")
+install(FILES ${tinystl_headers} DESTINATION "pybgfx/include/tinystl")
+
+file(GLOB bimg_headers "${BIMG_DIR}/include/bimg/*.h")
+install(FILES ${bimg_headers} DESTINATION "pybgfx/include/bimg")
+
+file(GLOB bgfx_examples_common_headers "${CMAKE_CURRENT_SOURCE_DIR}/examples/common/*.h")
+install(FILES ${bgfx_examples_common_headers} "${CMAKE_CURRENT_SOURCE_DIR}/include/bgfx_extra_utils.h"
+        DESTINATION "pybgfx/include/examples/common")
+
 install(FILES "${BGFX_DIR}/src/bgfx_compute.sh" DESTINATION "pybgfx/include/shaders")
 install(FILES "${BGFX_DIR}/src/bgfx_shader.sh" DESTINATION "pybgfx/include/shaders")
 
