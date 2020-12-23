@@ -2,7 +2,7 @@ import os
 
 # noinspection PyUnresolvedReferences
 from pybgfx import bgfx
-from pybgfx.utils.imgui import ImGuiExtra
+from pybgfx.utils.imgui_utils import ImGuiExtra
 
 from pybgfx.constants import (
     BGFX_CLEAR_COLOR,
@@ -24,10 +24,6 @@ class HelloWorld(ExampleWindow):
         self.init_conf.debug = True
         self.init_conf.resolution.width = self.width
         self.init_conf.resolution.height = self.height
-
-        if "GITHUB_ACTIONS" in os.environ:
-            self.init_conf.type = bgfx.RendererType.NOOP
-
         self.init_conf.resolution.reset = BGFX_RESET_VSYNC
 
     def init(self, platform_data):
@@ -45,13 +41,13 @@ class HelloWorld(ExampleWindow):
 
     def update(self, dt):
         mouse_x, mouse_y, buttons_states = self.get_mouse_state()
-        ImGuiExtra.beginFrame(
+        ImGuiExtra.begin_frame(
             int(mouse_x), int(mouse_y), buttons_states, 0, self.width, self.height
         )
 
         show_example_dialog()
 
-        ImGuiExtra.endFrame()
+        ImGuiExtra.end_frame()
 
         bgfx.setViewRect(0, 0, 0, self.width, self.height)
         bgfx.touch(0)

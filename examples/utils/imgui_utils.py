@@ -98,7 +98,7 @@ def resource_bar(name, tooltip, num, _max, max_width, height):
 
 def show_example_dialog():
     ImGui.SetNextWindowPos(ImGui.ImVec2(10.0, 70.0), ImGui.ImGuiCond_FirstUseEver)
-    ImGui.SetNextWindowSize(ImGui.ImVec2(325.0, 500.0), ImGui.ImGuiCond_FirstUseEver)
+    ImGui.SetNextWindowSize(ImGui.ImVec2(300.0, 500.0), ImGui.ImGuiCond_FirstUseEver)
 
     ImGui.Begin("\uf080 Statistics")
     renderer_name = bgfx.getRendererName(bgfx.getRendererType())
@@ -140,7 +140,7 @@ def show_example_dialog():
     if ImGui.CollapsingHeader("\uf12e Resources", ImGui.ImGuiTreeNodeFlags_DefaultOpen):
         caps = bgfx.getCaps()
         item_height = ImGui.GetTextLineHeightWithSpacing()
-        max_width = 115.0
+        max_width = 90.0
         ImGui.PushFont(ImGui.Font.Mono)
         ImGui.Text("Res: Num  / Max")
         resource_bar(

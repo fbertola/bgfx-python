@@ -6,17 +6,17 @@ import numpy as np
 from PIL import Image
 from loguru import logger
 
-from bgfx import (
-    bgfx,
-    ImGuiExtra,
-    ImGui,
+# noinspection PyUnresolvedReferences
+from pybgfx import bgfx, ImGui
+
+from pybgfx.utils.imgui_utils import ImGuiExtra
+from pybgfx.utils import as_void_ptr
+from pybgfx.utils.shaders_utils import ShaderType, load_shader
+from pybgfx.constants import (
     BGFX_CLEAR_COLOR,
     BGFX_CLEAR_DEPTH,
     BGFX_DEBUG_TEXT,
     BGFX_RESET_VSYNC,
-    as_void_ptr,
-    ShaderType,
-    load_shader,
     BGFX_STATE_WRITE_A,
     BGFX_STATE_WRITE_Z,
     BGFX_STATE_DEPTH_TEST_LESS,
@@ -126,49 +126,45 @@ class Textures(ExampleWindow):
         self.init_conf.debug = True
         self.init_conf.resolution.width = self.width
         self.init_conf.resolution.height = self.height
-
-        if "GITHUB_ACTIONS" in os.environ:
-            self.init_conf.type = bgfx.RendererType.NOOP
-
         self.init_conf.resolution.reset = BGFX_RESET_VSYNC
 
     def init(self, platform_data):
-        self.init_conf.platform_data = platform_data
-        bgfx.render_frame()
+        bgfx.setPlatformData(platform_data)
+        bgfx.renderFrame()
         bgfx.init(self.init_conf)
         bgfx.reset(
             self.width, self.height, BGFX_RESET_VSYNC, self.init_conf.resolution.format,
         )
 
-        bgfx.set_debug(BGFX_DEBUG_TEXT)
-        bgfx.set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0, 0)
+        bgfx.setDebug(BGFX_DEBUG_TEXT)
+        bgfx.setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x443355FF, 1.0, 0)
 
         self.vertex_layout = bgfx.VertexLayout()
         self.vertex_layout.begin().add(
-            bgfx.Attrib.POSITION, 3, bgfx.AttribType.FLOAT
-        ).add(bgfx.Attrib.COLOR0, 4, bgfx.AttribType.UINT8, True).add(
-            bgfx.Attrib.TEXCOORD0, 2, bgfx.AttribType.FLOAT
+            bgfx.Attrib.Position, 3, bgfx.AttribType.Float
+        ).add(bgfx.Attrib.Color0, 4, bgfx.AttribType.Uint8, True).add(
+            bgfx.Attrib.TexCoord0, 2, bgfx.AttribType.Float
         ).end()
 
         # Create static vertex buffer
         vb_memory = bgfx.copy(
             as_void_ptr(cube_vertices), sizeof(PosColorTexVertex) * num_vertices
         )
-        self.vertex_buffer = bgfx.create_vertex_buffer(vb_memory, self.vertex_layout)
+        self.vertex_buffer = bgfx.createVertexBuffer(vb_memory, self.vertex_layout)
 
         # Create index buffer
         ib_memory = bgfx.copy(as_void_ptr(cube_indices), cube_indices.nbytes)
-        self.index_buffer = bgfx.create_index_buffer(ib_memory)
+        self.index_buffer = bgfx.createIndexBuffer(ib_memory)
 
         # Create texture uniform
-        self.texture_uniform = bgfx.create_uniform("s_tex", bgfx.UniformType.SAMPLER)
+        self.texture_uniform = bgfx.createUniform("s_tex", bgfx.UniformType.Sampler)
 
         # Load the image using PIL and make the texture
         logo = Image.open(
             Path(__file__).parent.parent / "assets" / "textures" / "python_logo.png"
         )
         logo_memory = bgfx.copy(as_void_ptr(logo.tobytes()), len(logo.tobytes()))
-        self.logo_texture = bgfx.create_texture2d(
+        self.logo_texture = bgfx.createTexture2D(
             logo.width,
             logo.height,
             False,
@@ -179,7 +175,7 @@ class Textures(ExampleWindow):
         )
 
         # Create program from shaders.
-        self.main_program = bgfx.create_program(
+        self.main_program = bgfx.createProgram(
             load_shader(
                 "textures.VertexShader.vert", ShaderType.VERTEX, root_path=root_path
             ),
@@ -189,10 +185,10 @@ class Textures(ExampleWindow):
             True,
         )
 
-        ImGuiExtra.imgui_create()
+        ImGuiExtra.create()
 
     def shutdown(self):
-        ImGuiExtra.imgui_destroy()
+        ImGuiExtra.destroy()
         bgfx.destroy(self.index_buffer)
         bgfx.destroy(self.vertex_buffer)
         bgfx.destroy(self.main_program)
@@ -201,13 +197,13 @@ class Textures(ExampleWindow):
     def update(self, dt):
         self.elapsed_time += dt
         mouse_x, mouse_y, buttons_states = self.get_mouse_state()
-        ImGuiExtra.imgui_begin_frame(
+        ImGuiExtra.begin_frame(
             int(mouse_x), int(mouse_y), buttons_states, 0, self.width, self.height
         )
 
         show_example_dialog()
 
-        ImGuiExtra.imgui_end_frame()
+        ImGuiExtra.end_frame()
 
         at = (c_float * 3)(*[0.0, 0.0, 0.0])
         eye = (c_float * 3)(*[0.0, 0.0, -15.0])
@@ -216,8 +212,8 @@ class Textures(ExampleWindow):
         view = look_at(eye, at, up)
         projection = proj(60.0, self.width / self.height, 0.1, 100.0)
 
-        bgfx.set_view_transform(0, as_void_ptr(view), as_void_ptr(projection))
-        bgfx.set_view_rect(0, 0, 0, self.width, self.height)
+        bgfx.setViewTransform(0, as_void_ptr(view), as_void_ptr(projection))
+        bgfx.setViewRect(0, 0, 0, self.width, self.height)
 
         bgfx.touch(0)
 
@@ -229,16 +225,16 @@ class Textures(ExampleWindow):
                 mtx[3, 0] = 4 + xx * 3.5
                 mtx[3, 1] = 2 + yy * 3.5
                 mtx[3, 2] = 0
-                bgfx.set_transform(as_void_ptr(mtx), 1)
+                bgfx.setTransform(as_void_ptr(mtx), 1)
 
                 # Set vertex and index buffer.
-                bgfx.set_vertex_buffer(0, self.vertex_buffer, 0, num_vertices)
-                bgfx.set_index_buffer(self.index_buffer, 0, cube_indices.size)
+                bgfx.setVertexBuffer(0, self.vertex_buffer, 0, num_vertices)
+                bgfx.setIndexBuffer(self.index_buffer, 0, cube_indices.size)
 
                 # Set the texture
-                bgfx.set_texture(0, self.texture_uniform, self.logo_texture)
+                bgfx.setTexture(0, self.texture_uniform, self.logo_texture)
 
-                bgfx.set_state(
+                bgfx.setState(
                     0
                     | BGFX_STATE_WRITE_RGB
                     | BGFX_STATE_WRITE_A
