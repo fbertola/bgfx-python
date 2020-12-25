@@ -69,7 +69,7 @@ else()
   else()
     set(DIST_COMMAND linux-debug64)
   endif()
-  set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,-U,__main_")
+  set(LINKER_OPTIONS "-Wl,--start-group;-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--end-group-Wl,--undefined,__main_")
 endif()
 
 if(WIN32)
@@ -86,15 +86,9 @@ if(WIN32)
                   WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 else()
   if(APPLE)
-    set(CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -g -O3 -msse2 "
-    )
     execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   else()
-    set(CMAKE_CXX_FLAGS
-        "${CMAKE_CXX_FLAGS} -std=c++14 -fPIC -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS -DNDEBUG -ffast-math -fomit-frame-pointer -fno-var-tracking-assignments -g -O3 -msse2 "
-    )
     execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   endif()
@@ -139,7 +133,7 @@ string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "
 # cmake-format: off
 cppyy_add_bindings(
    "bgfx_python"
-   LANGUAGE_STANDARD "17"
+   LANGUAGE_STANDARD "14"
    TARGET_DIR "pybgfx"
    INCLUDE_DIRS ${INCLUDE_DIRS}
    LINK_OPTIONS ${LINKER_OPTIONS}
