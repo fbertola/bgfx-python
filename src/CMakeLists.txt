@@ -143,8 +143,8 @@ cppyy_add_bindings(
 )
 # cmake-format: on
 
-install(FILES ""${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
-install(FILES ""${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
+install(FILES "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
+install(FILES "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
 
 install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/shaderc${CMAKE_BUILD_TYPE}${CMAKE_EXECUTABLE_SUFFIX}"
         DESTINATION "pybgfx/bin")
