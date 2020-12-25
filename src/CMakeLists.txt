@@ -69,7 +69,7 @@ else()
   else()
     set(DIST_COMMAND linux-debug64)
   endif()
-  set(LINKER_OPTIONS "-Wl,--start-group;-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--end-group-Wl,--undefined,__main_")
+  set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,--undefined,__main_")
 endif()
 
 if(WIN32)
