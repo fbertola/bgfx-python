@@ -40,8 +40,8 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: "delocate-listdeps {wheel} && delocate-wheel -v -w {dest_dir} {wheel}"
           CIBW_BEFORE_BUILD_LINUX: |
             pip install clang==5.0 && \
-            yum install -y clang libstdc++ freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
-          CIBW_MANYLINUX_X86_64_IMAGE: ghcr.io/fbertola/manylinux2014_gcc:1.0.0
+            yum install -y freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
+          CIBW_MANYLINUX_X86_64_IMAGE: ghcr.io/fbertola/manylinux2014_gcc:1.0.1
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
