@@ -41,7 +41,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: |
             pip install clang==5.0 && \
             yum install -y freeglut freeglut-devel libX11-devel mesa-libGLU-devel byacc
-          CIBW_MANYLINUX_X86_64_IMAGE: ghcr.io/fbertola/manylinux2014_gcc:1.0.2
+          CIBW_MANYLINUX_X86_64_IMAGE: ghcr.io/fbertola/manylinux2014_gcc:1.0.3
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
