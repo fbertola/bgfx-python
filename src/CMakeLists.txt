@@ -130,6 +130,14 @@ string(
 
 string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra_utils.h")
 
+if(NOT WIN32)
+    set(CMAKE_MACOSX_RPATH ON)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+endif()
+
 # cmake-format: off
 cppyy_add_bindings(
    "bgfx_python"
@@ -142,9 +150,6 @@ cppyy_add_bindings(
    H_FILES ${H_FILES}
 )
 # cmake-format: on
-
-install(FILES "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
-install(FILES "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "pybgfx")
 
 install(FILES "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/shaderc${CMAKE_BUILD_TYPE}${CMAKE_EXECUTABLE_SUFFIX}"
         DESTINATION "pybgfx/bin")
