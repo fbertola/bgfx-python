@@ -10,8 +10,6 @@ configuration:
   - Release
 
 environment:
-  VCVAR2017: 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
-
   matrix:
     - PYTHON: "C:\\Python38-x64"
       PYTHON_VERSION: "3.8.x"
@@ -50,7 +48,6 @@ install:
 
 build_script:
   # Build the compiled extension
-  - call "%VCVAR2017%" x86_amd64
   - "python -m pip wheel -w .\\dist .\\"
 
 artifacts:
