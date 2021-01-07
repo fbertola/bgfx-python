@@ -22,8 +22,7 @@
 
 <p align="center">
   <a href="#key-features">Key Features</a> •
-  <a href="#how-to-use">How To Use</a> •
-  <a href="#build-cpp-bindings">Build CPP bindings</a> •
+  <a href="#how-to-use">How To Use</a> • •
   <a href="#using-imgui">Using ImGUI</a> •
   <a href="#examples">Examples</a> •
   <a href="#logging">Logging</a> •
@@ -37,8 +36,7 @@
 
 ## Key Features
 
-* Uses _Pyind11_ and _Builder_ to natively wrap the C++ interface. No _CTypes_ or ugly C interfaces.
-* Functions, classes and methods respect the PEP 8 notation.
+* Uses [Cppyy](https://cppyy.readthedocs.io/en/latest/) to natively wrap the C++ interface. No _CTypes_ or ugly C interfaces.
 * Unless specified, the GIL is released for every invocation and pointers are passed by reference. This will ensure great overall performances.
 * Maintains the original documentation; use `help()` on a class or function to view it.
 * Compiles shaders on-the-fly, so you don't have to.
@@ -95,21 +93,6 @@ Before building the package, make sure to activate all the environment variables
 call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 ```
 
-## Build CPP bindings
-
-`bgfx-python` uses _Binder_ and _Pybind11_ to wrap the original library. A script to generate such binding is provided inside the `scripts` directory.
-Make sure that all the paths are corrects then simply launch the various scripts, e.g:
-
-```bash
-$ python make_bindings_bgfx.py
-``` 
-
-Building on MacOS X could be a little trickier, since system headers are in the SDK location. Make sure to also include these paths; you can check where the headers are located running this command:
-
-```bash
-g++ -E -x c++ - -v < /dev/null
-```
-
 ## Using ImGUI
 
 Two modules are exposed:
@@ -121,36 +104,21 @@ To use it in your application, simply follow this template:
 ```python
 # Setup the application
 def init():
-    ImGuiExtra.imgui_create()
+    ImGuiExtra.create()
 
 # Destroy the application
 def destroy():
-    ImGuiExtra.imgui_destroy()
+    ImGuiExtra.destroy()
 
 # Update the application, rendering each fram
 def update():
-    ImGuiExtra.imgui_begin_frame(
+    ImGuiExtra.beginFrame(
         mouse_x, mouse_y, buttons_states, 0, width, height
     )
 
     # Other ImGui drawing directives...
 
-    ImGuiExtra.imgui_end_frame()
-```
- 
-All ImGui API that provides user input (such as _InputText_, _SliderFloat_, etc.) modifies their arguments by reference. However, in Python, such objects as integers, floats and strings are passed always by value. Because of this, *bgfx-python* provides special wrappers, that allow passing those variables by reference.
-
-For example, to use _SliderFloat_, you will need first to create a variable that will hold the state:
-
-```python
-f = ImGui.Float();
-```
-You can access the value in the following way: `f.value`
-
-To use it with _slider_float_ simply pass it to that function:
-
-```python
-ImGui.slider_float("float slider", f, 0.0, 1.0)
+    ImGuiExtra.endFrame()
 ```
 
 ## Logging
@@ -173,8 +141,7 @@ For a more advanced example, see the [Natrix](https://github.com/fbertola/Natrix
 This software uses the following open source packages:
 
 - [bgfx](https://github.com/bkaradzic/bgfx)
-- [pybind11](https://github.com/pybind/pybind11)
-- [binder](https://github.com/RosettaCommons/binder)
+- [cppyy](https://cppyy.readthedocs.io/en/latest/)
 
 
 [License (BSD 2-clause)](https://raw.githubusercontent.com/fbertola/bgfx-python/master/LICENSE)
@@ -186,7 +153,7 @@ This software uses the following open source packages:
 
     BSD 2-Clause License
     
-    Copyright (c) 2020, Federico Bertola
+    Copyright (c) 2021, Federico Bertola
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without
