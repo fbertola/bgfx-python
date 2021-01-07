@@ -138,6 +138,11 @@ if(NOT WIN32)
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
+if(DEFINED ENV{MANYLINUX_BUILD})
+     file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};" DESINATION "/usr/lib")
+     file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESINATION "/usr/lib")
+endif()
+
 # cmake-format: off
 cppyy_add_bindings(
    "bgfx_python"
