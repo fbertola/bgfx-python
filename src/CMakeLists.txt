@@ -139,8 +139,8 @@ if(NOT WIN32)
 endif()
 
 if(DEFINED ENV{MANYLINUX_BUILD})
-     file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};" DESINATION "/usr/lib")
-     file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESINATION "/usr/lib")
+     file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};" DESTINATION "/usr/lib")
+     file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
 endif()
 
 # cmake-format: off
