@@ -35,8 +35,8 @@ if(APPLE)
   set(BGFX_BUILD_PROJ_DIR gmake-osx)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
-  set(BGFX_BUILD_DIR win64_vs2017)
-  set(BGFX_BUILD_PROJ_DIR vs2017)
+  set(BGFX_BUILD_DIR win64_vs2019)
+  set(BGFX_BUILD_PROJ_DIR vs2019)
   set(CLING_LIB_SUFFIX ".lib")
 else()
   set(BGFX_BUILD_DIR linux64_gcc)
@@ -96,6 +96,19 @@ else()
   execute_process(COMMAND make -e ${DIST_COMMAND} CFLAGS+="-fPIC" WORKING_DIRECTORY ${BGFX_DIR})
 endif()
 
+if(NOT WIN32)
+    set(CMAKE_MACOSX_RPATH ON)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+    file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
+    file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
+
+    set(Cppyy_DIR "/tmp")
+endif()
+
 string(
   CONCAT LINKER_LIBRARIES
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
@@ -130,13 +143,6 @@ string(
 
 string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra_utils.h")
 
-if(NOT WIN32)
-    set(CMAKE_MACOSX_RPATH ON)
-    set(CMAKE_SKIP_BUILD_RPATH FALSE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-endif()
 
 if(DEFINED ENV{MANYLINUX_BUILD})
      file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
