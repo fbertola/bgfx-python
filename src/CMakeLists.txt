@@ -37,7 +37,7 @@ if(APPLE)
 elseif(WIN32)
   set(BGFX_BUILD_DIR win64_vs2017)
   set(BGFX_BUILD_PROJ_DIR vs2017)
-  set(CLING_LIB_SUFFIX ".dll")
+  set(CLING_LIB_SUFFIX ".lib")
 else()
   set(BGFX_BUILD_DIR linux64_gcc)
   set(BGFX_BUILD_PROJ_DIR gmake-linux)
@@ -104,8 +104,8 @@ string(
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
          "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}example-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${Cppyy_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}Cling${CLING_LIB_SUFFIX};"
-         "${Cppyy_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}CoreLegacy${CLING_LIB_SUFFIX}")
+         "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
+         "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
 
 string(
   CONCAT INCLUDE_DIRS
