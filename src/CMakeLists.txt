@@ -31,8 +31,8 @@ set(EXAMPLES_COMMON_DIR
     CACHE PATH "EXAMPLES_COMMON dir" FORCE)
 
 if(APPLE)
-  set(BGFX_BUILD_DIR osx64_clang)
-  set(BGFX_BUILD_PROJ_DIR gmake-osx)
+  set(BGFX_BUILD_DIR osx-x64)
+  set(BGFX_BUILD_PROJ_DIR gmake-osx-x64)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
   set(BGFX_BUILD_DIR win64_vs2019)
@@ -48,12 +48,10 @@ message(STATUS "BX_DIR = ${BX_DIR}")
 message(STATUS "BIMG_DIR = ${BIMG_DIR}")
 message(STATUS "BGFX_DIR = ${BGFX_DIR}")
 
+string(TOLOWER ${CMAKE_BUILD_TYPE} GENIE_BUILD_TYPE)
+
 if(APPLE)
-  if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(DIST_COMMAND osx-release64)
-  else()
-    set(DIST_COMMAND osx-debug64)
-  endif()
+  set(DIST_COMMAND osx-x64-${GENIE_BUILD_TYPE})
   set(SDKROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
   set(LINKER_OPTIONS
       "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
@@ -64,11 +62,7 @@ elseif(WIN32)
   # get_windowssdk_include_dirs("${WINDOWSSDK_LATEST_DIR}" WINSDK_INCLUDE_DIRS) foreach(X IN LISTS WINSDK_INCLUDE_DIRS)
   # include_directories("${X}") endforeach()
 else()
-  if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(DIST_COMMAND linux-release64)
-  else()
-    set(DIST_COMMAND linux-debug64)
-  endif()
+  set(DIST_COMMAND linux-${GENIE_BUILD_TYPE}64)
   set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,--undefined,__main_")
 endif()
 
@@ -86,7 +80,7 @@ if(WIN32)
                   WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
 else()
   if(APPLE)
-    execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake
+    execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx-x64 gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   else()
     execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake

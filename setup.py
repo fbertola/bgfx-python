@@ -17,7 +17,7 @@ except FileNotFoundError:
 
 package_name = "bgfx-python"
 version = "1.0.5"
-cmake_args = ["-DCMAKE_BUILD_TYPE=Debug"]
+cmake_args = []
 
 if sys.platform == 'darwin':
     plat_name = skbuild_plat_name()
