@@ -53,7 +53,7 @@ message(STATUS "BGFX_DIR = ${BGFX_DIR}")
 string(TOLOWER ${CMAKE_BUILD_TYPE} GENIE_BUILD_TYPE)
 
 if(APPLE)
-  set(DIST_COMMAND osx-x64-${GENIE_BUILD_TYPE})
+  set(DIST_COMMAND osx-${GENIE_BUILD_TYPE})
   set(SDKROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
   set(LINKER_OPTIONS
       "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
@@ -84,7 +84,7 @@ if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
 else()
   if(APPLE)
-    execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx-x64 gmake
+    execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   else()
     execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake
