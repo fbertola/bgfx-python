@@ -202,7 +202,7 @@ function(cppyy_add_bindings pkg)
   # ############## cppyy-generator #######################
   find_package(LibClang REQUIRED)
   get_filename_component(Cppyygen_EXECUTABLE ${Cppyy_EXECUTABLE} DIRECTORY)
-  set(Cppyygen_EXECUTABLE ${Cppyygen_EXECUTABLE}/cppyy-generator)
+  set(Cppyygen_EXECUTABLE ${Cppyygen_EXECUTABLE}/cppyy-generator${CMAKE_EXECUTABLE_SUFFIX})
 
   #
   # Set up arguments for cppyy-generator.

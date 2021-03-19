@@ -35,8 +35,10 @@ if(APPLE)
   set(BGFX_BUILD_PROJ_DIR gmake-osx-x64)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
-  set(BGFX_BUILD_DIR win64_vs2019)
-  set(BGFX_BUILD_PROJ_DIR vs2019)
+  set(BGFX_BUILD_DIR win64_vs2017)
+  set(BGFX_BUILD_PROJ_DIR vs2017)
+  set(CMAKE_STATIC_LIBRARY_PREFIX "")
+  set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
   set(CLING_LIB_SUFFIX ".lib")
 else()
   set(BGFX_BUILD_DIR linux64_gcc)
@@ -58,7 +60,7 @@ if(APPLE)
   )
 elseif(WIN32)
   include(FindWindowsSDK)
-  set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib;/FORCE:MULTIPLE")
+  set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib;/FORCE:UNRESOLVED")
   # get_windowssdk_include_dirs("${WINDOWSSDK_LATEST_DIR}" WINSDK_INCLUDE_DIRS) foreach(X IN LISTS WINSDK_INCLUDE_DIRS)
   # include_directories("${X}") endforeach()
 else()
@@ -68,6 +70,7 @@ endif()
 
 if(WIN32)
   set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
 
   execute_process(COMMAND ../bx/tools/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR}
@@ -78,6 +81,7 @@ if(WIN32)
 
   execute_process(COMMAND msbuild bgfx.sln /p:Configuration=Release
                   WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
 else()
   if(APPLE)
     execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx-x64 gmake
@@ -117,6 +121,7 @@ string(
 string(
   CONCAT INCLUDE_DIRS
          "${BX_DIR}/include;"
+         "${BX_DIR}/include/compat/msvc;"
          "${BIMG_DIR}/include;"
          "${BGFX_DIR}/include;"
          "${BGFX_DIR}/include/bgfx;"
@@ -193,3 +198,4 @@ file(GLOB imgui_headers "${IMGUI_DIR}/*.h")
 file(GLOB imgui_widgets_headers "${IMGUI_DIR}/widgets/*.h")
 install(FILES ${imgui_headers} DESTINATION "pybgfx/include/imgui")
 install(FILES ${imgui_widgets_headers} DESTINATION "pybgfx/include/imgui/widgets")
+

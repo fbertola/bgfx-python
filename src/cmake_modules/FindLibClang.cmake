@@ -112,9 +112,9 @@ find_path(
 find_library(
   LibClang_LIBRARY
   NAMES # On Windows with MSVC, the import library uses the ".imp" file extension instead of the comon ".lib"
-        libclang.imp libclang clang
+        libclang.dll libclang clang
   PATHS ${libclang_llvm_lib_search_paths}
-  PATH_SUFFIXES LLVM/lib # Windows package from http://llvm.org/releases/
+  PATH_SUFFIXES LLVM/bin # Windows package from http://llvm.org/releases/
   DOC "The file that corresponds to the libclang library.")
 
 get_filename_component(LibClang_LIBRARY_DIR ${LibClang_LIBRARY} PATH)
@@ -168,3 +168,4 @@ set(CLANG_VERSION_STRING
 mark_as_advanced(LibClang_VERSION)
 unset(_filename)
 unset(_find_libclang_filename)
+
