@@ -31,8 +31,8 @@ set(EXAMPLES_COMMON_DIR
     CACHE PATH "EXAMPLES_COMMON dir" FORCE)
 
 if(APPLE)
-  set(BGFX_BUILD_DIR osx-x64)
-  set(BGFX_BUILD_PROJ_DIR gmake-osx-x64)
+  set(BGFX_BUILD_DIR osx64_clang)
+  set(BGFX_BUILD_PROJ_DIR gmake-osx)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
   set(BGFX_BUILD_DIR win64_vs2017)
@@ -95,33 +95,33 @@ else()
 endif()
 
 if(NOT WIN32)
-    set(CMAKE_MACOSX_RPATH ON)
-    set(CMAKE_SKIP_BUILD_RPATH FALSE)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+  set(CMAKE_MACOSX_RPATH ON)
+  set(CMAKE_SKIP_BUILD_RPATH FALSE)
+  set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-    file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
-    file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
+  file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
+  file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
 
-    set(Cppyy_DIR "/tmp")
+  set(Cppyy_DIR "/tmp")
 endif()
 
 string(
-  CONCAT LINKER_LIBRARIES
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_encode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_decode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}example-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-         "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
-         "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
+  CONCAT
+    LINKER_LIBRARIES
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_encode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_decode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}example-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
+    "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
 
 string(
   CONCAT INCLUDE_DIRS
          "${BX_DIR}/include;"
-         "${BX_DIR}/include/compat/msvc;"
          "${BIMG_DIR}/include;"
          "${BGFX_DIR}/include;"
          "${BGFX_DIR}/include/bgfx;"
@@ -129,6 +129,10 @@ string(
          "${EXAMPLES_COMMON_DIR};"
          "${3RDPARTY_DIR};"
          "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+if(WIN32)
+  string(CONCAT INCLUDE_DIRS "${BX_DIR}/include/compat/msvc;" "${INCLUDE_DIRS}")
+endif()
 
 string(
   CONCAT H_DIRS
@@ -142,10 +146,9 @@ string(
 
 string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra_utils.h")
 
-
 if(DEFINED ENV{MANYLINUX_BUILD})
-     file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
-     file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
+  file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
+  file(COPY "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
 endif()
 
 # cmake-format: off
@@ -198,4 +201,3 @@ file(GLOB imgui_headers "${IMGUI_DIR}/*.h")
 file(GLOB imgui_widgets_headers "${IMGUI_DIR}/widgets/*.h")
 install(FILES ${imgui_headers} DESTINATION "pybgfx/include/imgui")
 install(FILES ${imgui_widgets_headers} DESTINATION "pybgfx/include/imgui/widgets")
-
