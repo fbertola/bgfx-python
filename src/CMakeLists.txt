@@ -31,8 +31,8 @@ set(EXAMPLES_COMMON_DIR
     CACHE PATH "EXAMPLES_COMMON dir" FORCE)
 
 if(APPLE)
-  set(BGFX_BUILD_DIR osx64_clang)
-  set(BGFX_BUILD_PROJ_DIR gmake-osx)
+  set(BGFX_BUILD_DIR osx-x64)
+  set(BGFX_BUILD_PROJ_DIR gmake-osx-x64)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
   set(BGFX_BUILD_DIR win64_vs2017)
@@ -53,7 +53,7 @@ message(STATUS "BGFX_DIR = ${BGFX_DIR}")
 string(TOLOWER ${CMAKE_BUILD_TYPE} GENIE_BUILD_TYPE)
 
 if(APPLE)
-  set(DIST_COMMAND osx-${GENIE_BUILD_TYPE})
+  set(DIST_COMMAND osx-x64-${GENIE_BUILD_TYPE})
   set(SDKROOT /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk)
   set(LINKER_OPTIONS
       "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
@@ -66,12 +66,18 @@ else()
   set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,--undefined,__main_")
 endif()
 
+if(DEFINED ENV{MANYLINUX_BUILD})
+  set(GENIE_FOLDER "/genie")
+else()
+  set(GENIE_FOLDER "${BX_DIR}/tools")
+endif()
+
 if(WIN32)
   set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
   set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
 
-  execute_process(COMMAND ../bx/tools/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR}
+  execute_process(COMMAND ${GENIE_FOLDER}/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR}
                   WORKING_DIRECTORY ${BGFX_DIR})
 
   execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat
@@ -82,10 +88,10 @@ if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
 else()
   if(APPLE)
-    execute_process(COMMAND ${BX_DIR}/tools/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx gmake
+    execute_process(COMMAND ${GENIE_FOLDER}/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx-x64 gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   else()
-    execute_process(COMMAND ${BX_DIR}/tools/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake
+    execute_process(COMMAND ${GENIE_FOLDER}/bin/linux/genie --with-tools --with-shared-lib --gcc=linux-gcc gmake
                     WORKING_DIRECTORY ${BGFX_DIR})
   endif()
 
