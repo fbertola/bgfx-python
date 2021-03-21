@@ -81,16 +81,16 @@ open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10
 
 ### Installing on Windows
 
-The easiest way is to install [Visual Studio 2019 Community Edition](https://visualstudio.microsoft.com/it/vs/). If you have [Chocolatey](https://chocolatey.org/install) installed, then run:
+The easiest way is to install [Visual Studio 2017 Community Edition](https://visualstudio.microsoft.com/it/vs/). If you have [Chocolatey](https://chocolatey.org/install) installed, then run:
 
 ```bash
-choco install visualstudio2019community
+choco install visualstudio2017community
 ```
 
 Before building the package, make sure to activate all the environment variables required by the compiler:
 
 ```bash
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
 ```
 
 ## Using ImGUI
