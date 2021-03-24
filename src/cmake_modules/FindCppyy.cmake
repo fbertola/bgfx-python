@@ -263,4 +263,11 @@ function(cppyy_add_bindings pkg)
     endif()
   endif()
 
+  if(APPLE)
+    add_custom_command(
+      TARGET ${lib_name}
+      POST_BUILD
+      COMMAND install_name_tool -delete_rpath /tmp/lib $<TARGET_FILE:${lib_name}>)
+  endif()
+
 endfunction(cppyy_add_bindings)
