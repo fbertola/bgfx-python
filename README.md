@@ -4,7 +4,7 @@
   <br>
 </h1>
 
-<h4 align="center">Python 3.6+ wrapper for the BGFX library.</h4>
+<h4 align="center">Python 3.7+ wrapper for the BGFX library.</h4>
 
 <p align="center">
   <img src="https://img.shields.io/pypi/pyversions/bgfx-python">
