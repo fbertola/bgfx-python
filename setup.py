@@ -42,6 +42,8 @@ setup(
     zip_safe=False,
     license='BSD',
     install_requires=[
+        'cppyy',
+        'clang',
         'loguru'
     ],
     classifiers=[
