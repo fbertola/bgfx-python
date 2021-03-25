@@ -263,6 +263,7 @@ function(cppyy_add_bindings pkg)
     endif()
   endif()
 
+  // For security reasons, delete the build RPATH
   if(APPLE)
     add_custom_command(
       TARGET ${lib_name}
