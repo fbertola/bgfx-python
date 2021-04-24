@@ -1,10 +1,9 @@
-include LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.rst NOTICES HISTORY.txt pyproject.toml
-exclude .gitmodules
+exclude LICENSE README.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.rst NOTICES HISTORY.txt pyproject.toml
 exclude .editorconfig .travis.yml .env appveyor.yml tox.ini pytest.ini
+exclude .gitmodules
+exclude src
+exclude examples
 
-
-recursive-include src *
-recursive-include examples *.py
 recursive-include pybgfx *.pcm *.rootmap *.map
 recursive-include pybgfx *.sh
 recursive-include pybgfx/utils *.py
