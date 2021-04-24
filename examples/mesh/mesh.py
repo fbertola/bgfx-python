@@ -54,7 +54,7 @@ class MeshExample(ExampleWindow):
 
         # Load Bunny mesh
         self.mesh = Mesh(
-            Path(__file__).parent.parent / "assets" / "meshes" / "bunny.bin"
+            (Path(__file__).parent.parent / "assets" / "meshes" / "bunny.bin").absolute()
         )
 
         # Create program from shaders.

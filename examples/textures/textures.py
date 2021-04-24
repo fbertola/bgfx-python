@@ -163,7 +163,8 @@ class Textures(ExampleWindow):
         logo = Image.open(
             Path(__file__).parent.parent / "assets" / "textures" / "python_logo.png"
         )
-        logo_memory = bgfx.copy(as_void_ptr(logo.tobytes()), len(logo.tobytes()))
+        image_bytes = logo.tobytes()
+        logo_memory = bgfx.copy(as_void_ptr(image_bytes), len(image_bytes))
         self.logo_texture = bgfx.createTexture2D(
             logo.width,
             logo.height,
