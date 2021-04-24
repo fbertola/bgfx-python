@@ -40,6 +40,7 @@ function(cppyy_add_bindings pkg)
       INCLUDE_DIRS
       LINK_OPTIONS
       LINK_LIBRARIES
+      CPPYY_LIBRARIES
       H_DIRS
       H_FILES
       LINKDEFS
@@ -70,7 +71,7 @@ function(cppyy_add_bindings pkg)
   endif()
 
   if("${ARG_TARGET_DIR}" STREQUAL "")
-    set(ARG_LANGUAGE_STANDARD ${pkg})
+    set(ARG_TARGET_DIR ${pkg})
   endif()
 
   # ####################################################################################################################
@@ -107,6 +108,14 @@ function(cppyy_add_bindings pkg)
   set(linker_args)
   foreach(link_option IN LISTS ARG_LINK_OPTIONS)
     list(APPEND linker_args "SHELL:${link_option}")
+  endforeach()
+
+  set(linker_libraries)
+  foreach(cppyy_library IN LISTS ARG_CPPYY_LIBRARIES)
+    list(APPEND linker_libraries "${cppyy_library}")
+  endforeach()
+  foreach(additional_library IN LISTS ARG_LINK_LIBRARIES)
+    list(APPEND linker_libraries "${additional_library}")
   endforeach()
 
   # ####################################################################################################################
@@ -199,7 +208,7 @@ function(cppyy_add_bindings pkg)
     COMMAND ${Cppyy_EXECUTABLE} ${cling_args} ${relative_h_files} ${out_linkdef}
     WORKING_DIRECTORY ${pkg_dir})
 
-  # ############## cppyy-generator #######################
+  # ##############   #######################
   find_package(LibClang REQUIRED)
   get_filename_component(Cppyygen_EXECUTABLE ${Cppyy_EXECUTABLE} DIRECTORY)
   set(Cppyygen_EXECUTABLE ${Cppyygen_EXECUTABLE}/cppyy-generator${CMAKE_EXECUTABLE_SUFFIX})
@@ -240,13 +249,37 @@ function(cppyy_add_bindings pkg)
   set_property(TARGET ${lib_name} PROPERTY VERSION ${version})
   set_property(TARGET ${lib_name} PROPERTY CXX_STANDARD ${ARG_LANGUAGE_STANDARD})
   set_property(TARGET ${lib_name} PROPERTY LIBRARY_OUTPUT_DIRECTORY ${pkg_dir})
-  # set_property(TARGET ${lib_name} PROPERTY LINK_WHAT_YOU_USE TRUE)
+
+  # if (UNIX)
+  #   set_property(TARGET ${lib_name} PROPERTY LINK_WHAT_YOU_USE TRUE)
+  # endif()
+
+  include(ExportAllSymbolsWindows)
+
+  string(CONCAT additional_objs_list
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/${pkg}.cpp.obj;"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/bgfx_extra.cpp.obj;"
+    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/imgui_extra.cpp.obj;")
+
+  export_all_symbols_windows(
+    ${lib_name}
+    EXPORT_LINK_LIBRARIES "${ARG_LINK_LIBRARIES};"
+    ADDITIONAL_OBJS ${additional_objs_list}
+  )
+  list(APPEND linker_args "/DEF:${EXPORT_DEF_FILE}")
+
   target_include_directories(${lib_name} PRIVATE ${Cppyy_INCLUDE_DIRS} ${ARG_INCLUDE_DIRS})
   target_compile_options(${lib_name} PRIVATE ${ARG_COMPILE_OPTIONS})
-  target_link_libraries(${lib_name} PUBLIC ${ARG_LINK_LIBRARIES})
-  target_link_options(${lib_name} PRIVATE ${linker_args})
 
-  install(TARGETS ${lib_name} LIBRARY DESTINATION ${ARG_TARGET_DIR})
+  target_link_libraries(${lib_name} PUBLIC ${linker_libraries})
+  target_link_options(${lib_name} PUBLIC ${linker_args})
+
+  if(WIN32)
+    install(TARGETS ${lib_name} RUNTIME DESTINATION ${ARG_TARGET_DIR})
+  else()
+    install(TARGETS ${lib_name} LIBRARY DESTINATION ${ARG_TARGET_DIR})
+  endif()
+
   install(FILES ${pcm_file} ${rootmap_file} ${extra_map_file} DESTINATION ${ARG_TARGET_DIR})
 
   if(CMAKE_STRIP)

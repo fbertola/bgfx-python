@@ -32,17 +32,14 @@ set(EXAMPLES_COMMON_DIR
 
 if(APPLE)
   set(BGFX_BUILD_DIR osx-x64)
-  set(BGFX_BUILD_PROJ_DIR gmake-osx-x64)
   set(CLING_LIB_SUFFIX ".so")
 elseif(WIN32)
   set(BGFX_BUILD_DIR win64_vs2017)
   set(BGFX_BUILD_PROJ_DIR vs2017)
   set(CMAKE_STATIC_LIBRARY_PREFIX "")
-  set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
   set(CLING_LIB_SUFFIX ".lib")
 else()
   set(BGFX_BUILD_DIR linux64_gcc)
-  set(BGFX_BUILD_PROJ_DIR gmake-linux)
   set(CLING_LIB_SUFFIX ".so")
 endif()
 
@@ -59,8 +56,11 @@ if(APPLE)
       "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
   )
 elseif(WIN32)
-  include(FindWindowsSDK)
-  set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib;/FORCE:UNRESOLVED")
+  #include(FindWindowsSDK)
+  set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib;/FORCE:UNRESOLVED;/FORCE:MULTIPLE;")
+  set(COMPILER_OPTIONS
+      "/D__STDC_LIMIT_MACROS;/D__STDC_FORMAT_MACROS;/D__STDC_CONSTANT_MACROS;/D_HAS_EXCEPTIONS=0;/D_CRT_SECURE_NO_WARNINGS"
+  )
 else()
   set(DIST_COMMAND linux-${GENIE_BUILD_TYPE}64)
   set(LINKER_OPTIONS "-lGL;-lGLU;-lglut;-lpthread;-lrt;-ldl;-Wl,--start-group;-Wl,--undefined,__main_")
@@ -73,19 +73,17 @@ else()
 endif()
 
 if(WIN32)
-  set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
-  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /bigobj /D__STDC_FORMAT_MACROS /D_CRT_SECURE_NO_WARNINGS ")
+  #set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
 
-  execute_process(COMMAND ${GENIE_FOLDER}/bin/windows/genie --with-tools ${BGFX_BUILD_PROJ_DIR}
+  execute_process(COMMAND ${GENIE_FOLDER}/bin/windows/genie --with-tools --with-shared-lib ${BGFX_BUILD_PROJ_DIR}
                   WORKING_DIRECTORY ${BGFX_DIR})
 
   execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat
-                          "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
+                         "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
 
-  execute_process(COMMAND msbuild bgfx.sln /p:Configuration=Release
+  execute_process(COMMAND msbuild bgfx.sln /p:Configuration=${CMAKE_BUILD_TYPE}
                   WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
 else()
   if(APPLE)
     execute_process(COMMAND ${GENIE_FOLDER}/bin/darwin/genie --with-tools --with-shared-lib --gcc=osx-x64 gmake
@@ -113,13 +111,17 @@ endif()
 
 string(
   CONCAT
-    LINKER_LIBRARIES
-    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    BGFX_LIBRARIES
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_encode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg_decode${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}example-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+
+string(
+  CONCAT
+    CPPYY_LIBRARIES
     "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
     "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
 
@@ -132,7 +134,7 @@ string(
          "${IMGUI_DIR};"
          "${EXAMPLES_COMMON_DIR};"
          "${3RDPARTY_DIR};"
-         "${CMAKE_CURRENT_SOURCE_DIR}/include")
+         "${CMAKE_CURRENT_SOURCE_DIR}/extras;")
 
 if(WIN32)
   string(CONCAT INCLUDE_DIRS "${BX_DIR}/include/compat/msvc;" "${INCLUDE_DIRS}")
@@ -146,9 +148,9 @@ string(
          "${IMGUI_DIR};"
          "${3RDPARTY_DIR};"
          "${EXAMPLES_COMMON_DIR};"
-         "${CMAKE_CURRENT_SOURCE_DIR}/include")
+         "${CMAKE_CURRENT_SOURCE_DIR}/extras;")
 
-string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra_utils.h")
+string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra.h;" "imgui_extra.h")
 
 if(DEFINED ENV{MANYLINUX_BUILD})
   file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")
@@ -161,8 +163,11 @@ cppyy_add_bindings(
    LANGUAGE_STANDARD "14"
    TARGET_DIR "pybgfx"
    INCLUDE_DIRS ${INCLUDE_DIRS}
+   COMPILE_OPTIONS ${COMPILER_OPTIONS}
    LINK_OPTIONS ${LINKER_OPTIONS}
-   LINK_LIBRARIES ${LINKER_LIBRARIES}
+   LINK_LIBRARIES ${BGFX_LIBRARIES}
+   CPPYY_LIBRARIES ${CPPYY_LIBRARIES}
+   EXTRA_CODES "${CMAKE_CURRENT_SOURCE_DIR}/extras/imgui_extra.cpp;${CMAKE_CURRENT_SOURCE_DIR}/extras/bgfx_extra.cpp;"
    H_DIRS ${H_DIRS}
    H_FILES ${H_FILES}
 )
@@ -194,9 +199,8 @@ install(FILES ${tinystl_headers} DESTINATION "pybgfx/include/tinystl")
 file(GLOB bimg_headers "${BIMG_DIR}/include/bimg/*.h")
 install(FILES ${bimg_headers} DESTINATION "pybgfx/include/bimg")
 
-file(GLOB bgfx_examples_common_headers "${CMAKE_CURRENT_SOURCE_DIR}/examples/common/*.h")
-install(FILES ${bgfx_examples_common_headers} "${CMAKE_CURRENT_SOURCE_DIR}/include/bgfx_extra_utils.h"
-        DESTINATION "pybgfx/include/examples/common")
+file(GLOB bgfx_examples_common_headers "${BGFX_DIR}/examples/common/*.h")
+install(FILES ${bgfx_examples_common_headers} DESTINATION "pybgfx/include/examples/common")
 
 install(FILES "${BGFX_DIR}/src/bgfx_compute.sh" DESTINATION "pybgfx/include/shaders")
 install(FILES "${BGFX_DIR}/src/bgfx_shader.sh" DESTINATION "pybgfx/include/shaders")
