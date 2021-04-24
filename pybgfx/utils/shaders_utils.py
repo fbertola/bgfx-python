@@ -44,9 +44,14 @@ def _get_platform() -> str:
     return platforms.get(platform.system())
 
 
-def _get_profile() -> str:
+def _get_profile(shader_type: ShaderType) -> str:
     renderer_type = bgfx.getRendererType()
     sys_platform = platform.system()
+    windows_shader_type = {
+        ShaderType.FRAGMENT: "ps_",
+        ShaderType.VERTEX: "vs_",
+        ShaderType.COMPUTE: "cs_",
+    }
 
     if sys_platform == "Darwin":
         return "metal"
@@ -59,9 +64,9 @@ def _get_profile() -> str:
 
     elif sys_platform == "Windows":
         if renderer_type == bgfx.RendererType.Direct3D9:
-            return "s_3"
+            return windows_shader_type.get(shader_type) + "3_0"
         else:
-            return "s_5"
+            return windows_shader_type.get(shader_type) + "5_0"
 
     else:
         raise ValueError("'{}' is not supported!".format(sys_platform))
@@ -92,7 +97,7 @@ def load_shader(
     name: str,
     shader_type: ShaderType,
     include_dirs: Optional[List[str]] = (),
-    root_path: Optional[str] = None,
+    root_path: Optional[Path] = None,
 ) -> bgfx.ShaderHandle:
     """
     Compiles the given shader for the platform-specific driver and creates
@@ -157,7 +162,7 @@ def compile_shader(
 
     options.extend(("-f", complete_path))
     options.extend(("-o", temp_file.name))
-    options.extend(("-i", _default_include_dir))
+    options.extend(("-i", str(_default_include_dir)))
 
     for include_dir in include_dirs:
         if not os.path.exists(include_dir) or os.path.isdir(include_dir):
@@ -168,7 +173,7 @@ def compile_shader(
         options.extend(["-i", include_dir])
 
     options.extend(("--platform", _get_platform()))
-    options.extend(("--profile", _get_profile()))
+    options.extend(("--profile", _get_profile(shader_type)))
     options.extend(("--type", shader_type.value))
 
     if platform.system() == "Windows":
