@@ -108,11 +108,12 @@ def show_example_dialog():
     stats = bgfx.getStats()
     to_ms_cpu = 1000.0 / stats.cpuTimerFreq
     to_ms_gpu = 1000.0 / stats.gpuTimerFreq
-    frame_ms = max(float(stats.cpuTimeEnd - stats.cpuTimeBegin), 1.0e-9)
+    frame_ms = float(stats.cpuTimeFrame) * to_ms_cpu
 
-    s_frame_time.push_sample(frame_ms * to_ms_cpu)
+    s_frame_time.push_sample(frame_ms)
+    fps = 1000.0 / s_frame_time.m_avg
 
-    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {(stats.cpuTimerFreq / frame_ms):6.2f} FPS"
+    frame_text_overlay = f"\uf063{s_frame_time.m_min:7.3f}ms, \uf062{s_frame_time.m_max:7.3f}ms\nAvg: {s_frame_time.m_avg:7.3f}ms, {fps:6.2f} FPS"
     ImGui.PushStyleColor(
         ImGui.ImGuiCol_PlotHistogram, ImGui.ImVec4(0.0, 0.5, 0.15, 1.0)
     )
