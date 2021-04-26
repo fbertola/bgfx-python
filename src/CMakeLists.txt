@@ -56,7 +56,7 @@ if(APPLE)
       "-framework Cocoa;-framework QuartzCore;-framework OpenGL;-weak_framework Metal;-weak_framework MetalKit;-Wl,-U,__main_"
   )
 elseif(WIN32)
-  #include(FindWindowsSDK)
+  # include(FindWindowsSDK)
   set(LINKER_OPTIONS "d3d12.lib;d3d11.lib;dxgi.lib;psapi.lib;d3dcompiler.lib;/FORCE:UNRESOLVED;/FORCE:MULTIPLE;")
   set(COMPILER_OPTIONS
       "/D__STDC_LIMIT_MACROS;/D__STDC_FORMAT_MACROS;/D__STDC_CONSTANT_MACROS;/D_HAS_EXCEPTIONS=0;/D_CRT_SECURE_NO_WARNINGS"
@@ -73,14 +73,13 @@ else()
 endif()
 
 if(WIN32)
-  #set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
-  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
+  # set(MSVC_RUNTIME_LIBRARY "MultiThreadedDLL") set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
 
   execute_process(COMMAND ${GENIE_FOLDER}/bin/windows/genie --with-tools --with-shared-lib ${BGFX_BUILD_PROJ_DIR}
                   WORKING_DIRECTORY ${BGFX_DIR})
 
   execute_process(COMMAND cmd /c ${CMAKE_CURRENT_SOURCE_DIR}/scripts/rename_runtime.bat
-                         "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
+                          "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}" COMMAND_ECHO STDOUT)
 
   execute_process(COMMAND msbuild bgfx.sln /p:Configuration=${CMAKE_BUILD_TYPE}
                   WORKING_DIRECTORY "${BGFX_DIR}/.build/projects/${BGFX_BUILD_PROJ_DIR}")
@@ -100,7 +99,7 @@ if(NOT WIN32)
   set(CMAKE_MACOSX_RPATH OFF)
   set(CMAKE_SKIP_BUILD_RPATH FALSE)
   set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-#  set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  # set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
   set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
   file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/tmp/lib")
@@ -117,13 +116,11 @@ string(
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}example-common${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
     "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bimg${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX};"
-    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+    "${BGFX_DIR}/.build/${BGFX_BUILD_DIR}/bin/${CMAKE_STATIC_LIBRARY_PREFIX}bgfx${CMAKE_BUILD_TYPE}${CMAKE_STATIC_LIBRARY_SUFFIX}"
+)
 
-string(
-  CONCAT
-    CPPYY_LIBRARIES
-    "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
-    "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
+string(CONCAT CPPYY_LIBRARIES "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX};"
+              "${Cppyy_DIR}/lib/libCoreLegacy${CLING_LIB_SUFFIX}")
 
 string(
   CONCAT INCLUDE_DIRS
@@ -150,7 +147,14 @@ string(
          "${EXAMPLES_COMMON_DIR};"
          "${CMAKE_CURRENT_SOURCE_DIR}/extras;")
 
-string(CONCAT H_FILES "bgfx.h;" "bgfx/platform.h;" "imgui.h;" "imgui/imgui.h;" "bgfx_extra.h;" "imgui_extra.h")
+string(
+  CONCAT H_FILES
+         "bgfx.h;"
+         "bgfx/platform.h;"
+         "imgui.h;"
+         "imgui/imgui.h;"
+         "bgfx_extra.h;"
+         "imgui_extra.h")
 
 if(DEFINED ENV{MANYLINUX_BUILD})
   file(COPY "${Cppyy_DIR}/lib/libCling${CLING_LIB_SUFFIX}" DESTINATION "/usr/lib")

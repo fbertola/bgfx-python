@@ -250,23 +250,19 @@ function(cppyy_add_bindings pkg)
   set_property(TARGET ${lib_name} PROPERTY CXX_STANDARD ${ARG_LANGUAGE_STANDARD})
   set_property(TARGET ${lib_name} PROPERTY LIBRARY_OUTPUT_DIRECTORY ${pkg_dir})
 
-  # if (UNIX)
-  #   set_property(TARGET ${lib_name} PROPERTY LINK_WHAT_YOU_USE TRUE)
-  # endif()
+  # if (UNIX) set_property(TARGET ${lib_name} PROPERTY LINK_WHAT_YOU_USE TRUE) endif()
 
-  include(ExportAllSymbolsWindows)
+  if(WIN32)
+    include(ExportAllSymbolsWindows)
+    string(
+      CONCAT additional_objs_list "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/${pkg}.cpp.obj;"
+             "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/bgfx_extra.cpp.obj;"
+             "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/imgui_extra.cpp.obj;")
 
-  string(CONCAT additional_objs_list
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/${pkg}.cpp.obj;"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/bgfx_extra.cpp.obj;"
-    "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${lib_name}.dir/extras/imgui_extra.cpp.obj;")
-
-  export_all_symbols_windows(
-    ${lib_name}
-    EXPORT_LINK_LIBRARIES "${ARG_LINK_LIBRARIES};"
-    ADDITIONAL_OBJS ${additional_objs_list}
-  )
-  list(APPEND linker_args "/DEF:${EXPORT_DEF_FILE}")
+    export_all_symbols_windows(${lib_name} EXPORT_LINK_LIBRARIES "${ARG_LINK_LIBRARIES};" ADDITIONAL_OBJS
+                               ${additional_objs_list})
+    list(APPEND linker_args "/DEF:${EXPORT_DEF_FILE}")
+  endif()
 
   target_include_directories(${lib_name} PRIVATE ${Cppyy_INCLUDE_DIRS} ${ARG_INCLUDE_DIRS})
   target_compile_options(${lib_name} PRIVATE ${ARG_COMPILE_OPTIONS})

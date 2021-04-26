@@ -1,4 +1,3 @@
-
 find_program(LIB_EXECUTABLE NAMES lib.exe REQUIRED)
 
 function(export_all_symbols_windows target)
@@ -21,10 +20,9 @@ function(export_all_symbols_windows target)
     endif()
 
     execute_process(
-        COMMAND ${LIB_EXECUTABLE} /nologo /list ${link_library}
-        OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/exports.def.tmp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        )
+      COMMAND ${LIB_EXECUTABLE} /nologo /list ${link_library}
+      OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/exports.def.tmp
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
     file(STRINGS ${CMAKE_CURRENT_BINARY_DIR}/exports.def.tmp rel_obj_paths)
 
@@ -45,8 +43,7 @@ function(export_all_symbols_windows target)
     TARGET ${target}
     PRE_LINK
     COMMAND ${CMAKE_COMMAND} -E __create_def exports.def exports.def.objs
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
   set(EXPORT_DEF_FILE
       "${CMAKE_CURRENT_BINARY_DIR}/exports.def"

@@ -15,6 +15,7 @@
 # Python support for clang might not be available for Python3. We need to find what we have.
 #
 set(LIBCLANG_KNOWN_LLVM_VERSIONS
+    11.1.0_1
     11.1.0
     11.0.0
     9.0.0
@@ -168,4 +169,3 @@ set(CLANG_VERSION_STRING
 mark_as_advanced(LibClang_VERSION)
 unset(_filename)
 unset(_find_libclang_filename)
-

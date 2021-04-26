@@ -5,7 +5,7 @@
 bx::DefaultAllocator default_allocator;
 bx::AllocatorI * allocator = & default_allocator;
 
-Mesh* meshLoad(const char* _filePath, bool _ramcopy)
+Mesh* meshLoadImpl(const char* _filePath, bool _ramcopy)
 {
     bx::FileReaderI* reader = BX_NEW(allocator, bx::FileReader);
     if (bx::open(reader, _filePath) )
@@ -21,7 +21,7 @@ Mesh* meshLoad(const char* _filePath, bool _ramcopy)
 
 Mesh* _MeshLoader::load(const char* _filePath, bool _ramcopy)
 {
-    return meshLoad(_filePath, _ramcopy);
+    return meshLoadImpl(_filePath, _ramcopy);
 }
 
 void _MeshLoader::destroy(Mesh* _mesh)
