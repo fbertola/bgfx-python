@@ -2,8 +2,11 @@
 
 #include <bx/file.h>
 
+#if defined(WIN32)
+
 bx::DefaultAllocator default_allocator;
 bx::AllocatorI * allocator = & default_allocator;
+
 
 Mesh* meshLoad(const char* _filePath, bool _ramcopy)
 {
@@ -18,6 +21,12 @@ Mesh* meshLoad(const char* _filePath, bool _ramcopy)
     BX_DELETE(allocator, reader);
     return NULL;
 }
+
+#else
+
+Mesh* meshLoad(const char* _filePath, bool _ramcopy);
+
+#endif
 
 Mesh* _MeshLoader::load(const char* _filePath, bool _ramcopy)
 {
