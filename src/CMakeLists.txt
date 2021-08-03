@@ -160,7 +160,7 @@ endif()
 # cmake-format: off
 cppyy_add_bindings(
    "bgfx_python"
-   LANGUAGE_STANDARD "14"
+   LANGUAGE_STANDARD "17"
    TARGET_DIR "pybgfx"
    INCLUDE_DIRS ${INCLUDE_DIRS}
    COMPILE_OPTIONS ${COMPILER_OPTIONS}
