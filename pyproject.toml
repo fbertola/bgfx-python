@@ -30,7 +30,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.7"
 loguru = "^0.5.1"
-cppyy = "^1.8.4"
+cppyy = "^2.1.0"
 clang = "^11.0"
 
 [tool.poetry.dev-dependencies]

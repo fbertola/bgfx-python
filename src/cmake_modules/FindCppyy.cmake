@@ -200,7 +200,7 @@ function(cppyy_add_bindings pkg)
     #
     list(APPEND cling_args "-m" "${in_pcm}")
   endforeach(in_pcm)
-  list(APPEND cling_args "${ARG_GENERATE_OPTIONS}")
+  list(APPEND cling_args "-cxxflags='${ARG_GENERATE_OPTIONS}'")
 
   # run rootcling
   add_custom_command(
