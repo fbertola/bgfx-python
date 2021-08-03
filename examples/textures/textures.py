@@ -192,6 +192,8 @@ class Textures(ExampleWindow):
         ImGuiExtra.destroy()
         bgfx.destroy(self.index_buffer)
         bgfx.destroy(self.vertex_buffer)
+        bgfx.destroy(self.texture_uniform)
+        bgfx.destroy(self.logo_texture)
         bgfx.destroy(self.main_program)
         bgfx.shutdown()
 
@@ -218,6 +220,9 @@ class Textures(ExampleWindow):
 
         bgfx.touch(0)
 
+        # Set the texture
+        bgfx.setTexture(0, self.texture_uniform, self.logo_texture)
+
         for yy in range(-2, 2):
             for xx in range(-2, 2):
                 mtx = rotate_xy(
@@ -231,9 +236,6 @@ class Textures(ExampleWindow):
                 # Set vertex and index buffer.
                 bgfx.setVertexBuffer(0, self.vertex_buffer, 0, num_vertices)
                 bgfx.setIndexBuffer(self.index_buffer, 0, cube_indices.size)
-
-                # Set the texture
-                bgfx.setTexture(0, self.texture_uniform, self.logo_texture)
 
                 bgfx.setState(
                     0

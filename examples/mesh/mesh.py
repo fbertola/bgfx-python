@@ -74,6 +74,7 @@ class MeshExample(ExampleWindow):
         ImGuiExtra.destroy()
         self.mesh.destroy()
         bgfx.destroy(self.main_program)
+        bgfx.destroy(self.time_uniform)
         bgfx.shutdown()
 
     def update(self, dt):
