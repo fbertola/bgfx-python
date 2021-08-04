@@ -46,7 +46,7 @@ build_script:
 
 artifacts:
   # Archive the generated packages in the ci.appveyor.com build report.
-  - path: dist\*
+  - path: dist\bgfx_python*
 
 #on_success:
 #  - TODO: upload the content of dist/*.whl to a public wheelhouse
