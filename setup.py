@@ -16,7 +16,7 @@ except FileNotFoundError:
     long_description = ""
 
 package_name = "bgfx-python"
-version = "1.0.5"
+version = "2.0.0"
 cmake_args = []
 
 if sys.platform == 'darwin':

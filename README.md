@@ -64,6 +64,13 @@ $ git submodule update --init --recursive
 
 Then, make sure to have `make`, `cmake` and `ninja` installed in your system.
 
+Install the required dependency through `poetry`:
+
+```bash
+$ pip install poetry
+$ poetry install
+```
+
 Finally, simply build and install the wheel.
 
 ```bash
@@ -77,6 +84,7 @@ Building on MacOS X > 10.14 requires you to also install the SDK headers:
 ```bash
 xcode-select --install
 open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
+export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk 
 ```
 
 ### Installing on Windows
