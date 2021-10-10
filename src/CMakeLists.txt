@@ -202,6 +202,9 @@ install(FILES ${bimg_headers} DESTINATION "pybgfx/include/bimg")
 file(GLOB bgfx_examples_common_headers "${BGFX_DIR}/examples/common/*.h")
 install(FILES ${bgfx_examples_common_headers} DESTINATION "pybgfx/include/examples/common")
 
+file(GLOB bgfx_examples_common_inline_headers "${BGFX_DIR}/examples/common/*.inl")
+install(FILES ${bgfx_examples_common_inline_headers} DESTINATION "pybgfx/include/examples/common")
+
 install(FILES "${BGFX_DIR}/src/bgfx_compute.sh" DESTINATION "pybgfx/include/shaders")
 install(FILES "${BGFX_DIR}/src/bgfx_shader.sh" DESTINATION "pybgfx/include/shaders")
 
@@ -209,3 +212,6 @@ file(GLOB imgui_headers "${IMGUI_DIR}/*.h")
 file(GLOB imgui_widgets_headers "${IMGUI_DIR}/widgets/*.h")
 install(FILES ${imgui_headers} DESTINATION "pybgfx/include/imgui")
 install(FILES ${imgui_widgets_headers} DESTINATION "pybgfx/include/imgui/widgets")
+
+file(GLOB extra_headers "${CMAKE_CURRENT_SOURCE_DIR}/extras/*.h")
+install(FILES ${extra_headers} DESTINATION "pybgfx/include/extras")
