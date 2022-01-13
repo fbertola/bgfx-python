@@ -47,7 +47,7 @@ nox = "^2020.5.24"
 glfw = "^2.0.0"
 numpy = "^1.19.0"
 pytest-sugar = "^0.9.4"
-pillow = "^8.2.0"
+pillow = "^9.0.0"
 cmakelang = "^0.6.13"
 
 [tool.black]
